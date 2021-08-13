@@ -1,7 +1,14 @@
 `timescale 1ns / 1ps
 
 module top_wrapper#(
-  parameter DATA_WIDTH = 12
+  parameter DATA_WIDTH = 12,
+            L3_INPUT_CHANNEL = 6,
+            L3_INPUT_HEIGHT = 14,
+            L3_INPUT_WIDTH = 14,
+            L3_FITER_SIZE = 151,
+            INPUT_SIZE = 1176,
+            FILTER_BASE_0 = 0,
+            FILTER_BASE_1 = 1208,
   )
   (
   input clk_in,rst,start,
@@ -25,10 +32,19 @@ module top_wrapper#(
   wire [5:0] L1_position_col;
   wire L3_done;
 
+
+  //front layer
   reg [DATA_WIDTH-1:0] inp [0:4][0:31];
-  //weight & bias
   reg [DATA_WIDTH-1:0] weight[0:5][0:24];
   reg [DATA_WIDTH-1:0] bias [0:5];
+
+  //middle layer
+  reg [11:0] input_mem [0: L3_INPUT_CHANNEL - 1][0: L3_INPUT_HEIGHT - 1][0: L3_INPUT_WIDTH - 1];
+  reg [11:0] weight1_mem [0:L3_FITER_SIZE -2];
+  reg [11:0] weight2_mem [0:L3_FITER_SIZE -2];
+  reg [11:0] bias1_mem;
+  reg [11:0] bias2_mem;
+
 
   wire [DATA_WIDTH-1:0] con_result [0:5];
 
@@ -231,6 +247,7 @@ module top_wrapper#(
     .L1_bias_unit4(bias[3]),
     .L1_bias_unit5(bias[4]),
     .L1_bias_unit6(bias[5]),
+
     .out_result_a(con_result[0]),
     .out_result_b(con_result[1]),
     .out_result_c(con_result[2]),
@@ -379,17 +396,6 @@ module top_wrapper#(
     end
   end
 
-
-
-
-
-
-
-
-
-
-
- 
   //L1,L2 memory
   //w:12 d:5*5*6 + 6   addra [7:0] dout[11:0]
   con1_w_mem L1_weight_mem (.clka(clk),.addra(L1_w_addr),.douta(L1_w_data)  );
@@ -398,13 +404,7 @@ module top_wrapper#(
   // w:12*32 d:32  input addr[9:0] dina[11:0] output addr[4:0] dout[383:0]
   Input_ram input_ram (.clka(clk),.wea(1'b0),.addra(10'b0),.dina(12'b0),.clkb(clk),.addrb(L1_in_addr),.doutb(L1_in_data));
 
-
-
-
-
   //layer 2 output block memory params
-  
-
   wire L2_feature_wea;
   wire [7:0] L2_feature_addr_write;
   wire [7:0] L2_feature_addr_read_s;
@@ -473,8 +473,6 @@ module top_wrapper#(
       .st(front_st)
   ); 
 
-
-
   //layer2 output block memory
   layer_2_output feature1 (.clka(clk),.wea(L2_feature_wea),.addra(L2_feature_addr_write),.dina(L2_feature1_dina),.clkb(clk),.addrb(L2_mem_addr_read),.doutb(L2_feature1_dout));
   layer_2_output feature2 (.clka(clk),.wea(L2_feature_wea),.addra(L2_feature_addr_write),.dina(L2_feature2_dina),.clkb(clk),.addrb(L2_mem_addr_read),.doutb(L2_feature2_dout));
@@ -483,109 +481,103 @@ module top_wrapper#(
   layer_2_output feature5 (.clka(clk),.wea(L2_feature_wea),.addra(L2_feature_addr_write),.dina(L2_feature5_dina),.clkb(clk),.addrb(L2_mem_addr_read),.doutb(L2_feature5_dout));
   layer_2_output feature6 (.clka(clk),.wea(L2_feature_wea),.addra(L2_feature_addr_write),.dina(L2_feature6_dina),.clkb(clk),.addrb(L2_mem_addr_read),.doutb(L2_feature6_dout));
 
-  assign L2_mem_addr_read = (L1_en == 1'b1) ? L2_feature_addr_read_s:L2_feature_addr_read_r;  
+  assign L2_mem_addr_read = (L1_en == 1'b1) ? L2_feature_addr_read_s:(L3_en == 1'b1) ? L2_feature_addr_read_r : 1'b0;  
 
 
 
 
 
-// /////////////////////////// 
-//   wire [7:0] L4_output_read_addr1;
-//   wire [7:0] L4_output_read_addr2;
-//   wire [11:0] L4_output_read_data1;
-//   wire [11:0] L4_output_read_data2;
+/////////////////////////// 
+  wire [7:0] L4_output_read_addr1;
+  wire [7:0] L4_output_read_addr2;
+  wire [11:0] L4_output_read_data1;
+  wire [11:0] L4_output_read_data2;
 
-//   wire [7:0] L4_output_write_addr1;
-//   wire [7:0] L4_output_write_addr2;
+  wire [7:0] L4_output_write_addr1;
+  wire [7:0] L4_output_write_addr2;
 
-//   wire [11:0] L4_output_write_data1;
-//   wire [11:0] L4_output_write_data2;
+  wire [11:0] L4_output_write_data1;
+  wire [11:0] L4_output_write_data2;
 
-//   wire L4_output_wea1;
-//   wire L4_output_wea2;
-
-
-//   wire [11:0] L3_weigth_douta;
-//   wire [11:0] L3_weigth_doutb;
-//   wire [11:0] L3_weight_addra;
-//   wire [11:0] L3_weight_addrb;
+  wire L4_output_wea1;
+  wire L4_output_wea2;
 
 
-//   middle_layer_wrapper L3_L4_wrapper(
-//     .clk(clk),
-//     .rst(rst),
-//     .L3_en(L3_en),
-//     .L3_weigth_douta(L3_weigth_douta),
-//     .L3_weigth_doutb(L3_weigth_doutb),
-//     .L2_feature1_douta(L2_feature1_dout),
-//     .L2_feature2_douta(L2_feature2_dout),
-//     .L2_feature3_douta(L2_feature3_dout),
-//     .L2_feature4_douta(L2_feature4_dout),
-//     .L2_feature5_douta(L2_feature5_dout),
-//     .L2_feature6_douta(L2_feature6_dout),
-
-//     .L4_output_read_data1(L4_output_read_data1),
-//     .L4_output_read_data2(L4_output_read_data2),
-//     .L4_output_read_addr1(L4_output_read_addr1),
-//     .L4_output_read_addr2(L4_output_read_addr2),
-//     .L4_output_write_addr1(L4_output_write_addr1),
-//     .L4_output_write_addr2(L4_output_write_addr2),
-//     .L4_output_write_data1(L4_output_write_data1),
-//     .L4_output_write_data2(L4_output_write_data2),
-//     .L4_output_wea1(L4_output_wea1),
-//     .L4_output_wea2(L4_output_wea2),
-
-//     .L3_weight_addra(L3_weight_addra),
-//     .L3_weight_addrb(L3_weight_addrb),
-//     .L2_feature1_addr_read(L2_feature1_addr_read_m),
-//     .L2_feature2_addr_read(L2_feature2_addr_read_m),
-//     .L2_feature3_addr_read(L2_feature3_addr_read_m),
-//     .L2_feature4_addr_read(L2_feature4_addr_read_m),
-//     .L2_feature5_addr_read(L2_feature5_addr_read_m),
-//     .L2_feature6_addr_read(L2_feature6_addr_read_m),
-//     .L3_done(L3_done)
-//   );
+  wire [11:0] L3_weigth_douta;
+  wire [11:0] L3_weigth_doutb;
+  wire [11:0] L3_weight_addra;
+  wire [11:0] L3_weight_addrb;
 
 
+  middle_layer_wrapper L3_L4_wrapper(
+    .clk(clk),
+    .rst(rst),
+    .L3_en(L3_en),
+    .L3_weigth_douta(L3_weigth_douta),
+    .L3_weigth_doutb(L3_weigth_doutb),
+    .L2_feature1_douta(L2_feature1_dout),
+    .L2_feature2_douta(L2_feature2_dout),
+    .L2_feature3_douta(L2_feature3_dout),
+    .L2_feature4_douta(L2_feature4_dout),
+    .L2_feature5_douta(L2_feature5_dout),
+    .L2_feature6_douta(L2_feature6_dout),
 
+    .L4_output_read_data1(L4_output_read_data1),
+    .L4_output_read_data2(L4_output_read_data2),
+    .L4_output_read_addr1(L4_output_read_addr1),
+    .L4_output_read_addr2(L4_output_read_addr2),
+    .L4_output_write_addr1(L4_output_write_addr1),
+    .L4_output_write_addr2(L4_output_write_addr2),
+    .L4_output_write_data1(L4_output_write_data1),
+    .L4_output_write_data2(L4_output_write_data2),
+    .L4_output_wea1(L4_output_wea1),
+    .L4_output_wea2(L4_output_wea2),
 
-//   con3_w_mem L3_weight_mem (
-//     .clka(clk),    // input wire clka
-//     .addra(L3_weight_addra),  // input wire [11 : 0] addra
-//     .douta(L3_weigth_douta),  // output wire [11 : 0] douta
-//     .clkb(clk),    // input wire clkb
-//     .addrb(L3_weight_addrb),  // input wire [11 : 0] addrb
-//     .doutb(L3_weigth_doutb)  // output wire [11 : 0] doutb
-//   );
-
-
-//   layer_4_output L4_feature1 (
-//     .clka(clk),    // input wire clka
-//     .wea(L4_output_wea1),      // input wire [0 : 0] wea
-//     .addra(L4_output_write_addr1),  // input wire [7 : 0] addra
-//     .dina(L4_output_write_data1),    // input wire [11 : 0] dina
-//     .clkb(clk),    // input wire clkb
-//     .addrb(L4_output_read_addr1),  // input wire [7 : 0] addrb
-//     .doutb(L4_output_read_data1)  // output wire [11 : 0] doutb
-//   );
-
-//   layer_4_output L4_feature2 (
-//     .clka(clka),    // input wire clka
-//     .wea(L4_output_wea2),      // input wire [0 : 0] wea
-//     .addra(L4_output_write_addr2),  // input wire [7 : 0] addra
-//     .dina(L4_output_write_data2),    // input wire [11 : 0] dina
-//     .clkb(clk),    // input wire clkb
-//     .addrb(L4_output_read_addr2),  // input wire [7 : 0] addrb
-//     .doutb(L4_output_read_data2)  // output wire [11 : 0] doutb
-//   );
+    .L3_weight_addra(L3_weight_addra),
+    .L3_weight_addrb(L3_weight_addrb),
+    .L2_feature1_addr_read(L2_feature1_addr_read_m),
+    .L2_feature2_addr_read(L2_feature2_addr_read_m),
+    .L2_feature3_addr_read(L2_feature3_addr_read_m),
+    .L2_feature4_addr_read(L2_feature4_addr_read_m),
+    .L2_feature5_addr_read(L2_feature5_addr_read_m),
+    .L2_feature6_addr_read(L2_feature6_addr_read_m),
+    .L3_done(L3_done)
+  );
 
 
 
-//   calculate_wrapper cal_wrapper(
-//     .clk(clk),
-//     `L1_INSTANCE_PORT
-//     );
 
-//   assign out_d = L4_output_write_data1[6:0];
+  con3_w_mem L3_weight_mem (
+    .clka(clk),    // input wire clka
+    .addra(L3_weight_addra),  // input wire [11 : 0] addra
+    .douta(L3_weigth_douta),  // output wire [11 : 0] douta
+    .clkb(clk),    // input wire clkb
+    .addrb(L3_weight_addrb),  // input wire [11 : 0] addrb
+    .doutb(L3_weigth_doutb)  // output wire [11 : 0] doutb
+  );
+
+
+  layer_4_output L4_feature1 (
+    .clka(clk),    // input wire clka
+    .wea(L4_output_wea1),      // input wire [0 : 0] wea
+    .addra(L4_output_write_addr1),  // input wire [7 : 0] addra
+    .dina(L4_output_write_data1),    // input wire [11 : 0] dina
+    .clkb(clk),    // input wire clkb
+    .addrb(L4_output_read_addr1),  // input wire [7 : 0] addrb
+    .doutb(L4_output_read_data1)  // output wire [11 : 0] doutb
+  );
+
+  layer_4_output L4_feature2 (
+    .clka(clk),    // input wire clka
+    .wea(L4_output_wea2),      // input wire [0 : 0] wea
+    .addra(L4_output_write_addr2),  // input wire [7 : 0] addra
+    .dina(L4_output_write_data2),    // input wire [11 : 0] dina
+    .clkb(clk),    // input wire clkb
+    .addrb(L4_output_read_addr2),  // input wire [7 : 0] addrb
+    .doutb(L4_output_read_data2)  // output wire [11 : 0] doutb
+  );
+
+
+  assign out_d = L4_output_write_data1[6:0];
 
 endmodule
