@@ -30,13 +30,14 @@ module front_layer_wrapper
     output [7:0] L1_w_addr,
     output [4:0] L1_in_addr,
     input [DATA_WIDTH - 1 : 0] L1_w_data,
+    output reg [4:0] row_cnt,
 
     //weight load param
-    output  w_load_done,
-    output  load_wait,
-    output  weight_index,
-    output  weight_channel,
-    output  w_load_en,
+    output reg  w_load_done,
+    output reg [1:0] load_wait,
+    output reg [5:0] weight_index,
+    output reg [3:0] weight_channel,
+    output      w_load_en,
     //conv result
     input [DATA_WIDTH - 1 : 0] con_result_1,
     input [DATA_WIDTH - 1 : 0] con_result_2,
@@ -57,9 +58,13 @@ module front_layer_wrapper
     output [DATA_WIDTH -1:0] L2_out4_din,
     output [DATA_WIDTH -1:0] L2_out5_din,
     output [DATA_WIDTH -1:0] L2_out6_din,
+   
     output L2_out_wea,
     output [7:0] L2_out_addr_read,
     output [7:0] L2_out_addr_write,
+
+
+
     //other flags
     output reg [1:0] cal_wait,
     output reg [5:0] position_col,
@@ -77,15 +82,8 @@ module front_layer_wrapper
     wire pool_done_ins6;
 
 
-    wire [DATA_WIDTH-1:0] out_data1;
-    wire [DATA_WIDTH-1:0] out_data2;
-    wire [DATA_WIDTH-1:0] out_data3;
-    wire [DATA_WIDTH-1:0] out_data4;
-    wire [DATA_WIDTH-1:0] out_data5;
-    wire [DATA_WIDTH-1:0] out_data6;
 
 
-    assign out_d = out_data1;
     reg [4:0] nst;
 
     // reg [5:0] position_col;
@@ -93,20 +91,12 @@ module front_layer_wrapper
 
     
     
-    reg [4:0] row_cnt;
-    reg [1:0] load_wait;
-    // reg [1:0] cal_wait;
-    reg [5:0] weight_index;
-    reg [3:0] weight_channel;
     
-    integer i,j;
     
-    // reg w_load_done;
-    wire [DATA_WIDTH-1:0] output_result [0 : 5];
    
     //input data 위치 설정이 중요
-    reg [4:0] in_cell_row;
-    reg [4:0] in_cell_col;
+    // reg [4:0] in_cell_row;
+    // reg [4:0] in_cell_col;
     reg [2:0] wait_done;
     reg c_done;
 
@@ -260,37 +250,19 @@ module front_layer_wrapper
             if(load_wait == 2'b10)begin
                 //load 5 col
                 if(position_col < 5)begin
-                    for(i = 0; i < 5 ; i = i + 1)begin
-                        for(j = 0 ; j < 32 ; j = j + 1)begin
-                           if(position_col == i)begin
-                                inp[i][j] <= L1_in_data[j*12 +: 12];
-                            end
-                            else begin
-                                inp[i][j] <= inp[i][j];
-                            end
-                        end
-                    end
                     position_col <= position_col + 1'b1;
                     cal_wait <= 1'b0;   
                 end
 
                 else begin
-                    for(i = 0; i < 5 ; i = i + 1)begin
-                        for(j = 0 ; j < 32 ; j = j + 1)begin
-                            inp[i][j] <= inp[i][j];
-                        end
-                    end
+
                     position_col <= position_col;   
                     cal_wait <= 1'b0;    
                 end
 
             end
             else begin
-                 for(i = 0; i < 5 ; i = i + 1)begin
-                        for(j = 0 ; j < 32 ; j = j + 1)begin
-                            inp[i][j] <= inp[i][j];
-                        end
-                    end
+
                     position_col <= 1'b0;
                     cal_wait <= 1'b0;       
             end
@@ -308,39 +280,16 @@ module front_layer_wrapper
         else if(st == CALCULATION)begin
             if(cal_wait == 2'b11)begin
                 if(row_cnt == 5'd27)begin
-                     for(i = 0; i < 5 ; i = i + 1)begin
-                        for(j = 0 ; j < 32 ; j = j + 1)begin
-                            //load new data
-                            if(4 == i)begin
-                                inp[i][j] <= L1_in_data[j*12 +: 12];
-                            end
-                            
-                            //shift col
-                            else begin
-                                inp[i][j] <= inp[i+1][j];
-                            end
-                        end
-                    end
                     position_col <= position_col + 1'b1;
                     cal_wait <= cal_wait;
                 end
 
                 else begin
-                    for(i = 0; i < 5 ; i = i + 1)begin
-                        for(j = 0 ; j < 32 ; j = j + 1)begin
-                            inp[i][j] <= inp[i][j];
-                        end
-                    end
                     position_col <= position_col;
                     cal_wait <= cal_wait;    
                 end
             end
             else begin
-                for(i = 0; i < 5 ; i = i + 1)begin
-                        for(j = 0 ; j < 32 ; j = j + 1)begin
-                            inp[i][j] <= inp[i][j];
-                        end
-                    end
                     position_col <= position_col;
                     cal_wait <= cal_wait + 1'b1;    
             end
@@ -348,11 +297,7 @@ module front_layer_wrapper
         end
 
         else begin
-             for(i = 0; i < 5 ; i = i + 1)begin
-                        for(j = 0 ; j < 32 ; j = j + 1)begin
-                            inp[i][j] <= 1'b0;
-                        end
-                    end
+
                     position_col <= 1'b0; 
                     cal_wait <= 1'b0;      
         end
@@ -384,12 +329,7 @@ module front_layer_wrapper
 
     assign all_pool_done = pool_done_ins1 & pool_done_ins2 & pool_done_ins3 & pool_done_ins4 & pool_done_ins5 & pool_done_ins6;
     
-    assign out_data1 = output_result[0];
-    assign out_data2 = output_result[1];
-    assign out_data3 = output_result[2];
-    assign out_data4 = output_result[3];
-    assign out_data5 = output_result[4];
-    assign out_data6 = output_result[5];
+
 
     assign L1_done = (st==DONE) ? 1'b1 : 1'b0;
 
@@ -400,10 +340,10 @@ module front_layer_wrapper
         clk,
         cal_wait,
         L2_out1_dout,
-        out_data1,
-        L2_out1_addr_read,
-        L2_out1_addr_write,
-        L2_out1_wea,
+        con_result_1,
+        L2_out_addr_read,
+        L2_out_addr_write,
+        L2_out_wea,
         L2_out1_din,
         pool_done_ins1
     );
@@ -414,10 +354,10 @@ module front_layer_wrapper
         clk,
         cal_wait,
         L2_out2_dout,
-        out_data2,
-        L2_out2_addr_read,
-        L2_out2_addr_write,
-        L2_out2_wea,
+        con_result_2,
+        L2_out_addr_read,
+        L2_out_addr_write,
+        L2_out_wea,
         L2_out2_din,
         pool_done_ins2
     );
@@ -427,10 +367,10 @@ module front_layer_wrapper
         clk,
         cal_wait,
         L2_out3_dout,
-        out_data3,
-        L2_out3_addr_read,
-        L2_out3_addr_write,
-        L2_out3_wea,
+        con_result_3,
+        L2_out_addr_read,
+        L2_out_addr_write,
+        L2_out_wea,
         L2_out3_din,
         pool_done_ins3
     );
@@ -441,10 +381,10 @@ module front_layer_wrapper
         clk,
         cal_wait,
         L2_out4_dout,
-        out_data4,
-        L2_out4_addr_read,
-        L2_out4_addr_write,
-        L2_out4_wea,
+        con_result_4,
+        L2_out_addr_read,
+        L2_out_addr_write,
+        L2_out_wea,
         L2_out4_din,
         pool_done_ins4
     );
@@ -453,10 +393,10 @@ module front_layer_wrapper
         clk,
         cal_wait,
         L2_out5_dout,
-        out_data5,
-        L2_out5_addr_read,
-        L2_out5_addr_write,
-        L2_out5_wea,
+        con_result_5,
+        L2_out_addr_read,
+        L2_out_addr_write,
+        L2_out_wea,
         L2_out5_din,
         pool_done_ins5
     );
@@ -465,10 +405,10 @@ module front_layer_wrapper
         clk,
         cal_wait,
         L2_out6_dout,
-        out_data6,
-        L2_out6_addr_read,
-        L2_out6_addr_write,
-        L2_out6_wea,
+        con_result_6,
+        L2_out_addr_read,
+        L2_out_addr_write,
+        L2_out_wea,
         L2_out6_din,
         pool_done_ins6
     );

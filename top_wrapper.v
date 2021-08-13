@@ -23,6 +23,7 @@ module top_wrapper#(
   wire [7:0] L1_w_addr;
   wire [4:0] L1_in_addr;
   wire [5:0] L1_position_col;
+  wire L3_done;
 
   reg [DATA_WIDTH-1:0] inp [0:4][0:31];
   //weight & bias
@@ -31,6 +32,18 @@ module top_wrapper#(
 
   wire [DATA_WIDTH-1:0] con_result [0:5];
 
+
+  wire [1:0] L1_load_wait;
+  wire [5:0] weight_index;
+  wire [3:0] weight_channel;
+
+  wire L1_w_load_en;
+  wire [4:0] L1_row_cnt;
+
+  
+  wire [4:0] in_cell_row;
+  wire [4:0] in_cell_col;
+ 
 
 
   calculate_wrapper cal_wrapper(
@@ -212,70 +225,91 @@ module top_wrapper#(
     .L1_weight_unit23_channel6(weight[5][22]),
     .L1_weight_unit24_channel6(weight[5][23]),
     .L1_weight_unit25_channel6(weight[5][24]),
-    .L1_bias_unit1(L1_bias_unit1),
-    .L1_bias_unit2(L1_bias_unit2),
-    .L1_bias_unit3(L1_bias_unit3),
-    .L1_bias_unit4(L1_bias_unit4),
-    .L1_bias_unit5(L1_bias_unit5),
-    .L1_bias_unit6(L1_bias_unit6),
-    .out_result_a(out_result_a[0]),
-    .out_result_b(out_result_a[1]),
-    .out_result_c(out_result_a[2]),
-    .out_result_d(out_result_a[3]),
-    .out_result_e(out_result_a[4]),
-    .out_result_f(out_result_a[5])
+    .L1_bias_unit1(bias[0]),
+    .L1_bias_unit2(bias[1]),
+    .L1_bias_unit3(bias[2]),
+    .L1_bias_unit4(bias[3]),
+    .L1_bias_unit5(bias[4]),
+    .L1_bias_unit6(bias[5]),
+    .out_result_a(con_result[0]),
+    .out_result_b(con_result[1]),
+    .out_result_c(con_result[2]),
+    .out_result_d(con_result[3]),
+    .out_result_e(con_result[4]),
+    .out_result_f(con_result[5])
 
     );
 
 
 
 
-
+  integer i,j;
 
   //weight memory 
   always@(posedge clk)begin
-    if(w_load_en && ~w_load_done)begin
-        for(i = 0; i< 6 ; i = i + 1)begin    
-          if(i == weight_channel && j == 25)begin
+    if(L1_load_wait == 2'b10)begin
+        for(i = 0; i< 6 ; i = i + 1)begin
+          if(L1_w_load_done == 1'b1)begin
+              bias[i] <= bias[i];
+          end
+          else if(i == weight_channel && weight_index == 25)begin
               bias[i] <= L1_w_data;                        
           end
           else begin
               bias[i] <= bias[i];
           end
       end
+    end
+    else if(L1_en == 1'b0)begin
+      for(i = 0; i< 6 ; i = i + 1)begin    
+              bias[i] <= 1'b0;
+      end
+    end
+    else begin
+        for(i = 0; i< 6 ; i = i + 1)begin    
+              bias[i] <= bias[i];
+        end
+    end
+    
 
-        for(j = 0; j <6 ; j = j+1)begin
-            for(i = 0; i< 25 ; i = i + 1)begin
-                if( i== weight_channel && j == weight_index)    
-                  weight[j][i] <= L1_w_data;        
-                else 
-                  weight[j][i] <= weight[j][i];        
+    if(L1_load_wait == 2'b10)begin
+        for(i = 0; i <6 ; i = i+1)begin
+            for(j = 0; j< 25 ; j = j + 1)begin
+                if(i== weight_channel && j == weight_index)begin
+                    weight[i][j] <= L1_w_data;        
+                end   
+                else begin
+                    weight[i][j] <= weight[i][j];        
+                end
             end    
         end  
     end
+    else if(L1_en == 1'b0)begin
+        for(i = 0; i <6 ; i = i+1)begin
+          for(j = 0; j< 25 ; j = j + 1)begin
+                  weight[i][j] <= 1'b0;                        
+          end    
+      end
+    end
 
     else begin
-      for(i = 0; i< 6 ; i = i + 1)begin    
-              bias[i] <= bias[i];
-      end
-      for(j = 0; j <6 ; j = j+1)begin
-          for(i = 0; i< 25 ; i = i + 1)begin
-                  weight[j][i] <= weight[j][i];                        
+      for(i = 0; i <6 ; i = i+1)begin
+          for(j = 0; j< 25 ; j = j + 1)begin
+                  weight[i][j] <= weight[i][j];                        
           end    
       end  
     end
   end
 
-
   //input data index
   always@(posedge clk)begin
     //load register 시간에 input memory는 32*5를 채워야하니까
-    if(load_wait == 2'b10)begin
+    if(L1_load_wait == 2'b10)begin
           //load 5 col
-      if(position_col < 5)begin
+      if(L1_position_col < 3'd5)begin
         for(i = 0; i < 5 ; i = i + 1)begin
             for(j = 0 ; j < 32 ; j = j + 1)begin
-                if(position_col == i) inp[i][j] <= L1_in_data[j*12 +: 12];
+                if(L1_position_col == i) inp[i][j] <= L1_in_data[j*12 +: 12];
                 else inp[i][j] <= inp[i][j];
             end
         end
@@ -299,9 +333,8 @@ module top_wrapper#(
     // 4 --> 3
     // new_data --> 4
         
-    else if(cal_wait == 2'b11)begin
-      //
-      if(row_cnt == 5'd27)begin
+    else if(L1_cal_wait == 2'b11)begin
+      if(L1_row_cnt == 5'd27)begin
           for(i = 0; i < 5 ; i = i + 1)begin
             for(j = 0 ; j < 32 ; j = j + 1)begin
                 //load new data
@@ -327,10 +360,20 @@ module top_wrapper#(
     //end st == calculation
     
     // other state
+
+    else if( L1_en == 1'b0)begin
+      for(i = 0; i < 5 ; i = i + 1)begin
+          for(j = 0 ; j < 32 ; j = j + 1)begin
+              inp[i][j] <= 1'b0;
+          end
+        end
+    end
+
+
     else begin
           for(i = 0; i < 5 ; i = i + 1)begin
                     for(j = 0 ; j < 32 ; j = j + 1)begin
-                        inp[i][j] <= 1'b0;
+                        inp[i][j] <= inp[i][j];
                     end
                 end
     end
@@ -359,16 +402,8 @@ module top_wrapper#(
 
 
 
-  wire w_load_done;
-  wire load_wait;
-  wire weight_index;
-  wire weight_channel;
-
-  wire [4:0] in_cell_row;
-  wire [4:0] in_cell_col;
-
   //layer 2 output block memory params
-  wire [11:0] con_result[0:5];
+  
 
   wire L2_feature_wea;
   wire [7:0] L2_feature_addr_write;
@@ -401,10 +436,11 @@ module top_wrapper#(
       .L1_in_addr(L1_in_addr),
       .L1_w_data(L1_w_data),
       //weight load param
-      .w_load_done(w_load_done),
-      .load_wait(load_wait),
+      .w_load_done(L1_w_load_done),
+      .load_wait(L1_load_wait),
       .weight_index(weight_index),
       .weight_channel(weight_channel),
+      .w_load_en(L1_w_load_en),
       //conv result
       .con_result_1(con_result[0]),
       .con_result_2(con_result[1]),
@@ -425,7 +461,8 @@ module top_wrapper#(
       .L2_out4_din(L2_feature4_dina),
       .L2_out5_din(L2_feature5_dina),
       .L2_out6_din(L2_feature6_dina),
-      .L2_out_addr_read(L2_feature_addr_read),
+      .row_cnt(L1_row_cnt),
+      .L2_out_addr_read(L2_feature_addr_read_s),
       .L2_out_addr_write(L2_feature_addr_write),
       .L2_out_wea(L2_feature_wea),
       //other flags
@@ -446,7 +483,7 @@ module top_wrapper#(
   layer_2_output feature5 (.clka(clk),.wea(L2_feature_wea),.addra(L2_feature_addr_write),.dina(L2_feature5_dina),.clkb(clk),.addrb(L2_mem_addr_read),.doutb(L2_feature5_dout));
   layer_2_output feature6 (.clka(clk),.wea(L2_feature_wea),.addra(L2_feature_addr_write),.dina(L2_feature6_dina),.clkb(clk),.addrb(L2_mem_addr_read),.doutb(L2_feature6_dout));
 
-  assign L2_mem_addr_read = (L1_en == 1'b1) ? L2_feature_addr_read :L2_feature_addr_read_m;  
+  assign L2_mem_addr_read = (L1_en == 1'b1) ? L2_feature_addr_read_s:L2_feature_addr_read_r;  
 
 
 

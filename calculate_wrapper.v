@@ -29,6 +29,7 @@ module calculate_wrapper(
     input [11:0]  L1_inp_unit23,
     input [11:0]  L1_inp_unit24,
     input [11:0]  L1_inp_unit25,
+
     input [11:0]  L1_weight_unit1_channel1,
     input [11:0]  L1_weight_unit2_channel1,
     input [11:0]  L1_weight_unit3_channel1,
@@ -198,23 +199,23 @@ module calculate_wrapper(
     );
 
 
-    wire [11:0] in_a [0:4][0:24];
-    wire [11:0] in_b [0:4][0:24];
+    wire [11:0] in_a [0:5][0:24];
+    wire [11:0] in_b [0:5][0:24];
     wire [11:0] L1_bias[0:5];
 
     wire [11:0] out_temp[0:5];
     
     //input a assign
-    assign in_a[0][0] = L1_en  ? L1_inp_unit1 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
-    assign in_a[0][1] = L1_en  ? L1_inp_unit2 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
-    assign in_a[0][2] = L1_en  ? L1_inp_unit3 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
-    assign in_a[0][3] = L1_en  ? L1_inp_unit4 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
-    assign in_a[0][4] = L1_en  ? L1_inp_unit5 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
-    assign in_a[0][5] = L1_en  ? L1_inp_unit6 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
-    assign in_a[0][6] = L1_en  ? L1_inp_unit7 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
-    assign in_a[0][7] = L1_en  ? L1_inp_unit8 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
-    assign in_a[0][8] = L1_en  ? L1_inp_unit9 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
-    assign in_a[0][9] = L1_en  ? L1_inp_unit10 : L3_en ? L1_weight_unit10_channel1 : 1'b0;
+    assign in_a[0][0 ] = L1_en  ? L1_inp_unit1 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
+    assign in_a[0][1 ] = L1_en  ? L1_inp_unit2 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
+    assign in_a[0][2 ] = L1_en  ? L1_inp_unit3 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
+    assign in_a[0][3 ] = L1_en  ? L1_inp_unit4 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
+    assign in_a[0][4 ] = L1_en  ? L1_inp_unit5 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
+    assign in_a[0][5 ] = L1_en  ? L1_inp_unit6 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
+    assign in_a[0][6 ] = L1_en  ? L1_inp_unit7 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
+    assign in_a[0][7 ] = L1_en  ? L1_inp_unit8 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
+    assign in_a[0][8 ] = L1_en  ? L1_inp_unit9 : L3_en  ? L1_weight_unit10_channel1 : 1'b0;
+    assign in_a[0][9 ] = L1_en ? L1_inp_unit10 : L3_en ? L1_weight_unit10_channel1 : 1'b0;
     assign in_a[0][10] = L1_en ? L1_inp_unit11 : L3_en ? L1_weight_unit10_channel1 : 1'b0;
     assign in_a[0][11] = L1_en ? L1_inp_unit12 : L3_en ? L1_weight_unit10_channel1 : 1'b0;
     assign in_a[0][12] = L1_en ? L1_inp_unit13 : L3_en ? L1_weight_unit10_channel1 : 1'b0;
@@ -230,16 +231,16 @@ module calculate_wrapper(
     assign in_a[0][22] = L1_en ? L1_inp_unit23 : L3_en ? L1_weight_unit10_channel1 : 1'b0;
     assign in_a[0][23] = L1_en ? L1_inp_unit24 : L3_en ? L1_weight_unit10_channel1 : 1'b0;
     assign in_a[0][24] = L1_en ? L1_inp_unit25 : L3_en ? L1_weight_unit10_channel1 : 1'b0;
-    assign in_a[1][0] = L1_en  ? L1_inp_unit1 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
-    assign in_a[1][1] = L1_en  ? L1_inp_unit2 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
-    assign in_a[1][2] = L1_en  ? L1_inp_unit3 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
-    assign in_a[1][3] = L1_en  ? L1_inp_unit4 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
-    assign in_a[1][4] = L1_en  ? L1_inp_unit5 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
-    assign in_a[1][5] = L1_en  ? L1_inp_unit6 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
-    assign in_a[1][6] = L1_en  ? L1_inp_unit7 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
-    assign in_a[1][7] = L1_en  ? L1_inp_unit8 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
-    assign in_a[1][8] = L1_en  ? L1_inp_unit9 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
-    assign in_a[1][9] = L1_en  ? L1_inp_unit10 : L3_en ? L1_weight_unit10_channel2 : 1'b0;
+    assign in_a[1][0 ] = L1_en  ? L1_inp_unit1 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
+    assign in_a[1][1 ] = L1_en  ? L1_inp_unit2 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
+    assign in_a[1][2 ] = L1_en  ? L1_inp_unit3 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
+    assign in_a[1][3 ] = L1_en  ? L1_inp_unit4 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
+    assign in_a[1][4 ] = L1_en  ? L1_inp_unit5 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
+    assign in_a[1][5 ] = L1_en  ? L1_inp_unit6 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
+    assign in_a[1][6 ] = L1_en  ? L1_inp_unit7 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
+    assign in_a[1][7 ] = L1_en  ? L1_inp_unit8 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
+    assign in_a[1][8 ] = L1_en  ? L1_inp_unit9 : L3_en  ? L1_weight_unit10_channel2 : 1'b0;
+    assign in_a[1][9 ] = L1_en ? L1_inp_unit10 : L3_en ? L1_weight_unit10_channel2 : 1'b0;
     assign in_a[1][10] = L1_en ? L1_inp_unit11 : L3_en ? L1_weight_unit10_channel2 : 1'b0;
     assign in_a[1][11] = L1_en ? L1_inp_unit12 : L3_en ? L1_weight_unit10_channel2 : 1'b0;
     assign in_a[1][12] = L1_en ? L1_inp_unit13 : L3_en ? L1_weight_unit10_channel2 : 1'b0;
@@ -255,16 +256,16 @@ module calculate_wrapper(
     assign in_a[1][22] = L1_en ? L1_inp_unit23 : L3_en ? L1_weight_unit10_channel2 : 1'b0;
     assign in_a[1][23] = L1_en ? L1_inp_unit24 : L3_en ? L1_weight_unit10_channel2 : 1'b0;
     assign in_a[1][24] = L1_en ? L1_inp_unit25 : L3_en ? L1_weight_unit10_channel2 : 1'b0;
-    assign in_a[2][0] = L1_en  ? L1_inp_unit1 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
-    assign in_a[2][1] = L1_en  ? L1_inp_unit2 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
-    assign in_a[2][2] = L1_en  ? L1_inp_unit3 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
-    assign in_a[2][3] = L1_en  ? L1_inp_unit4 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
-    assign in_a[2][4] = L1_en  ? L1_inp_unit5 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
-    assign in_a[2][5] = L1_en  ? L1_inp_unit6 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
-    assign in_a[2][6] = L1_en  ? L1_inp_unit7 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
-    assign in_a[2][7] = L1_en  ? L1_inp_unit8 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
-    assign in_a[2][8] = L1_en  ? L1_inp_unit9 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
-    assign in_a[2][9] = L1_en  ? L1_inp_unit10 : L3_en ? L1_weight_unit10_channel3 : 1'b0;
+    assign in_a[2][0 ] = L1_en  ? L1_inp_unit1 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
+    assign in_a[2][1 ] = L1_en  ? L1_inp_unit2 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
+    assign in_a[2][2 ] = L1_en  ? L1_inp_unit3 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
+    assign in_a[2][3 ] = L1_en  ? L1_inp_unit4 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
+    assign in_a[2][4 ] = L1_en  ? L1_inp_unit5 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
+    assign in_a[2][5 ] = L1_en  ? L1_inp_unit6 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
+    assign in_a[2][6 ] = L1_en  ? L1_inp_unit7 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
+    assign in_a[2][7 ] = L1_en  ? L1_inp_unit8 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
+    assign in_a[2][8 ] = L1_en  ? L1_inp_unit9 : L3_en  ? L1_weight_unit10_channel3 : 1'b0;
+    assign in_a[2][9 ] = L1_en ? L1_inp_unit10 : L3_en ? L1_weight_unit10_channel3 : 1'b0;
     assign in_a[2][10] = L1_en ? L1_inp_unit11 : L3_en ? L1_weight_unit10_channel3 : 1'b0;
     assign in_a[2][11] = L1_en ? L1_inp_unit12 : L3_en ? L1_weight_unit10_channel3 : 1'b0;
     assign in_a[2][12] = L1_en ? L1_inp_unit13 : L3_en ? L1_weight_unit10_channel3 : 1'b0;
@@ -280,16 +281,16 @@ module calculate_wrapper(
     assign in_a[2][22] = L1_en ? L1_inp_unit23 : L3_en ? L1_weight_unit10_channel3 : 1'b0;
     assign in_a[2][23] = L1_en ? L1_inp_unit24 : L3_en ? L1_weight_unit10_channel3 : 1'b0;
     assign in_a[2][24] = L1_en ? L1_inp_unit25 : L3_en ? L1_weight_unit10_channel3 : 1'b0;
-    assign in_a[3][0] = L1_en  ? L1_inp_unit1 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
-    assign in_a[3][1] = L1_en  ? L1_inp_unit2 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
-    assign in_a[3][2] = L1_en  ? L1_inp_unit3 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
-    assign in_a[3][3] = L1_en  ? L1_inp_unit4 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
-    assign in_a[3][4] = L1_en  ? L1_inp_unit5 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
-    assign in_a[3][5] = L1_en  ? L1_inp_unit6 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
-    assign in_a[3][6] = L1_en  ? L1_inp_unit7 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
-    assign in_a[3][7] = L1_en  ? L1_inp_unit8 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
-    assign in_a[3][8] = L1_en  ? L1_inp_unit9 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
-    assign in_a[3][9] = L1_en  ? L1_inp_unit10 : L3_en ? L1_weight_unit10_channel4 : 1'b0;
+    assign in_a[3][0 ] = L1_en  ? L1_inp_unit1 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
+    assign in_a[3][1 ] = L1_en  ? L1_inp_unit2 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
+    assign in_a[3][2 ] = L1_en  ? L1_inp_unit3 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
+    assign in_a[3][3 ] = L1_en  ? L1_inp_unit4 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
+    assign in_a[3][4 ] = L1_en  ? L1_inp_unit5 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
+    assign in_a[3][5 ] = L1_en  ? L1_inp_unit6 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
+    assign in_a[3][6 ] = L1_en  ? L1_inp_unit7 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
+    assign in_a[3][7 ] = L1_en  ? L1_inp_unit8 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
+    assign in_a[3][8 ] = L1_en  ? L1_inp_unit9 : L3_en  ? L1_weight_unit10_channel4 : 1'b0;
+    assign in_a[3][9 ] = L1_en ? L1_inp_unit10 : L3_en ? L1_weight_unit10_channel4 : 1'b0;
     assign in_a[3][10] = L1_en ? L1_inp_unit11 : L3_en ? L1_weight_unit10_channel4 : 1'b0;
     assign in_a[3][11] = L1_en ? L1_inp_unit12 : L3_en ? L1_weight_unit10_channel4 : 1'b0;
     assign in_a[3][12] = L1_en ? L1_inp_unit13 : L3_en ? L1_weight_unit10_channel4 : 1'b0;
@@ -305,16 +306,16 @@ module calculate_wrapper(
     assign in_a[3][22] = L1_en ? L1_inp_unit23 : L3_en ? L1_weight_unit10_channel4 : 1'b0;
     assign in_a[3][23] = L1_en ? L1_inp_unit24 : L3_en ? L1_weight_unit10_channel4 : 1'b0;
     assign in_a[3][24] = L1_en ? L1_inp_unit25 : L3_en ? L1_weight_unit10_channel4 : 1'b0;
-    assign in_a[4][0] = L1_en  ? L1_inp_unit1 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
-    assign in_a[4][1] = L1_en  ? L1_inp_unit2 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
-    assign in_a[4][2] = L1_en  ? L1_inp_unit3 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
-    assign in_a[4][3] = L1_en  ? L1_inp_unit4 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
-    assign in_a[4][4] = L1_en  ? L1_inp_unit5 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
-    assign in_a[4][5] = L1_en  ? L1_inp_unit6 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
-    assign in_a[4][6] = L1_en  ? L1_inp_unit7 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
-    assign in_a[4][7] = L1_en  ? L1_inp_unit8 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
-    assign in_a[4][8] = L1_en  ? L1_inp_unit9 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
-    assign in_a[4][9] = L1_en  ? L1_inp_unit10 : L3_en ? L1_weight_unit10_channel5 : 1'b0;
+    assign in_a[4][0 ] = L1_en  ? L1_inp_unit1 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
+    assign in_a[4][1 ] = L1_en  ? L1_inp_unit2 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
+    assign in_a[4][2 ] = L1_en  ? L1_inp_unit3 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
+    assign in_a[4][3 ] = L1_en  ? L1_inp_unit4 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
+    assign in_a[4][4 ] = L1_en  ? L1_inp_unit5 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
+    assign in_a[4][5 ] = L1_en  ? L1_inp_unit6 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
+    assign in_a[4][6 ] = L1_en  ? L1_inp_unit7 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
+    assign in_a[4][7 ] = L1_en  ? L1_inp_unit8 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
+    assign in_a[4][8 ] = L1_en  ? L1_inp_unit9 : L3_en  ? L1_weight_unit10_channel5 : 1'b0;
+    assign in_a[4][9 ] = L1_en ? L1_inp_unit10 : L3_en ? L1_weight_unit10_channel5 : 1'b0;
     assign in_a[4][10] = L1_en ? L1_inp_unit11 : L3_en ? L1_weight_unit10_channel5 : 1'b0;
     assign in_a[4][11] = L1_en ? L1_inp_unit12 : L3_en ? L1_weight_unit10_channel5 : 1'b0;
     assign in_a[4][12] = L1_en ? L1_inp_unit13 : L3_en ? L1_weight_unit10_channel5 : 1'b0;
@@ -330,16 +331,16 @@ module calculate_wrapper(
     assign in_a[4][22] = L1_en ? L1_inp_unit23 : L3_en ? L1_weight_unit10_channel5 : 1'b0;
     assign in_a[4][23] = L1_en ? L1_inp_unit24 : L3_en ? L1_weight_unit10_channel5 : 1'b0;
     assign in_a[4][24] = L1_en ? L1_inp_unit25 : L3_en ? L1_weight_unit10_channel5 : 1'b0;
-    assign in_a[5][0] = L1_en  ? L1_inp_unit1 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
-    assign in_a[5][1] = L1_en  ? L1_inp_unit2 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
-    assign in_a[5][2] = L1_en  ? L1_inp_unit3 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
-    assign in_a[5][3] = L1_en  ? L1_inp_unit4 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
-    assign in_a[5][4] = L1_en  ? L1_inp_unit5 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
-    assign in_a[5][5] = L1_en  ? L1_inp_unit6 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
-    assign in_a[5][6] = L1_en  ? L1_inp_unit7 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
-    assign in_a[5][7] = L1_en  ? L1_inp_unit8 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
-    assign in_a[5][8] = L1_en  ? L1_inp_unit9 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
-    assign in_a[5][9] = L1_en  ? L1_inp_unit10 : L3_en ? L1_weight_unit10_channel6 : 1'b0;
+    assign in_a[5][0 ] = L1_en  ? L1_inp_unit1 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
+    assign in_a[5][1 ] = L1_en  ? L1_inp_unit2 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
+    assign in_a[5][2 ] = L1_en  ? L1_inp_unit3 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
+    assign in_a[5][3 ] = L1_en  ? L1_inp_unit4 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
+    assign in_a[5][4 ] = L1_en  ? L1_inp_unit5 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
+    assign in_a[5][5 ] = L1_en  ? L1_inp_unit6 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
+    assign in_a[5][6 ] = L1_en  ? L1_inp_unit7 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
+    assign in_a[5][7 ] = L1_en  ? L1_inp_unit8 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
+    assign in_a[5][8 ] = L1_en  ? L1_inp_unit9 : L3_en  ? L1_weight_unit10_channel6 : 1'b0;
+    assign in_a[5][9 ] = L1_en ? L1_inp_unit10 : L3_en ? L1_weight_unit10_channel6 : 1'b0;
     assign in_a[5][10] = L1_en ? L1_inp_unit11 : L3_en ? L1_weight_unit10_channel6 : 1'b0;
     assign in_a[5][11] = L1_en ? L1_inp_unit12 : L3_en ? L1_weight_unit10_channel6 : 1'b0;
     assign in_a[5][12] = L1_en ? L1_inp_unit13 : L3_en ? L1_weight_unit10_channel6 : 1'b0;
@@ -537,15 +538,15 @@ module calculate_wrapper(
     calculate_2d cal_instance1(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0+in_cell_row]),.input_unit_2 (in_a[0][1+in_cell_row]),.input_unit_3 (in_a[0][2+in_cell_row]),
-        .input_unit_4 (in_a[0][3+in_cell_row]),.input_unit_5 (in_a[0][4+in_cell_row]),.input_unit_6 (in_a[1][0+in_cell_row]),
-        .input_unit_7 (in_a[1][1+in_cell_row]),.input_unit_8 (in_a[1][2+in_cell_row]),.input_unit_9 (in_a[1][3+in_cell_row]),
-        .input_unit_10(in_a[1][4+in_cell_row]),.input_unit_11(in_a[2][0+in_cell_row]),.input_unit_12(in_a[2][1+in_cell_row]),
-        .input_unit_13(in_a[2][2+in_cell_row]),.input_unit_14(in_a[2][3+in_cell_row]),.input_unit_15(in_a[2][4+in_cell_row]),
-        .input_unit_16(in_a[3][0+in_cell_row]),.input_unit_17(in_a[3][1+in_cell_row]),.input_unit_18(in_a[3][2+in_cell_row]),
-        .input_unit_19(in_a[3][3+in_cell_row]),.input_unit_20(in_a[3][4+in_cell_row]),.input_unit_21(in_a[4][0+in_cell_row]),
-        .input_unit_22(in_a[4][1+in_cell_row]),.input_unit_23(in_a[4][2+in_cell_row]),.input_unit_24(in_a[4][3+in_cell_row]),
-        .input_unit_25(in_a[4][4+in_cell_row]),
+        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
+        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
+        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
+        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
+        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
+        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
+        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
+        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
+        .input_unit_25(in_a[0][24]),
         
         //weight 25
         .weight_unit_1 (in_b[0][0]), .weight_unit_2 (in_b[0][1] ),.weight_unit_3 (in_b[0][2] ),
@@ -558,22 +559,22 @@ module calculate_wrapper(
         .weight_unit_22(in_b[0][21]),.weight_unit_23(in_b[0][22]),.weight_unit_24(in_b[0][23]),
         .weight_unit_25(in_b[0][24]),
         //bias 1
-        .bias_unit(bias[0]),
+        .bias_unit(L1_bias[0]),
         .output_unit_1(out_temp[0])        //.stage_5_unit(out_temp)
     );
 
     calculate_2d cal_instance2(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0+in_cell_row]),.input_unit_2 (in_a[0][1+in_cell_row]),.input_unit_3 (in_a[0][2+in_cell_row]),
-        .input_unit_4 (in_a[0][3+in_cell_row]),.input_unit_5 (in_a[0][4+in_cell_row]),.input_unit_6 (in_a[1][0+in_cell_row]),
-        .input_unit_7 (in_a[1][1+in_cell_row]),.input_unit_8 (in_a[1][2+in_cell_row]),.input_unit_9 (in_a[1][3+in_cell_row]),
-        .input_unit_10(in_a[1][4+in_cell_row]),.input_unit_11(in_a[2][0+in_cell_row]),.input_unit_12(in_a[2][1+in_cell_row]),
-        .input_unit_13(in_a[2][2+in_cell_row]),.input_unit_14(in_a[2][3+in_cell_row]),.input_unit_15(in_a[2][4+in_cell_row]),
-        .input_unit_16(in_a[3][0+in_cell_row]),.input_unit_17(in_a[3][1+in_cell_row]),.input_unit_18(in_a[3][2+in_cell_row]),
-        .input_unit_19(in_a[3][3+in_cell_row]),.input_unit_20(in_a[3][4+in_cell_row]),.input_unit_21(in_a[4][0+in_cell_row]),
-        .input_unit_22(in_a[4][1+in_cell_row]),.input_unit_23(in_a[4][2+in_cell_row]),.input_unit_24(in_a[4][3+in_cell_row]),
-        .input_unit_25(in_a[4][4+in_cell_row]),
+        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
+        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
+        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
+        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
+        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
+        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
+        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
+        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
+        .input_unit_25(in_a[0][24]),
         
         //weight 25
         .weight_unit_1 (in_b[1][0]), .weight_unit_2 (in_b[1][1] ),.weight_unit_3 (in_b[1][2] ),
@@ -586,22 +587,23 @@ module calculate_wrapper(
         .weight_unit_22(in_b[1][21]),.weight_unit_23(in_b[1][22]),.weight_unit_24(in_b[1][23]),
         .weight_unit_25(in_b[1][24]),
         //bias 1
-        .bias_unit(bias[1]),
+        .bias_unit(L1_bias[1]),
         .output_unit_1(out_temp[1])        //.stage_5_unit(out_temp)
     );
 
     calculate_2d cal_instance3(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0+in_cell_row]),.input_unit_2 (in_a[0][1+in_cell_row]),.input_unit_3 (in_a[0][2+in_cell_row]),
-        .input_unit_4 (in_a[0][3+in_cell_row]),.input_unit_5 (in_a[0][4+in_cell_row]),.input_unit_6 (in_a[1][0+in_cell_row]),
-        .input_unit_7 (in_a[1][1+in_cell_row]),.input_unit_8 (in_a[1][2+in_cell_row]),.input_unit_9 (in_a[1][3+in_cell_row]),
-        .input_unit_10(in_a[1][4+in_cell_row]),.input_unit_11(in_a[2][0+in_cell_row]),.input_unit_12(in_a[2][1+in_cell_row]),
-        .input_unit_13(in_a[2][2+in_cell_row]),.input_unit_14(in_a[2][3+in_cell_row]),.input_unit_15(in_a[2][4+in_cell_row]),
-        .input_unit_16(in_a[3][0+in_cell_row]),.input_unit_17(in_a[3][1+in_cell_row]),.input_unit_18(in_a[3][2+in_cell_row]),
-        .input_unit_19(in_a[3][3+in_cell_row]),.input_unit_20(in_a[3][4+in_cell_row]),.input_unit_21(in_a[4][0+in_cell_row]),
-        .input_unit_22(in_a[4][1+in_cell_row]),.input_unit_23(in_a[4][2+in_cell_row]),.input_unit_24(in_a[4][3+in_cell_row]),
-        .input_unit_25(in_a[4][4+in_cell_row]),
+        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
+        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
+        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
+        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
+        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
+        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
+        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
+        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
+        .input_unit_25(in_a[0][24]),
+        
         
         //weight 25
         .weight_unit_1 (in_b[2][0]), .weight_unit_2 (in_b[2][1] ),.weight_unit_3 (in_b[2][2] ),
@@ -614,22 +616,23 @@ module calculate_wrapper(
         .weight_unit_22(in_b[2][21]),.weight_unit_23(in_b[2][22]),.weight_unit_24(in_b[2][23]),
         .weight_unit_25(in_b[2][24]),
         //bias 1
-        .bias_unit(bias[2]),
+        .bias_unit(L1_bias[2]),
         .output_unit_1(out_temp[2])        //.stage_5_unit(out_temp)
     );
 
     calculate_2d cal_instance4(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0+in_cell_row]),.input_unit_2 (in_a[0][1+in_cell_row]),.input_unit_3 (in_a[0][2+in_cell_row]),
-        .input_unit_4 (in_a[0][3+in_cell_row]),.input_unit_5 (in_a[0][4+in_cell_row]),.input_unit_6 (in_a[1][0+in_cell_row]),
-        .input_unit_7 (in_a[1][1+in_cell_row]),.input_unit_8 (in_a[1][2+in_cell_row]),.input_unit_9 (in_a[1][3+in_cell_row]),
-        .input_unit_10(in_a[1][4+in_cell_row]),.input_unit_11(in_a[2][0+in_cell_row]),.input_unit_12(in_a[2][1+in_cell_row]),
-        .input_unit_13(in_a[2][2+in_cell_row]),.input_unit_14(in_a[2][3+in_cell_row]),.input_unit_15(in_a[2][4+in_cell_row]),
-        .input_unit_16(in_a[3][0+in_cell_row]),.input_unit_17(in_a[3][1+in_cell_row]),.input_unit_18(in_a[3][2+in_cell_row]),
-        .input_unit_19(in_a[3][3+in_cell_row]),.input_unit_20(in_a[3][4+in_cell_row]),.input_unit_21(in_a[4][0+in_cell_row]),
-        .input_unit_22(in_a[4][1+in_cell_row]),.input_unit_23(in_a[4][2+in_cell_row]),.input_unit_24(in_a[4][3+in_cell_row]),
-        .input_unit_25(in_a[4][4+in_cell_row]),
+        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
+        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
+        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
+        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
+        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
+        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
+        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
+        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
+        .input_unit_25(in_a[0][24]),
+        
         
         //weight 25
         .weight_unit_1 (in_b[3][0]), .weight_unit_2 (in_b[3][1] ),.weight_unit_3 (in_b[3][2] ),
@@ -642,22 +645,23 @@ module calculate_wrapper(
         .weight_unit_22(in_b[3][21]),.weight_unit_23(in_b[3][22]),.weight_unit_24(in_b[3][23]),
         .weight_unit_25(in_b[3][24]),
         //bias 1
-        .bias_unit(bias[3]),
+        .bias_unit(L1_bias[3]),
         .output_unit_1(out_temp[3])        //.stage_5_unit(out_temp)
     );
 
     calculate_2d cal_instance5(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0+in_cell_row]),.input_unit_2 (in_a[0][1+in_cell_row]),.input_unit_3 (in_a[0][2+in_cell_row]),
-        .input_unit_4 (in_a[0][3+in_cell_row]),.input_unit_5 (in_a[0][4+in_cell_row]),.input_unit_6 (in_a[1][0+in_cell_row]),
-        .input_unit_7 (in_a[1][1+in_cell_row]),.input_unit_8 (in_a[1][2+in_cell_row]),.input_unit_9 (in_a[1][3+in_cell_row]),
-        .input_unit_10(in_a[1][4+in_cell_row]),.input_unit_11(in_a[2][0+in_cell_row]),.input_unit_12(in_a[2][1+in_cell_row]),
-        .input_unit_13(in_a[2][2+in_cell_row]),.input_unit_14(in_a[2][3+in_cell_row]),.input_unit_15(in_a[2][4+in_cell_row]),
-        .input_unit_16(in_a[3][0+in_cell_row]),.input_unit_17(in_a[3][1+in_cell_row]),.input_unit_18(in_a[3][2+in_cell_row]),
-        .input_unit_19(in_a[3][3+in_cell_row]),.input_unit_20(in_a[3][4+in_cell_row]),.input_unit_21(in_a[4][0+in_cell_row]),
-        .input_unit_22(in_a[4][1+in_cell_row]),.input_unit_23(in_a[4][2+in_cell_row]),.input_unit_24(in_a[4][3+in_cell_row]),
-        .input_unit_25(in_a[4][4+in_cell_row]),
+        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
+        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
+        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
+        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
+        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
+        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
+        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
+        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
+        .input_unit_25(in_a[0][24]),
+        
         
         //weight 25
         .weight_unit_1 (in_b[4][0]), .weight_unit_2 (in_b[4][1] ),.weight_unit_3 (in_b[4][2] ),
@@ -670,7 +674,7 @@ module calculate_wrapper(
         .weight_unit_22(in_b[4][21]),.weight_unit_23(in_b[4][22]),.weight_unit_24(in_b[4][23]),
         .weight_unit_25(in_b[4][24]),
         //bias 1
-        .bias_unit(bias[4]),
+        .bias_unit(L1_bias[4]),
         .output_unit_1(out_temp[4])        //.stage_5_unit(out_temp)
     );
 
@@ -678,15 +682,16 @@ module calculate_wrapper(
     calculate_2d cal_instance6(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0+in_cell_row]),.input_unit_2 (in_a[0][1+in_cell_row]),.input_unit_3 (in_a[0][2+in_cell_row]),
-        .input_unit_4 (in_a[0][3+in_cell_row]),.input_unit_5 (in_a[0][4+in_cell_row]),.input_unit_6 (in_a[1][0+in_cell_row]),
-        .input_unit_7 (in_a[1][1+in_cell_row]),.input_unit_8 (in_a[1][2+in_cell_row]),.input_unit_9 (in_a[1][3+in_cell_row]),
-        .input_unit_10(in_a[1][4+in_cell_row]),.input_unit_11(in_a[2][0+in_cell_row]),.input_unit_12(in_a[2][1+in_cell_row]),
-        .input_unit_13(in_a[2][2+in_cell_row]),.input_unit_14(in_a[2][3+in_cell_row]),.input_unit_15(in_a[2][4+in_cell_row]),
-        .input_unit_16(in_a[3][0+in_cell_row]),.input_unit_17(in_a[3][1+in_cell_row]),.input_unit_18(in_a[3][2+in_cell_row]),
-        .input_unit_19(in_a[3][3+in_cell_row]),.input_unit_20(in_a[3][4+in_cell_row]),.input_unit_21(in_a[4][0+in_cell_row]),
-        .input_unit_22(in_a[4][1+in_cell_row]),.input_unit_23(in_a[4][2+in_cell_row]),.input_unit_24(in_a[4][3+in_cell_row]),
-        .input_unit_25(in_a[4][4+in_cell_row]),
+        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
+        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
+        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
+        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
+        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
+        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
+        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
+        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
+        .input_unit_25(in_a[0][24]),
+        
         
         //weight 25
         .weight_unit_1 (in_b[5][0]), .weight_unit_2 (in_b[5][1] ),.weight_unit_3 (in_b[5][2] ),
@@ -699,7 +704,7 @@ module calculate_wrapper(
         .weight_unit_22(in_b[5][21]),.weight_unit_23(in_b[5][22]),.weight_unit_24(in_b[5][23]),
         .weight_unit_25(in_b[5][24]),
         //bias 1
-        .bias_unit(bias[5]),
+        .bias_unit(L1_bias[5]),
         .output_unit_1(out_temp[5])        //.stage_5_unit(out_temp)
     );
 
