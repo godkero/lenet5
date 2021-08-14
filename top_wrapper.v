@@ -15,6 +15,7 @@ module top_wrapper#(
   output finish,
   output [6:0] out_d
   );
+  
   wire clk;
   wire locked;
   clk_wiz_0 pll_clk(.clk_out1(clk),.locked(locked),.clk_in1(clk_in));   
@@ -33,6 +34,10 @@ module top_wrapper#(
   wire L3_done;
 
 
+  //layer convoultion 3
+  wire [3:0] col,row;
+
+
   //front layer
   reg [DATA_WIDTH-1:0] inp [0:4][0:31];
   reg [DATA_WIDTH-1:0] weight[0:5][0:24];
@@ -46,9 +51,9 @@ module top_wrapper#(
   reg [11:0] bias2_mem;
 
 
-  wire [DATA_WIDTH-1:0] con_result [0:5];
+  wire [DATA_WIDTH-1:0] con_result [0:11];
 
-
+  wire [11:0] L3_cur_filter_count;
   wire [1:0] L1_load_wait;
   wire [5:0] weight_index;
   wire [3:0] weight_channel;
@@ -248,61 +253,89 @@ module top_wrapper#(
     .L1_bias_unit5(bias[4]),
     .L1_bias_unit6(bias[5]),
 
-    .L3_a_channel1_unit1 (),.L3_a_channel2_unit1 (),.L3_a_channel3_unit1 (),.L3_a_channel4_unit1 (),.L3_a_channel5_unit1 (),
-    .L3_a_channel1_unit2 (),.L3_a_channel2_unit2 (),.L3_a_channel3_unit2 (),.L3_a_channel4_unit2 (),.L3_a_channel5_unit2 (),
-    .L3_a_channel1_unit3 (),.L3_a_channel2_unit3 (),.L3_a_channel3_unit3 (),.L3_a_channel4_unit3 (),.L3_a_channel5_unit3 (),
-    .L3_a_channel1_unit4 (),.L3_a_channel2_unit4 (),.L3_a_channel3_unit4 (),.L3_a_channel4_unit4 (),.L3_a_channel5_unit4 (),
-    .L3_a_channel1_unit5 (),.L3_a_channel2_unit5 (),.L3_a_channel3_unit5 (),.L3_a_channel4_unit5 (),.L3_a_channel5_unit5 (),
-    .L3_a_channel1_unit6 (),.L3_a_channel2_unit6 (),.L3_a_channel3_unit6 (),.L3_a_channel4_unit6 (),.L3_a_channel5_unit6 (),
-    .L3_a_channel1_unit7 (),.L3_a_channel2_unit7 (),.L3_a_channel3_unit7 (),.L3_a_channel4_unit7 (),.L3_a_channel5_unit7 (),
-    .L3_a_channel1_unit8 (),.L3_a_channel2_unit8 (),.L3_a_channel3_unit8 (),.L3_a_channel4_unit8 (),.L3_a_channel5_unit8 (),
-    .L3_a_channel1_unit9 (),.L3_a_channel2_unit9 (),.L3_a_channel3_unit9 (),.L3_a_channel4_unit9 (),.L3_a_channel5_unit9 (),
-    .L3_a_channel1_unit10(),.L3_a_channel2_unit10(),.L3_a_channel3_unit10(),.L3_a_channel4_unit10(),.L3_a_channel5_unit10(),
-    .L3_a_channel1_unit11(),.L3_a_channel2_unit11(),.L3_a_channel3_unit11(),.L3_a_channel4_unit11(),.L3_a_channel5_unit11(),
-    .L3_a_channel1_unit12(),.L3_a_channel2_unit12(),.L3_a_channel3_unit12(),.L3_a_channel4_unit12(),.L3_a_channel5_unit12(),
-    .L3_a_channel1_unit13(),.L3_a_channel2_unit13(),.L3_a_channel3_unit13(),.L3_a_channel4_unit13(),.L3_a_channel5_unit13(),
-    .L3_a_channel1_unit14(),.L3_a_channel2_unit14(),.L3_a_channel3_unit14(),.L3_a_channel4_unit14(),.L3_a_channel5_unit14(),
-    .L3_a_channel1_unit15(),.L3_a_channel2_unit15(),.L3_a_channel3_unit15(),.L3_a_channel4_unit15(),.L3_a_channel5_unit15(),
-    .L3_a_channel1_unit16(),.L3_a_channel2_unit16(),.L3_a_channel3_unit16(),.L3_a_channel4_unit16(),.L3_a_channel5_unit16(),
-    .L3_a_channel1_unit17(),.L3_a_channel2_unit17(),.L3_a_channel3_unit17(),.L3_a_channel4_unit17(),.L3_a_channel5_unit17(),
-    .L3_a_channel1_unit18(),.L3_a_channel2_unit18(),.L3_a_channel3_unit18(),.L3_a_channel4_unit18(),.L3_a_channel5_unit18(),
-    .L3_a_channel1_unit19(),.L3_a_channel2_unit19(),.L3_a_channel3_unit19(),.L3_a_channel4_unit19(),.L3_a_channel5_unit19(),
-    .L3_a_channel1_unit20(),.L3_a_channel2_unit20(),.L3_a_channel3_unit20(),.L3_a_channel4_unit20(),.L3_a_channel5_unit20(),
-    .L3_a_channel1_unit21(),.L3_a_channel2_unit21(),.L3_a_channel3_unit21(),.L3_a_channel4_unit21(),.L3_a_channel5_unit21(),
-    .L3_a_channel1_unit22(),.L3_a_channel2_unit22(),.L3_a_channel3_unit22(),.L3_a_channel4_unit22(),.L3_a_channel5_unit22(),
-    .L3_a_channel1_unit23(),.L3_a_channel2_unit23(),.L3_a_channel3_unit23(),.L3_a_channel4_unit23(),.L3_a_channel5_unit23(),
-    .L3_a_channel1_unit24(),.L3_a_channel2_unit24(),.L3_a_channel3_unit24(),.L3_a_channel4_unit24(),.L3_a_channel5_unit24(),
-    .L3_a_channel1_unit25(),.L3_a_channel2_unit25(),.L3_a_channel3_unit25(),.L3_a_channel4_unit25(),.L3_a_channel5_unit25(),
+    .L3_a_channel1_unit1 (input_mem[0][0+col][0+row]),.L3_a_channel2_unit1 (input_mem[1][0+col][0+row]),.L3_a_channel3_unit1 (input_mem[2][0+col][0+row]),.L3_a_channel4_unit1 (input_mem[3][0+col][0+row]),.L3_a_channel5_unit1 (input_mem[4][0+col][0+row]),.L3_a_channel6_unit1 (input_mem[5][0+col][0+row]),
+    .L3_a_channel1_unit2 (input_mem[0][0+col][1+row]),.L3_a_channel2_unit2 (input_mem[1][0+col][1+row]),.L3_a_channel3_unit2 (input_mem[2][0+col][1+row]),.L3_a_channel4_unit2 (input_mem[3][0+col][1+row]),.L3_a_channel5_unit2 (input_mem[4][0+col][1+row]),.L3_a_channel6_unit2 (input_mem[5][0+col][1+row]),
+    .L3_a_channel1_unit3 (input_mem[0][0+col][2+row]),.L3_a_channel2_unit3 (input_mem[1][0+col][2+row]),.L3_a_channel3_unit3 (input_mem[2][0+col][2+row]),.L3_a_channel4_unit3 (input_mem[3][0+col][2+row]),.L3_a_channel5_unit3 (input_mem[4][0+col][2+row]),.L3_a_channel6_unit3 (input_mem[5][0+col][2+row]),
+    .L3_a_channel1_unit4 (input_mem[0][0+col][3+row]),.L3_a_channel2_unit4 (input_mem[1][0+col][3+row]),.L3_a_channel3_unit4 (input_mem[2][0+col][3+row]),.L3_a_channel4_unit4 (input_mem[3][0+col][3+row]),.L3_a_channel5_unit4 (input_mem[4][0+col][3+row]),.L3_a_channel6_unit4 (input_mem[5][0+col][3+row]),
+    .L3_a_channel1_unit5 (input_mem[0][0+col][4+row]),.L3_a_channel2_unit5 (input_mem[1][0+col][4+row]),.L3_a_channel3_unit5 (input_mem[2][0+col][4+row]),.L3_a_channel4_unit5 (input_mem[3][0+col][4+row]),.L3_a_channel5_unit5 (input_mem[4][0+col][4+row]),.L3_a_channel6_unit5 (input_mem[5][0+col][4+row]),
+    .L3_a_channel1_unit6 (input_mem[0][1+col][0+row]),.L3_a_channel2_unit6 (input_mem[1][1+col][0+row]),.L3_a_channel3_unit6 (input_mem[2][1+col][0+row]),.L3_a_channel4_unit6 (input_mem[3][1+col][0+row]),.L3_a_channel5_unit6 (input_mem[4][1+col][0+row]),.L3_a_channel6_unit6 (input_mem[5][1+col][0+row]),
+    .L3_a_channel1_unit7 (input_mem[0][1+col][1+row]),.L3_a_channel2_unit7 (input_mem[1][1+col][1+row]),.L3_a_channel3_unit7 (input_mem[2][1+col][1+row]),.L3_a_channel4_unit7 (input_mem[3][1+col][1+row]),.L3_a_channel5_unit7 (input_mem[4][1+col][1+row]),.L3_a_channel6_unit7 (input_mem[5][1+col][1+row]),
+    .L3_a_channel1_unit8 (input_mem[0][1+col][2+row]),.L3_a_channel2_unit8 (input_mem[1][1+col][2+row]),.L3_a_channel3_unit8 (input_mem[2][1+col][2+row]),.L3_a_channel4_unit8 (input_mem[3][1+col][2+row]),.L3_a_channel5_unit8 (input_mem[4][1+col][2+row]),.L3_a_channel6_unit8 (input_mem[5][1+col][2+row]),
+    .L3_a_channel1_unit9 (input_mem[0][1+col][3+row]),.L3_a_channel2_unit9 (input_mem[1][1+col][3+row]),.L3_a_channel3_unit9 (input_mem[2][1+col][3+row]),.L3_a_channel4_unit9 (input_mem[3][1+col][3+row]),.L3_a_channel5_unit9 (input_mem[4][1+col][3+row]),.L3_a_channel6_unit9 (input_mem[5][1+col][3+row]),
+    .L3_a_channel1_unit10(input_mem[0][1+col][4+row]),.L3_a_channel2_unit10(input_mem[1][1+col][4+row]),.L3_a_channel3_unit10(input_mem[2][1+col][4+row]),.L3_a_channel4_unit10(input_mem[3][1+col][4+row]),.L3_a_channel5_unit10(input_mem[4][1+col][4+row]),.L3_a_channel6_unit10(input_mem[5][1+col][4+row]),
+    .L3_a_channel1_unit11(input_mem[0][2+col][0+row]),.L3_a_channel2_unit11(input_mem[1][2+col][0+row]),.L3_a_channel3_unit11(input_mem[2][2+col][0+row]),.L3_a_channel4_unit11(input_mem[3][2+col][0+row]),.L3_a_channel5_unit11(input_mem[4][2+col][0+row]),.L3_a_channel6_unit11(input_mem[5][2+col][0+row]),
+    .L3_a_channel1_unit12(input_mem[0][2+col][1+row]),.L3_a_channel2_unit12(input_mem[1][2+col][1+row]),.L3_a_channel3_unit12(input_mem[2][2+col][1+row]),.L3_a_channel4_unit12(input_mem[3][2+col][1+row]),.L3_a_channel5_unit12(input_mem[4][2+col][1+row]),.L3_a_channel6_unit12(input_mem[5][2+col][1+row]),
+    .L3_a_channel1_unit13(input_mem[0][2+col][2+row]),.L3_a_channel2_unit13(input_mem[1][2+col][2+row]),.L3_a_channel3_unit13(input_mem[2][2+col][2+row]),.L3_a_channel4_unit13(input_mem[3][2+col][2+row]),.L3_a_channel5_unit13(input_mem[4][2+col][2+row]),.L3_a_channel6_unit13(input_mem[5][2+col][2+row]),
+    .L3_a_channel1_unit14(input_mem[0][2+col][3+row]),.L3_a_channel2_unit14(input_mem[1][2+col][3+row]),.L3_a_channel3_unit14(input_mem[2][2+col][3+row]),.L3_a_channel4_unit14(input_mem[3][2+col][3+row]),.L3_a_channel5_unit14(input_mem[4][2+col][3+row]),.L3_a_channel6_unit14(input_mem[5][2+col][3+row]),
+    .L3_a_channel1_unit15(input_mem[0][2+col][4+row]),.L3_a_channel2_unit15(input_mem[1][2+col][4+row]),.L3_a_channel3_unit15(input_mem[2][2+col][4+row]),.L3_a_channel4_unit15(input_mem[3][2+col][4+row]),.L3_a_channel5_unit15(input_mem[4][2+col][4+row]),.L3_a_channel6_unit15(input_mem[5][2+col][4+row]),
+    .L3_a_channel1_unit16(input_mem[0][3+col][0+row]),.L3_a_channel2_unit16(input_mem[1][3+col][0+row]),.L3_a_channel3_unit16(input_mem[2][3+col][0+row]),.L3_a_channel4_unit16(input_mem[3][3+col][0+row]),.L3_a_channel5_unit16(input_mem[4][3+col][0+row]),.L3_a_channel6_unit16(input_mem[5][3+col][0+row]),
+    .L3_a_channel1_unit17(input_mem[0][3+col][1+row]),.L3_a_channel2_unit17(input_mem[1][3+col][1+row]),.L3_a_channel3_unit17(input_mem[2][3+col][1+row]),.L3_a_channel4_unit17(input_mem[3][3+col][1+row]),.L3_a_channel5_unit17(input_mem[4][3+col][1+row]),.L3_a_channel6_unit17(input_mem[5][3+col][1+row]),
+    .L3_a_channel1_unit18(input_mem[0][3+col][2+row]),.L3_a_channel2_unit18(input_mem[1][3+col][2+row]),.L3_a_channel3_unit18(input_mem[2][3+col][2+row]),.L3_a_channel4_unit18(input_mem[3][3+col][2+row]),.L3_a_channel5_unit18(input_mem[4][3+col][2+row]),.L3_a_channel6_unit18(input_mem[5][3+col][2+row]),
+    .L3_a_channel1_unit19(input_mem[0][3+col][3+row]),.L3_a_channel2_unit19(input_mem[1][3+col][3+row]),.L3_a_channel3_unit19(input_mem[2][3+col][3+row]),.L3_a_channel4_unit19(input_mem[3][3+col][3+row]),.L3_a_channel5_unit19(input_mem[4][3+col][3+row]),.L3_a_channel6_unit19(input_mem[5][3+col][3+row]),
+    .L3_a_channel1_unit20(input_mem[0][3+col][4+row]),.L3_a_channel2_unit20(input_mem[1][3+col][4+row]),.L3_a_channel3_unit20(input_mem[2][3+col][4+row]),.L3_a_channel4_unit20(input_mem[3][3+col][4+row]),.L3_a_channel5_unit20(input_mem[4][3+col][4+row]),.L3_a_channel6_unit20(input_mem[5][3+col][4+row]),
+    .L3_a_channel1_unit21(input_mem[0][4+col][0+row]),.L3_a_channel2_unit21(input_mem[1][4+col][0+row]),.L3_a_channel3_unit21(input_mem[2][4+col][0+row]),.L3_a_channel4_unit21(input_mem[3][4+col][0+row]),.L3_a_channel5_unit21(input_mem[4][4+col][0+row]),.L3_a_channel6_unit21(input_mem[5][4+col][0+row]),
+    .L3_a_channel1_unit22(input_mem[0][4+col][1+row]),.L3_a_channel2_unit22(input_mem[1][4+col][1+row]),.L3_a_channel3_unit22(input_mem[2][4+col][1+row]),.L3_a_channel4_unit22(input_mem[3][4+col][1+row]),.L3_a_channel5_unit22(input_mem[4][4+col][1+row]),.L3_a_channel6_unit22(input_mem[5][4+col][1+row]),
+    .L3_a_channel1_unit23(input_mem[0][4+col][2+row]),.L3_a_channel2_unit23(input_mem[1][4+col][2+row]),.L3_a_channel3_unit23(input_mem[2][4+col][2+row]),.L3_a_channel4_unit23(input_mem[3][4+col][2+row]),.L3_a_channel5_unit23(input_mem[4][4+col][2+row]),.L3_a_channel6_unit23(input_mem[5][4+col][2+row]),
+    .L3_a_channel1_unit24(input_mem[0][4+col][3+row]),.L3_a_channel2_unit24(input_mem[1][4+col][3+row]),.L3_a_channel3_unit24(input_mem[2][4+col][3+row]),.L3_a_channel4_unit24(input_mem[3][4+col][3+row]),.L3_a_channel5_unit24(input_mem[4][4+col][3+row]),.L3_a_channel6_unit24(input_mem[5][4+col][3+row]),
+    .L3_a_channel1_unit25(input_mem[0][4+col][4+row]),.L3_a_channel2_unit25(input_mem[1][4+col][4+row]),.L3_a_channel3_unit25(input_mem[2][4+col][4+row]),.L3_a_channel4_unit25(input_mem[3][4+col][4+row]),.L3_a_channel5_unit25(input_mem[4][4+col][4+row]),.L3_a_channel6_unit25(input_mem[5][4+col][4+row]),
 
 
-    .L3_b_channel1_unit1 (),.L3_b_channel2_unit1 (),.L3_b_channel3_unit1 (),.L3_b_channel4_unit1 (),.L3_b_channel5_unit1 (),
-    .L3_b_channel1_unit2 (),.L3_b_channel2_unit2 (),.L3_b_channel3_unit2 (),.L3_b_channel4_unit2 (),.L3_b_channel5_unit2 (),
-    .L3_b_channel1_unit3 (),.L3_b_channel2_unit3 (),.L3_b_channel3_unit3 (),.L3_b_channel4_unit3 (),.L3_b_channel5_unit3 (),
-    .L3_b_channel1_unit4 (),.L3_b_channel2_unit4 (),.L3_b_channel3_unit4 (),.L3_b_channel4_unit4 (),.L3_b_channel5_unit4 (),
-    .L3_b_channel1_unit5 (),.L3_b_channel2_unit5 (),.L3_b_channel3_unit5 (),.L3_b_channel4_unit5 (),.L3_b_channel5_unit5 (),
-    .L3_b_channel1_unit6 (),.L3_b_channel2_unit6 (),.L3_b_channel3_unit6 (),.L3_b_channel4_unit6 (),.L3_b_channel5_unit6 (),
-    .L3_b_channel1_unit7 (),.L3_b_channel2_unit7 (),.L3_b_channel3_unit7 (),.L3_b_channel4_unit7 (),.L3_b_channel5_unit7 (),
-    .L3_b_channel1_unit8 (),.L3_b_channel2_unit8 (),.L3_b_channel3_unit8 (),.L3_b_channel4_unit8 (),.L3_b_channel5_unit8 (),
-    .L3_b_channel1_unit9 (),.L3_b_channel2_unit9 (),.L3_b_channel3_unit9 (),.L3_b_channel4_unit9 (),.L3_b_channel5_unit9 (),
-    .L3_b_channel1_unit10(),.L3_b_channel2_unit10(),.L3_b_channel3_unit10(),.L3_b_channel4_unit10(),.L3_b_channel5_unit10(),
-    .L3_b_channel1_unit11(),.L3_b_channel2_unit11(),.L3_b_channel3_unit11(),.L3_b_channel4_unit11(),.L3_b_channel5_unit11(),
-    .L3_b_channel1_unit12(),.L3_b_channel2_unit12(),.L3_b_channel3_unit12(),.L3_b_channel4_unit12(),.L3_b_channel5_unit12(),
-    .L3_b_channel1_unit13(),.L3_b_channel2_unit13(),.L3_b_channel3_unit13(),.L3_b_channel4_unit13(),.L3_b_channel5_unit13(),
-    .L3_b_channel1_unit14(),.L3_b_channel2_unit14(),.L3_b_channel3_unit14(),.L3_b_channel4_unit14(),.L3_b_channel5_unit14(),
-    .L3_b_channel1_unit15(),.L3_b_channel2_unit15(),.L3_b_channel3_unit15(),.L3_b_channel4_unit15(),.L3_b_channel5_unit15(),
-    .L3_b_channel1_unit16(),.L3_b_channel2_unit16(),.L3_b_channel3_unit16(),.L3_b_channel4_unit16(),.L3_b_channel5_unit16(),
-    .L3_b_channel1_unit17(),.L3_b_channel2_unit17(),.L3_b_channel3_unit17(),.L3_b_channel4_unit17(),.L3_b_channel5_unit17(),
-    .L3_b_channel1_unit18(),.L3_b_channel2_unit18(),.L3_b_channel3_unit18(),.L3_b_channel4_unit18(),.L3_b_channel5_unit18(),
-    .L3_b_channel1_unit19(),.L3_b_channel2_unit19(),.L3_b_channel3_unit19(),.L3_b_channel4_unit19(),.L3_b_channel5_unit19(),
-    .L3_b_channel1_unit20(),.L3_b_channel2_unit20(),.L3_b_channel3_unit20(),.L3_b_channel4_unit20(),.L3_b_channel5_unit20(),
-    .L3_b_channel1_unit21(),.L3_b_channel2_unit21(),.L3_b_channel3_unit21(),.L3_b_channel4_unit21(),.L3_b_channel5_unit21(),
-    .L3_b_channel1_unit22(),.L3_b_channel2_unit22(),.L3_b_channel3_unit22(),.L3_b_channel4_unit22(),.L3_b_channel5_unit22(),
-    .L3_b_channel1_unit23(),.L3_b_channel2_unit23(),.L3_b_channel3_unit23(),.L3_b_channel4_unit23(),.L3_b_channel5_unit23(),
-    .L3_b_channel1_unit24(),.L3_b_channel2_unit24(),.L3_b_channel3_unit24(),.L3_b_channel4_unit24(),.L3_b_channel5_unit24(),
-    .L3_b_channel1_unit25(),.L3_b_channel2_unit25(),.L3_b_channel3_unit25(),.L3_b_channel4_unit25(),.L3_b_channel5_unit25(),
+    .L3_b_channel1_unit1 (weight1_mem[0] ),.L3_b_channel2_unit1 (weight1_mem[25]),.L3_b_channel3_unit1 (weight1_mem[50]),.L3_b_channel4_unit1 (weight1_mem[75]),.L3_b_channel5_unit1 (weight1_mem[100]),.L3_b_channel6_unit1 (weight1_mem[125]),
+    .L3_b_channel1_unit2 (weight1_mem[1] ),.L3_b_channel2_unit2 (weight1_mem[26]),.L3_b_channel3_unit2 (weight1_mem[51]),.L3_b_channel4_unit2 (weight1_mem[76]),.L3_b_channel5_unit2 (weight1_mem[101]),.L3_b_channel6_unit2 (weight1_mem[126]),
+    .L3_b_channel1_unit3 (weight1_mem[2] ),.L3_b_channel2_unit3 (weight1_mem[27]),.L3_b_channel3_unit3 (weight1_mem[52]),.L3_b_channel4_unit3 (weight1_mem[77]),.L3_b_channel5_unit3 (weight1_mem[102]),.L3_b_channel6_unit3 (weight1_mem[127]),
+    .L3_b_channel1_unit4 (weight1_mem[3] ),.L3_b_channel2_unit4 (weight1_mem[28]),.L3_b_channel3_unit4 (weight1_mem[53]),.L3_b_channel4_unit4 (weight1_mem[78]),.L3_b_channel5_unit4 (weight1_mem[103]),.L3_b_channel6_unit4 (weight1_mem[128]),
+    .L3_b_channel1_unit5 (weight1_mem[4] ),.L3_b_channel2_unit5 (weight1_mem[29]),.L3_b_channel3_unit5 (weight1_mem[54]),.L3_b_channel4_unit5 (weight1_mem[79]),.L3_b_channel5_unit5 (weight1_mem[104]),.L3_b_channel6_unit5 (weight1_mem[129]),
+    .L3_b_channel1_unit6 (weight1_mem[5] ),.L3_b_channel2_unit6 (weight1_mem[30]),.L3_b_channel3_unit6 (weight1_mem[55]),.L3_b_channel4_unit6 (weight1_mem[80]),.L3_b_channel5_unit6 (weight1_mem[105]),.L3_b_channel6_unit6 (weight1_mem[130]),
+    .L3_b_channel1_unit7 (weight1_mem[6] ),.L3_b_channel2_unit7 (weight1_mem[31]),.L3_b_channel3_unit7 (weight1_mem[56]),.L3_b_channel4_unit7 (weight1_mem[81]),.L3_b_channel5_unit7 (weight1_mem[106]),.L3_b_channel6_unit7 (weight1_mem[131]),
+    .L3_b_channel1_unit8 (weight1_mem[7] ),.L3_b_channel2_unit8 (weight1_mem[32]),.L3_b_channel3_unit8 (weight1_mem[57]),.L3_b_channel4_unit8 (weight1_mem[82]),.L3_b_channel5_unit8 (weight1_mem[107]),.L3_b_channel6_unit8 (weight1_mem[132]),
+    .L3_b_channel1_unit9 (weight1_mem[8] ),.L3_b_channel2_unit9 (weight1_mem[33]),.L3_b_channel3_unit9 (weight1_mem[58]),.L3_b_channel4_unit9 (weight1_mem[83]),.L3_b_channel5_unit9 (weight1_mem[108]),.L3_b_channel6_unit9 (weight1_mem[133]),
+    .L3_b_channel1_unit10(weight1_mem[9] ),.L3_b_channel2_unit10(weight1_mem[34]),.L3_b_channel3_unit10(weight1_mem[59]),.L3_b_channel4_unit10(weight1_mem[84]),.L3_b_channel5_unit10(weight1_mem[109]),.L3_b_channel6_unit10(weight1_mem[134]),
+    .L3_b_channel1_unit11(weight1_mem[10]),.L3_b_channel2_unit11(weight1_mem[35]),.L3_b_channel3_unit11(weight1_mem[60]),.L3_b_channel4_unit11(weight1_mem[85]),.L3_b_channel5_unit11(weight1_mem[110]),.L3_b_channel6_unit11(weight1_mem[135]),
+    .L3_b_channel1_unit12(weight1_mem[11]),.L3_b_channel2_unit12(weight1_mem[36]),.L3_b_channel3_unit12(weight1_mem[61]),.L3_b_channel4_unit12(weight1_mem[86]),.L3_b_channel5_unit12(weight1_mem[111]),.L3_b_channel6_unit12(weight1_mem[136]),
+    .L3_b_channel1_unit13(weight1_mem[12]),.L3_b_channel2_unit13(weight1_mem[37]),.L3_b_channel3_unit13(weight1_mem[62]),.L3_b_channel4_unit13(weight1_mem[87]),.L3_b_channel5_unit13(weight1_mem[112]),.L3_b_channel6_unit13(weight1_mem[137]),
+    .L3_b_channel1_unit14(weight1_mem[13]),.L3_b_channel2_unit14(weight1_mem[38]),.L3_b_channel3_unit14(weight1_mem[63]),.L3_b_channel4_unit14(weight1_mem[88]),.L3_b_channel5_unit14(weight1_mem[113]),.L3_b_channel6_unit14(weight1_mem[138]),
+    .L3_b_channel1_unit15(weight1_mem[14]),.L3_b_channel2_unit15(weight1_mem[39]),.L3_b_channel3_unit15(weight1_mem[64]),.L3_b_channel4_unit15(weight1_mem[89]),.L3_b_channel5_unit15(weight1_mem[114]),.L3_b_channel6_unit15(weight1_mem[139]),
+    .L3_b_channel1_unit16(weight1_mem[15]),.L3_b_channel2_unit16(weight1_mem[40]),.L3_b_channel3_unit16(weight1_mem[65]),.L3_b_channel4_unit16(weight1_mem[90]),.L3_b_channel5_unit16(weight1_mem[115]),.L3_b_channel6_unit16(weight1_mem[140]),
+    .L3_b_channel1_unit17(weight1_mem[16]),.L3_b_channel2_unit17(weight1_mem[41]),.L3_b_channel3_unit17(weight1_mem[66]),.L3_b_channel4_unit17(weight1_mem[91]),.L3_b_channel5_unit17(weight1_mem[116]),.L3_b_channel6_unit17(weight1_mem[141]),
+    .L3_b_channel1_unit18(weight1_mem[17]),.L3_b_channel2_unit18(weight1_mem[42]),.L3_b_channel3_unit18(weight1_mem[67]),.L3_b_channel4_unit18(weight1_mem[92]),.L3_b_channel5_unit18(weight1_mem[117]),.L3_b_channel6_unit18(weight1_mem[142]),
+    .L3_b_channel1_unit19(weight1_mem[18]),.L3_b_channel2_unit19(weight1_mem[43]),.L3_b_channel3_unit19(weight1_mem[68]),.L3_b_channel4_unit19(weight1_mem[93]),.L3_b_channel5_unit19(weight1_mem[118]),.L3_b_channel6_unit19(weight1_mem[143]),
+    .L3_b_channel1_unit20(weight1_mem[19]),.L3_b_channel2_unit20(weight1_mem[44]),.L3_b_channel3_unit20(weight1_mem[69]),.L3_b_channel4_unit20(weight1_mem[94]),.L3_b_channel5_unit20(weight1_mem[119]),.L3_b_channel6_unit20(weight1_mem[144]),
+    .L3_b_channel1_unit21(weight1_mem[20]),.L3_b_channel2_unit21(weight1_mem[45]),.L3_b_channel3_unit21(weight1_mem[70]),.L3_b_channel4_unit21(weight1_mem[95]),.L3_b_channel5_unit21(weight1_mem[120]),.L3_b_channel6_unit21(weight1_mem[145]),
+    .L3_b_channel1_unit22(weight1_mem[21]),.L3_b_channel2_unit22(weight1_mem[46]),.L3_b_channel3_unit22(weight1_mem[71]),.L3_b_channel4_unit22(weight1_mem[96]),.L3_b_channel5_unit22(weight1_mem[121]),.L3_b_channel6_unit22(weight1_mem[146]),
+    .L3_b_channel1_unit23(weight1_mem[22]),.L3_b_channel2_unit23(weight1_mem[47]),.L3_b_channel3_unit23(weight1_mem[72]),.L3_b_channel4_unit23(weight1_mem[97]),.L3_b_channel5_unit23(weight1_mem[122]),.L3_b_channel6_unit23(weight1_mem[147]),
+    .L3_b_channel1_unit24(weight1_mem[23]),.L3_b_channel2_unit24(weight1_mem[48]),.L3_b_channel3_unit24(weight1_mem[73]),.L3_b_channel4_unit24(weight1_mem[98]),.L3_b_channel5_unit24(weight1_mem[123]),.L3_b_channel6_unit24(weight1_mem[148]),
+    .L3_b_channel1_unit25(weight1_mem[24]),.L3_b_channel2_unit25(weight1_mem[49]),.L3_b_channel3_unit25(weight1_mem[74]),.L3_b_channel4_unit25(weight1_mem[99]),.L3_b_channel5_unit25(weight1_mem[124]),.L3_b_channel6_unit25(weight1_mem[149]),
 
-    .L3_bias_unit1(),
-    .L3_bias_unit2(),
+    .L3_b_2_channel1_unit1 (weight2_mem[0] ),.L3_b_2_channel2_unit1 (weight2_mem[25]),.L3_b_2_channel3_unit1 (weight2_mem[50]),.L3_b_2_channel4_unit1 (weight2_mem[75]),.L3_b_2_channel5_unit1 (weight1_mem[100]),.L3_b_2_channel6_unit1 (weight1_mem[125]),
+    .L3_b_2_channel1_unit2 (weight2_mem[1] ),.L3_b_2_channel2_unit2 (weight2_mem[26]),.L3_b_2_channel3_unit2 (weight2_mem[51]),.L3_b_2_channel4_unit2 (weight2_mem[76]),.L3_b_2_channel5_unit2 (weight1_mem[101]),.L3_b_2_channel6_unit2 (weight1_mem[126]),
+    .L3_b_2_channel1_unit3 (weight2_mem[2] ),.L3_b_2_channel2_unit3 (weight2_mem[27]),.L3_b_2_channel3_unit3 (weight2_mem[52]),.L3_b_2_channel4_unit3 (weight2_mem[77]),.L3_b_2_channel5_unit3 (weight1_mem[102]),.L3_b_2_channel6_unit3 (weight1_mem[127]),
+    .L3_b_2_channel1_unit4 (weight2_mem[3] ),.L3_b_2_channel2_unit4 (weight2_mem[28]),.L3_b_2_channel3_unit4 (weight2_mem[53]),.L3_b_2_channel4_unit4 (weight2_mem[78]),.L3_b_2_channel5_unit4 (weight1_mem[103]),.L3_b_2_channel6_unit4 (weight1_mem[128]),
+    .L3_b_2_channel1_unit5 (weight2_mem[4] ),.L3_b_2_channel2_unit5 (weight2_mem[29]),.L3_b_2_channel3_unit5 (weight2_mem[54]),.L3_b_2_channel4_unit5 (weight2_mem[79]),.L3_b_2_channel5_unit5 (weight1_mem[104]),.L3_b_2_channel6_unit5 (weight1_mem[129]),
+    .L3_b_2_channel1_unit6 (weight2_mem[5] ),.L3_b_2_channel2_unit6 (weight2_mem[30]),.L3_b_2_channel3_unit6 (weight2_mem[55]),.L3_b_2_channel4_unit6 (weight2_mem[80]),.L3_b_2_channel5_unit6 (weight1_mem[105]),.L3_b_2_channel6_unit6 (weight1_mem[130]),
+    .L3_b_2_channel1_unit7 (weight2_mem[6] ),.L3_b_2_channel2_unit7 (weight2_mem[31]),.L3_b_2_channel3_unit7 (weight2_mem[56]),.L3_b_2_channel4_unit7 (weight2_mem[81]),.L3_b_2_channel5_unit7 (weight1_mem[106]),.L3_b_2_channel6_unit7 (weight1_mem[131]),
+    .L3_b_2_channel1_unit8 (weight2_mem[7] ),.L3_b_2_channel2_unit8 (weight2_mem[32]),.L3_b_2_channel3_unit8 (weight2_mem[57]),.L3_b_2_channel4_unit8 (weight2_mem[82]),.L3_b_2_channel5_unit8 (weight1_mem[107]),.L3_b_2_channel6_unit8 (weight1_mem[132]),
+    .L3_b_2_channel1_unit9 (weight2_mem[8] ),.L3_b_2_channel2_unit9 (weight2_mem[33]),.L3_b_2_channel3_unit9 (weight2_mem[58]),.L3_b_2_channel4_unit9 (weight2_mem[83]),.L3_b_2_channel5_unit9 (weight1_mem[108]),.L3_b_2_channel6_unit9 (weight1_mem[133]),
+    .L3_b_2_channel1_unit10(weight2_mem[9] ),.L3_b_2_channel2_unit10(weight2_mem[34]),.L3_b_2_channel3_unit10(weight2_mem[59]),.L3_b_2_channel4_unit10(weight2_mem[84]),.L3_b_2_channel5_unit10(weight1_mem[109]),.L3_b_2_channel6_unit10(weight1_mem[134]),
+    .L3_b_2_channel1_unit11(weight2_mem[10]),.L3_b_2_channel2_unit11(weight2_mem[35]),.L3_b_2_channel3_unit11(weight2_mem[60]),.L3_b_2_channel4_unit11(weight2_mem[85]),.L3_b_2_channel5_unit11(weight1_mem[110]),.L3_b_2_channel6_unit11(weight1_mem[135]),
+    .L3_b_2_channel1_unit12(weight2_mem[11]),.L3_b_2_channel2_unit12(weight2_mem[36]),.L3_b_2_channel3_unit12(weight2_mem[61]),.L3_b_2_channel4_unit12(weight2_mem[86]),.L3_b_2_channel5_unit12(weight1_mem[111]),.L3_b_2_channel6_unit12(weight1_mem[136]),
+    .L3_b_2_channel1_unit13(weight2_mem[12]),.L3_b_2_channel2_unit13(weight2_mem[37]),.L3_b_2_channel3_unit13(weight2_mem[62]),.L3_b_2_channel4_unit13(weight2_mem[87]),.L3_b_2_channel5_unit13(weight1_mem[112]),.L3_b_2_channel6_unit13(weight1_mem[137]),
+    .L3_b_2_channel1_unit14(weight2_mem[13]),.L3_b_2_channel2_unit14(weight2_mem[38]),.L3_b_2_channel3_unit14(weight2_mem[63]),.L3_b_2_channel4_unit14(weight2_mem[88]),.L3_b_2_channel5_unit14(weight1_mem[113]),.L3_b_2_channel6_unit14(weight1_mem[138]),
+    .L3_b_2_channel1_unit15(weight2_mem[14]),.L3_b_2_channel2_unit15(weight2_mem[39]),.L3_b_2_channel3_unit15(weight2_mem[64]),.L3_b_2_channel4_unit15(weight2_mem[89]),.L3_b_2_channel5_unit15(weight1_mem[114]),.L3_b_2_channel6_unit15(weight1_mem[139]),
+    .L3_b_2_channel1_unit16(weight2_mem[15]),.L3_b_2_channel2_unit16(weight2_mem[40]),.L3_b_2_channel3_unit16(weight2_mem[65]),.L3_b_2_channel4_unit16(weight2_mem[90]),.L3_b_2_channel5_unit16(weight1_mem[115]),.L3_b_2_channel6_unit16(weight1_mem[140]),
+    .L3_b_2_channel1_unit17(weight2_mem[16]),.L3_b_2_channel2_unit17(weight2_mem[41]),.L3_b_2_channel3_unit17(weight2_mem[66]),.L3_b_2_channel4_unit17(weight2_mem[91]),.L3_b_2_channel5_unit17(weight1_mem[116]),.L3_b_2_channel6_unit17(weight1_mem[141]),
+    .L3_b_2_channel1_unit18(weight2_mem[17]),.L3_b_2_channel2_unit18(weight2_mem[42]),.L3_b_2_channel3_unit18(weight2_mem[67]),.L3_b_2_channel4_unit18(weight2_mem[92]),.L3_b_2_channel5_unit18(weight1_mem[117]),.L3_b_2_channel6_unit18(weight1_mem[142]),
+    .L3_b_2_channel1_unit19(weight2_mem[18]),.L3_b_2_channel2_unit19(weight2_mem[43]),.L3_b_2_channel3_unit19(weight2_mem[68]),.L3_b_2_channel4_unit19(weight2_mem[93]),.L3_b_2_channel5_unit19(weight1_mem[118]),.L3_b_2_channel6_unit19(weight1_mem[143]),
+    .L3_b_2_channel1_unit20(weight2_mem[19]),.L3_b_2_channel2_unit20(weight2_mem[44]),.L3_b_2_channel3_unit20(weight2_mem[69]),.L3_b_2_channel4_unit20(weight2_mem[94]),.L3_b_2_channel5_unit20(weight1_mem[119]),.L3_b_2_channel6_unit20(weight1_mem[144]),
+    .L3_b_2_channel1_unit21(weight2_mem[20]),.L3_b_2_channel2_unit21(weight2_mem[45]),.L3_b_2_channel3_unit21(weight2_mem[70]),.L3_b_2_channel4_unit21(weight2_mem[95]),.L3_b_2_channel5_unit21(weight1_mem[120]),.L3_b_2_channel6_unit21(weight1_mem[145]),
+    .L3_b_2_channel1_unit22(weight2_mem[21]),.L3_b_2_channel2_unit22(weight2_mem[46]),.L3_b_2_channel3_unit22(weight2_mem[71]),.L3_b_2_channel4_unit22(weight2_mem[96]),.L3_b_2_channel5_unit22(weight1_mem[121]),.L3_b_2_channel6_unit22(weight1_mem[146]),
+    .L3_b_2_channel1_unit23(weight2_mem[22]),.L3_b_2_channel2_unit23(weight2_mem[47]),.L3_b_2_channel3_unit23(weight2_mem[72]),.L3_b_2_channel4_unit23(weight2_mem[97]),.L3_b_2_channel5_unit23(weight1_mem[122]),.L3_b_2_channel6_unit23(weight1_mem[147]),
+    .L3_b_2_channel1_unit24(weight2_mem[23]),.L3_b_2_channel2_unit24(weight2_mem[48]),.L3_b_2_channel3_unit24(weight2_mem[73]),.L3_b_2_channel4_unit24(weight2_mem[98]),.L3_b_2_channel5_unit24(weight1_mem[123]),.L3_b_2_channel6_unit24(weight1_mem[148]),
+    .L3_b_2_channel1_unit25(weight2_mem[24]),.L3_b_2_channel2_unit25(weight2_mem[49]),.L3_b_2_channel3_unit25(weight2_mem[74]),.L3_b_2_channel4_unit25(weight2_mem[99]),.L3_b_2_channel5_unit25(weight1_mem[124]),.L3_b_2_channel6_unit25(weight1_mem[149]),
+
+
+
+    .L3_bias_unit1(bias1_mem),
+    .L3_bias_unit2(bias2_mem),
 
 
     .out_result_a(con_result[0]),
@@ -310,7 +343,13 @@ module top_wrapper#(
     .out_result_c(con_result[2]),
     .out_result_d(con_result[3]),
     .out_result_e(con_result[4]),
-    .out_result_f(con_result[5])
+    .out_result_f(con_result[5]),
+    .out_result_g(con_result[6]),
+    .out_result_h(con_result[7]),
+    .out_result_i(con_result[8]),
+    .out_result_j(con_result[9]),
+    .out_result_k(con_result[10]),
+    .out_result_l(con_result[11])
 
     );
 
@@ -322,7 +361,7 @@ module top_wrapper#(
   //weight memory 
   always@(posedge clk)begin
     if(L1_load_wait == 2'b10)begin
-        for(i = 0; i< 6 ; i = i + 1)begin
+        for(i = 0; i< 4'd6 ; i = i + 1)begin
           if(L1_w_load_done == 1'b1)begin
               bias[i] <= bias[i];
           end
@@ -335,7 +374,7 @@ module top_wrapper#(
       end
     end
     else if(L1_en == 1'b0)begin
-      for(i = 0; i< 6 ; i = i + 1)begin    
+      for(i = 0; i< 4'd6 ; i = i + 1)begin    
               bias[i] <= 1'b0;
       end
     end
@@ -347,8 +386,8 @@ module top_wrapper#(
     
 
     if(L1_load_wait == 2'b10)begin
-        for(i = 0; i <6 ; i = i+1)begin
-            for(j = 0; j< 25 ; j = j + 1)begin
+        for(i = 0; i <4'd6 ; i = i+1)begin
+            for(j = 0; j< 5'd25 ; j = j + 1)begin
                 if(i== weight_channel && j == weight_index)begin
                     weight[i][j] <= L1_w_data;        
                 end   
@@ -359,16 +398,16 @@ module top_wrapper#(
         end  
     end
     else if(L1_en == 1'b0)begin
-        for(i = 0; i <6 ; i = i+1)begin
-          for(j = 0; j< 25 ; j = j + 1)begin
+        for(i = 0; i <4'd6 ; i = i+1)begin
+          for(j = 0; j< 5'd25 ; j = j + 1)begin
                   weight[i][j] <= 1'b0;                        
           end    
       end
     end
 
     else begin
-      for(i = 0; i <6 ; i = i+1)begin
-          for(j = 0; j< 25 ; j = j + 1)begin
+      for(i = 0; i <4'd6 ; i = i+1)begin
+          for(j = 0; j< 5'd25 ; j = j + 1)begin
                   weight[i][j] <= weight[i][j];                        
           end    
       end  
@@ -381,16 +420,16 @@ module top_wrapper#(
     if(L1_load_wait == 2'b10)begin
           //load 5 col
       if(L1_position_col < 3'd5)begin
-        for(i = 0; i < 5 ; i = i + 1)begin
-            for(j = 0 ; j < 32 ; j = j + 1)begin
+        for(i = 0; i < 4'd5 ; i = i + 1)begin
+            for(j = 0 ; j < 6'd32 ; j = j + 1)begin
                 if(L1_position_col == i) inp[i][j] <= L1_in_data[j*12 +: 12];
                 else inp[i][j] <= inp[i][j];
             end
         end
       end
       else begin
-        for(i = 0; i < 5 ; i = i + 1)begin
-            for(j = 0 ; j < 32 ; j = j + 1)begin
+        for(i = 0; i < 3'd5 ; i = i + 1)begin
+            for(j = 0 ; j < 6'd32 ; j = j + 1)begin
                 inp[i][j] <= inp[i][j];
             end
         end
@@ -409,8 +448,8 @@ module top_wrapper#(
         
     else if(L1_cal_wait == 2'b11)begin
       if(L1_row_cnt == 5'd27)begin
-          for(i = 0; i < 5 ; i = i + 1)begin
-            for(j = 0 ; j < 32 ; j = j + 1)begin
+          for(i = 0; i < 3'd5 ; i = i + 1)begin
+            for(j = 0 ; j < 6'd32 ; j = j + 1)begin
                 //load new data
                 if(4 == i)begin
                     inp[i][j] <= L1_in_data[j*12 +: 12];
@@ -424,8 +463,8 @@ module top_wrapper#(
         end
       end
       else begin
-          for(i = 0; i < 5 ; i = i + 1)begin
-              for(j = 0 ; j < 32 ; j = j + 1)begin
+          for(i = 0; i < 3'd5 ; i = i + 1)begin
+              for(j = 0 ; j < 6'd32 ; j = j + 1)begin
                   inp[i][j] <= inp[i][j];
               end
           end
@@ -436,8 +475,8 @@ module top_wrapper#(
     // other state
 
     else if( L1_en == 1'b0)begin
-      for(i = 0; i < 5 ; i = i + 1)begin
-          for(j = 0 ; j < 32 ; j = j + 1)begin
+      for(i = 0; i < 3'd5 ; i = i + 1)begin
+          for(j = 0 ; j < 6'd32 ; j = j + 1)begin
               inp[i][j] <= 1'b0;
           end
         end
@@ -445,11 +484,11 @@ module top_wrapper#(
 
 
     else begin
-          for(i = 0; i < 5 ; i = i + 1)begin
-                    for(j = 0 ; j < 32 ; j = j + 1)begin
-                        inp[i][j] <= inp[i][j];
-                    end
-                end
+        for(i = 0; i < 3'd5 ; i = i + 1)begin
+          for(j = 0 ; j < 6'd32 ; j = j + 1)begin
+              inp[i][j] <= inp[i][j];
+          end
+      end
     end
   end
 
@@ -556,8 +595,8 @@ module top_wrapper#(
   wire L4_output_wea;
 
 
-  wire [11:0] L3_weigth_douta;
-  wire [11:0] L3_weigth_doutb;
+  wire [11:0] L3_weight_douta;
+  wire [11:0] L3_weight_doutb;
   wire [11:0] L3_weight_addra;
   wire [11:0] L3_weight_addrb;
   
@@ -570,15 +609,15 @@ module top_wrapper#(
   wire L3_load_weight_done;
 
   wire [11:0] cur_filter_count;
-  wire [3:0] L3_col,L3_row;
+ 
 
   middle_layer_wrapper L3_L4_wrapper(
     .clk(clk),
     .rst(rst),
     .L3_en(L3_en),
     //L3 weight blcok memory
-    .L3_weigth_douta(L3_weigth_douta),
-    .L3_weigth_doutb(L3_weigth_doutb),
+    .L3_weight_douta(L3_weight_douta),
+    .L3_weight_doutb(L3_weight_doutb),
     .L3_weight_addra(L3_weight_addra),
     .L3_weight_addrb(L3_weight_addrb),
     //L2 output block memory
@@ -588,7 +627,7 @@ module top_wrapper#(
     // .L2_feature4_douta(L2_feature4_dout),
     // .L2_feature5_douta(L2_feature5_dout),
     // .L2_feature6_douta(L2_feature6_dout),
-    .L2_feature_addr_read(L2_feature1_addr_read_m),
+    .L2_feature_addr_read(L2_feature_addr_read_r),
     //convoultion result
     .con_result_1(con_result[0]),
     .con_result_2(con_result[1]),
@@ -620,8 +659,8 @@ module top_wrapper#(
     .inp_load_done(L3_inp_load_done),
     .load_weight_done(L3_load_weight_done),
     .cur_filter_count(L3_cur_filter_count),
-    .col(L3_col),
-    .row(L3_row),
+    .col(col),
+    .row(row),
     .L3_done(L3_done)
     
   );
@@ -668,10 +707,10 @@ module top_wrapper#(
   //L3 filter load
    always@(posedge clk)begin
         if(L3_wait_weight == 2'b11 && L3_load_weight_done == 1'b0)begin
-            for(i = 0; i< 150 ;i = i + 1)begin
+            for(i = 0; i< 8'd150 ;i = i + 1)begin
                 if(L3_cur_filter_count == i )begin
-                    weight1_mem [i] <= L3_weigth_douta;
-                    weight2_mem [i] <= L3_weigth_doutb;
+                    weight1_mem [i] <= L3_weight_douta;
+                    weight2_mem [i] <= L3_weight_doutb;
                 end
                 else begin
                     weight1_mem [i] <= weight1_mem [i];
@@ -680,8 +719,8 @@ module top_wrapper#(
             end
 
             if(L3_cur_filter_count == L3_FILTER_SIZE - 1)begin
-                bias1_mem <= L3_weigth_douta;
-                bias2_mem <= L3_weigth_doutb;
+                bias1_mem <= L3_weight_douta;
+                bias2_mem <= L3_weight_doutb;
             end
             else begin
                 bias2_mem <= bias2_mem;
@@ -690,7 +729,7 @@ module top_wrapper#(
         end
 
         else begin
-            for(i = 0; i< 150 ;i = i + 1)begin
+            for(i = 0; i< 8'd150 ;i = i + 1)begin
                 weight1_mem [i] <=  weight1_mem [i];
                 weight2_mem [i] <=  weight2_mem [i];
             end
@@ -704,16 +743,16 @@ module top_wrapper#(
   con3_w_mem L3_weight_mem (
     .clka(clk),    // input wire clka
     .addra(L3_weight_addra),  // input wire [11 : 0] addra
-    .douta(L3_weigth_douta),  // output wire [11 : 0] douta
+    .douta(L3_weight_douta),  // output wire [11 : 0] douta
     .clkb(clk),    // input wire clkb
     .addrb(L3_weight_addrb),  // input wire [11 : 0] addrb
-    .doutb(L3_weigth_doutb)  // output wire [11 : 0] doutb
+    .doutb(L3_weight_doutb)  // output wire [11 : 0] doutb
   );
 
   //layer 4 output block memory
   layer_4_output L4_feature1 (
     .clka(clk),    // input wire clka
-    .wea(L4_output_wea1),      // input wire [0 : 0] wea
+    .wea(L4_output_wea),      // input wire [0 : 0] wea
     .addra(L4_output_write_addr),  // input wire [7 : 0] addra
     .dina(L4_output_write_data1),    // input wire [11 : 0] dina
     .clkb(clk),    // input wire clkb
@@ -723,7 +762,7 @@ module top_wrapper#(
 
   layer_4_output L4_feature2 (
     .clka(clk),    // input wire clka
-    .wea(L4_output_wea2),      // input wire [0 : 0] wea
+    .wea(L4_output_wea),      // input wire [0 : 0] wea
     .addra(L4_output_write_addr),  // input wire [7 : 0] addra
     .dina(L4_output_write_data2),    // input wire [11 : 0] dina
     .clkb(clk),    // input wire clkb

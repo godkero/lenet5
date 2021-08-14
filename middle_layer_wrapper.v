@@ -48,8 +48,8 @@ parameter  DATA_WIDTH = 12,
     input L3_en,
 
     //L3 weight blcok memory
-    input [DATA_WIDTH - 1:0] L3_weigth_douta,
-    input [DATA_WIDTH - 1:0] L3_weigth_doutb,
+    input [DATA_WIDTH - 1:0] L3_weight_douta,
+    input [DATA_WIDTH - 1:0] L3_weight_doutb,
     output[DATA_WIDTH - 1:0] L3_weight_addra,
     output[DATA_WIDTH - 1:0] L3_weight_addrb,
     //L2 output block memory
@@ -86,7 +86,7 @@ parameter  DATA_WIDTH = 12,
     output reg [3:0] cur_input_width_count,
     output reg [1:0] inp_wait,
     output reg [2:0] wait_weight,
-    output reg load_weight_done,
+    output           load_weight_done,
     output reg inp_load_done,
     output reg [11:0] cur_filter_count,
     output reg [3:0] col,row,
@@ -288,7 +288,7 @@ parameter  DATA_WIDTH = 12,
 
     always@(posedge clk)begin
         if(rst)begin
-            cal_st <=WEIGHT_LOAD;
+            cal_st <=CAL_IDLE;
         end        
         else begin
             cal_st <= nst_cal_st;
@@ -312,7 +312,7 @@ parameter  DATA_WIDTH = 12,
         end
         else if(st == CALCULATE)begin
             if(cal_st == WEIGHT_LOAD)begin
-                if(filter_count == 12'd150)begin
+                if(filter_count == 12'd151)begin
                     filter_count<=filter_count;
                     filter_count_a <= filter_count_a;
                     filter_count_b <= filter_count_b;
@@ -325,14 +325,14 @@ parameter  DATA_WIDTH = 12,
             end
             else begin
                 filter_count <= 1'b0;
-                filter_count_a <= filter_count_a + 1'b1;
-                filter_count_b <= filter_count_b + 1'b1;
+                filter_count_a <= filter_count_a;
+                filter_count_b <= filter_count_b;
             end    
         end
         else begin
             filter_count <= 1'b0;
-            filter_count_a <= 1'b0;
-            filter_count_b <= 1'b0;
+            filter_count_a <= FILTER_BASE_0;
+            filter_count_b <= FILTER_BASE_1;
         end
     end
 
@@ -340,6 +340,8 @@ parameter  DATA_WIDTH = 12,
     assign L3_weight_addrb = filter_count_b;
 
 
+    reg [3:0] wait_done;
+    
 //L3_done
 
     always@(posedge clk)begin
@@ -358,21 +360,20 @@ parameter  DATA_WIDTH = 12,
         if(wait_weight == 2'b11)begin
             if(cur_filter_count == 151)begin
                 cur_filter_count <= cur_filter_count;
-                load_weight_done <= 1'b1;
+                // load_weight_done <= 1'b1;
             end
             else begin
                 cur_filter_count <= cur_filter_count + 1'b1;
-                load_weight_done <= 1'b0;
+                // load_weight_done <= 1'b0;
             end
         end
         else begin
             cur_filter_count <= 1'b0;
-            load_weight_done <= 1'b0;
+            // load_weight_done <= 1'b0;
         end
     end
 
     
-    reg [3:0] wait_done;
 
     //read done
     always@(posedge clk)begin
@@ -471,6 +472,6 @@ parameter  DATA_WIDTH = 12,
     );
 
 
-
+    assign load_weight_done = cur_filter_count == 8'd151;
 
 endmodule

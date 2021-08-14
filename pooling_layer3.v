@@ -172,6 +172,8 @@ module pooling_layer3(
     wire [3:0] shift_w_row;
     wire [3:0] shift_w_col;
 
+
+    // wire [11:0] 
     assign shift_r_row = r_row >>1;
     assign shift_r_col = r_col >>1;
     assign shift_w_row = w_row >>1;
