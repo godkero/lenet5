@@ -248,7 +248,13 @@ module calculate_wrapper(
     output [11:0] out_result_c,
     output [11:0] out_result_d,
     output [11:0] out_result_e,
-    output [11:0] out_result_f
+    output [11:0] out_result_f,
+    output [11:0] out_result_g,
+    output [11:0] out_result_h,
+    output [11:0] out_result_i,
+    output [11:0] out_result_j,
+    output [11:0] out_result_k,
+    output [11:0] out_result_l
 
 
     // `L1_INSTANCE_PORT

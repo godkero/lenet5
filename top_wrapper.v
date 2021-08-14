@@ -5,10 +5,10 @@ module top_wrapper#(
             L3_INPUT_CHANNEL = 6,
             L3_INPUT_HEIGHT = 14,
             L3_INPUT_WIDTH = 14,
-            L3_FITER_SIZE = 151,
+            L3_FILTER_SIZE = 151,
             INPUT_SIZE = 1176,
             FILTER_BASE_0 = 0,
-            FILTER_BASE_1 = 1208,
+            FILTER_BASE_1 = 1208
   )
   (
   input clk_in,rst,start,
@@ -40,8 +40,8 @@ module top_wrapper#(
 
   //middle layer
   reg [11:0] input_mem [0: L3_INPUT_CHANNEL - 1][0: L3_INPUT_HEIGHT - 1][0: L3_INPUT_WIDTH - 1];
-  reg [11:0] weight1_mem [0:L3_FITER_SIZE -2];
-  reg [11:0] weight2_mem [0:L3_FITER_SIZE -2];
+  reg [11:0] weight1_mem [0:L3_FILTER_SIZE -2];
+  reg [11:0] weight2_mem [0:L3_FILTER_SIZE -2];
   reg [11:0] bias1_mem;
   reg [11:0] bias2_mem;
 
@@ -247,6 +247,63 @@ module top_wrapper#(
     .L1_bias_unit4(bias[3]),
     .L1_bias_unit5(bias[4]),
     .L1_bias_unit6(bias[5]),
+
+    .L3_a_channel1_unit1 (),.L3_a_channel2_unit1 (),.L3_a_channel3_unit1 (),.L3_a_channel4_unit1 (),.L3_a_channel5_unit1 (),
+    .L3_a_channel1_unit2 (),.L3_a_channel2_unit2 (),.L3_a_channel3_unit2 (),.L3_a_channel4_unit2 (),.L3_a_channel5_unit2 (),
+    .L3_a_channel1_unit3 (),.L3_a_channel2_unit3 (),.L3_a_channel3_unit3 (),.L3_a_channel4_unit3 (),.L3_a_channel5_unit3 (),
+    .L3_a_channel1_unit4 (),.L3_a_channel2_unit4 (),.L3_a_channel3_unit4 (),.L3_a_channel4_unit4 (),.L3_a_channel5_unit4 (),
+    .L3_a_channel1_unit5 (),.L3_a_channel2_unit5 (),.L3_a_channel3_unit5 (),.L3_a_channel4_unit5 (),.L3_a_channel5_unit5 (),
+    .L3_a_channel1_unit6 (),.L3_a_channel2_unit6 (),.L3_a_channel3_unit6 (),.L3_a_channel4_unit6 (),.L3_a_channel5_unit6 (),
+    .L3_a_channel1_unit7 (),.L3_a_channel2_unit7 (),.L3_a_channel3_unit7 (),.L3_a_channel4_unit7 (),.L3_a_channel5_unit7 (),
+    .L3_a_channel1_unit8 (),.L3_a_channel2_unit8 (),.L3_a_channel3_unit8 (),.L3_a_channel4_unit8 (),.L3_a_channel5_unit8 (),
+    .L3_a_channel1_unit9 (),.L3_a_channel2_unit9 (),.L3_a_channel3_unit9 (),.L3_a_channel4_unit9 (),.L3_a_channel5_unit9 (),
+    .L3_a_channel1_unit10(),.L3_a_channel2_unit10(),.L3_a_channel3_unit10(),.L3_a_channel4_unit10(),.L3_a_channel5_unit10(),
+    .L3_a_channel1_unit11(),.L3_a_channel2_unit11(),.L3_a_channel3_unit11(),.L3_a_channel4_unit11(),.L3_a_channel5_unit11(),
+    .L3_a_channel1_unit12(),.L3_a_channel2_unit12(),.L3_a_channel3_unit12(),.L3_a_channel4_unit12(),.L3_a_channel5_unit12(),
+    .L3_a_channel1_unit13(),.L3_a_channel2_unit13(),.L3_a_channel3_unit13(),.L3_a_channel4_unit13(),.L3_a_channel5_unit13(),
+    .L3_a_channel1_unit14(),.L3_a_channel2_unit14(),.L3_a_channel3_unit14(),.L3_a_channel4_unit14(),.L3_a_channel5_unit14(),
+    .L3_a_channel1_unit15(),.L3_a_channel2_unit15(),.L3_a_channel3_unit15(),.L3_a_channel4_unit15(),.L3_a_channel5_unit15(),
+    .L3_a_channel1_unit16(),.L3_a_channel2_unit16(),.L3_a_channel3_unit16(),.L3_a_channel4_unit16(),.L3_a_channel5_unit16(),
+    .L3_a_channel1_unit17(),.L3_a_channel2_unit17(),.L3_a_channel3_unit17(),.L3_a_channel4_unit17(),.L3_a_channel5_unit17(),
+    .L3_a_channel1_unit18(),.L3_a_channel2_unit18(),.L3_a_channel3_unit18(),.L3_a_channel4_unit18(),.L3_a_channel5_unit18(),
+    .L3_a_channel1_unit19(),.L3_a_channel2_unit19(),.L3_a_channel3_unit19(),.L3_a_channel4_unit19(),.L3_a_channel5_unit19(),
+    .L3_a_channel1_unit20(),.L3_a_channel2_unit20(),.L3_a_channel3_unit20(),.L3_a_channel4_unit20(),.L3_a_channel5_unit20(),
+    .L3_a_channel1_unit21(),.L3_a_channel2_unit21(),.L3_a_channel3_unit21(),.L3_a_channel4_unit21(),.L3_a_channel5_unit21(),
+    .L3_a_channel1_unit22(),.L3_a_channel2_unit22(),.L3_a_channel3_unit22(),.L3_a_channel4_unit22(),.L3_a_channel5_unit22(),
+    .L3_a_channel1_unit23(),.L3_a_channel2_unit23(),.L3_a_channel3_unit23(),.L3_a_channel4_unit23(),.L3_a_channel5_unit23(),
+    .L3_a_channel1_unit24(),.L3_a_channel2_unit24(),.L3_a_channel3_unit24(),.L3_a_channel4_unit24(),.L3_a_channel5_unit24(),
+    .L3_a_channel1_unit25(),.L3_a_channel2_unit25(),.L3_a_channel3_unit25(),.L3_a_channel4_unit25(),.L3_a_channel5_unit25(),
+
+
+    .L3_b_channel1_unit1 (),.L3_b_channel2_unit1 (),.L3_b_channel3_unit1 (),.L3_b_channel4_unit1 (),.L3_b_channel5_unit1 (),
+    .L3_b_channel1_unit2 (),.L3_b_channel2_unit2 (),.L3_b_channel3_unit2 (),.L3_b_channel4_unit2 (),.L3_b_channel5_unit2 (),
+    .L3_b_channel1_unit3 (),.L3_b_channel2_unit3 (),.L3_b_channel3_unit3 (),.L3_b_channel4_unit3 (),.L3_b_channel5_unit3 (),
+    .L3_b_channel1_unit4 (),.L3_b_channel2_unit4 (),.L3_b_channel3_unit4 (),.L3_b_channel4_unit4 (),.L3_b_channel5_unit4 (),
+    .L3_b_channel1_unit5 (),.L3_b_channel2_unit5 (),.L3_b_channel3_unit5 (),.L3_b_channel4_unit5 (),.L3_b_channel5_unit5 (),
+    .L3_b_channel1_unit6 (),.L3_b_channel2_unit6 (),.L3_b_channel3_unit6 (),.L3_b_channel4_unit6 (),.L3_b_channel5_unit6 (),
+    .L3_b_channel1_unit7 (),.L3_b_channel2_unit7 (),.L3_b_channel3_unit7 (),.L3_b_channel4_unit7 (),.L3_b_channel5_unit7 (),
+    .L3_b_channel1_unit8 (),.L3_b_channel2_unit8 (),.L3_b_channel3_unit8 (),.L3_b_channel4_unit8 (),.L3_b_channel5_unit8 (),
+    .L3_b_channel1_unit9 (),.L3_b_channel2_unit9 (),.L3_b_channel3_unit9 (),.L3_b_channel4_unit9 (),.L3_b_channel5_unit9 (),
+    .L3_b_channel1_unit10(),.L3_b_channel2_unit10(),.L3_b_channel3_unit10(),.L3_b_channel4_unit10(),.L3_b_channel5_unit10(),
+    .L3_b_channel1_unit11(),.L3_b_channel2_unit11(),.L3_b_channel3_unit11(),.L3_b_channel4_unit11(),.L3_b_channel5_unit11(),
+    .L3_b_channel1_unit12(),.L3_b_channel2_unit12(),.L3_b_channel3_unit12(),.L3_b_channel4_unit12(),.L3_b_channel5_unit12(),
+    .L3_b_channel1_unit13(),.L3_b_channel2_unit13(),.L3_b_channel3_unit13(),.L3_b_channel4_unit13(),.L3_b_channel5_unit13(),
+    .L3_b_channel1_unit14(),.L3_b_channel2_unit14(),.L3_b_channel3_unit14(),.L3_b_channel4_unit14(),.L3_b_channel5_unit14(),
+    .L3_b_channel1_unit15(),.L3_b_channel2_unit15(),.L3_b_channel3_unit15(),.L3_b_channel4_unit15(),.L3_b_channel5_unit15(),
+    .L3_b_channel1_unit16(),.L3_b_channel2_unit16(),.L3_b_channel3_unit16(),.L3_b_channel4_unit16(),.L3_b_channel5_unit16(),
+    .L3_b_channel1_unit17(),.L3_b_channel2_unit17(),.L3_b_channel3_unit17(),.L3_b_channel4_unit17(),.L3_b_channel5_unit17(),
+    .L3_b_channel1_unit18(),.L3_b_channel2_unit18(),.L3_b_channel3_unit18(),.L3_b_channel4_unit18(),.L3_b_channel5_unit18(),
+    .L3_b_channel1_unit19(),.L3_b_channel2_unit19(),.L3_b_channel3_unit19(),.L3_b_channel4_unit19(),.L3_b_channel5_unit19(),
+    .L3_b_channel1_unit20(),.L3_b_channel2_unit20(),.L3_b_channel3_unit20(),.L3_b_channel4_unit20(),.L3_b_channel5_unit20(),
+    .L3_b_channel1_unit21(),.L3_b_channel2_unit21(),.L3_b_channel3_unit21(),.L3_b_channel4_unit21(),.L3_b_channel5_unit21(),
+    .L3_b_channel1_unit22(),.L3_b_channel2_unit22(),.L3_b_channel3_unit22(),.L3_b_channel4_unit22(),.L3_b_channel5_unit22(),
+    .L3_b_channel1_unit23(),.L3_b_channel2_unit23(),.L3_b_channel3_unit23(),.L3_b_channel4_unit23(),.L3_b_channel5_unit23(),
+    .L3_b_channel1_unit24(),.L3_b_channel2_unit24(),.L3_b_channel3_unit24(),.L3_b_channel4_unit24(),.L3_b_channel5_unit24(),
+    .L3_b_channel1_unit25(),.L3_b_channel2_unit25(),.L3_b_channel3_unit25(),.L3_b_channel4_unit25(),.L3_b_channel5_unit25(),
+
+    .L3_bias_unit1(),
+    .L3_bias_unit2(),
+
 
     .out_result_a(con_result[0]),
     .out_result_b(con_result[1]),
@@ -488,65 +545,162 @@ module top_wrapper#(
 
 
 /////////////////////////// 
-  wire [7:0] L4_output_read_addr1;
-  wire [7:0] L4_output_read_addr2;
+  wire [7:0] L4_output_read_addr;
   wire [11:0] L4_output_read_data1;
   wire [11:0] L4_output_read_data2;
 
-  wire [7:0] L4_output_write_addr1;
-  wire [7:0] L4_output_write_addr2;
-
+  wire [7:0] L4_output_write_addr;
   wire [11:0] L4_output_write_data1;
   wire [11:0] L4_output_write_data2;
 
-  wire L4_output_wea1;
-  wire L4_output_wea2;
+  wire L4_output_wea;
 
 
   wire [11:0] L3_weigth_douta;
   wire [11:0] L3_weigth_doutb;
   wire [11:0] L3_weight_addra;
   wire [11:0] L3_weight_addrb;
+  
+  
+  wire [3:0] L3_input_height_count;
+  wire [3:0] L3_input_width_count;
+  wire [1:0] L3_input_wait;
+  wire [2:0] L3_wait_weight;
+  wire L3_inp_load_done;
+  wire L3_load_weight_done;
 
+  wire [11:0] cur_filter_count;
+  wire [3:0] L3_col,L3_row;
 
   middle_layer_wrapper L3_L4_wrapper(
     .clk(clk),
     .rst(rst),
     .L3_en(L3_en),
+    //L3 weight blcok memory
     .L3_weigth_douta(L3_weigth_douta),
     .L3_weigth_doutb(L3_weigth_doutb),
-    .L2_feature1_douta(L2_feature1_dout),
-    .L2_feature2_douta(L2_feature2_dout),
-    .L2_feature3_douta(L2_feature3_dout),
-    .L2_feature4_douta(L2_feature4_dout),
-    .L2_feature5_douta(L2_feature5_dout),
-    .L2_feature6_douta(L2_feature6_dout),
-
-    .L4_output_read_data1(L4_output_read_data1),
-    .L4_output_read_data2(L4_output_read_data2),
-    .L4_output_read_addr1(L4_output_read_addr1),
-    .L4_output_read_addr2(L4_output_read_addr2),
-    .L4_output_write_addr1(L4_output_write_addr1),
-    .L4_output_write_addr2(L4_output_write_addr2),
-    .L4_output_write_data1(L4_output_write_data1),
-    .L4_output_write_data2(L4_output_write_data2),
-    .L4_output_wea1(L4_output_wea1),
-    .L4_output_wea2(L4_output_wea2),
-
     .L3_weight_addra(L3_weight_addra),
     .L3_weight_addrb(L3_weight_addrb),
-    .L2_feature1_addr_read(L2_feature1_addr_read_m),
-    .L2_feature2_addr_read(L2_feature2_addr_read_m),
-    .L2_feature3_addr_read(L2_feature3_addr_read_m),
-    .L2_feature4_addr_read(L2_feature4_addr_read_m),
-    .L2_feature5_addr_read(L2_feature5_addr_read_m),
-    .L2_feature6_addr_read(L2_feature6_addr_read_m),
+    //L2 output block memory
+    // .L2_feature1_douta(L2_feature1_dout),
+    // .L2_feature2_douta(L2_feature2_dout),
+    // .L2_feature3_douta(L2_feature3_dout),
+    // .L2_feature4_douta(L2_feature4_dout),
+    // .L2_feature5_douta(L2_feature5_dout),
+    // .L2_feature6_douta(L2_feature6_dout),
+    .L2_feature_addr_read(L2_feature1_addr_read_m),
+    //convoultion result
+    .con_result_1(con_result[0]),
+    .con_result_2(con_result[1]),
+    .con_result_3(con_result[2]),
+    .con_result_4(con_result[3]),
+    .con_result_5(con_result[4]),
+    .con_result_6(con_result[5]),
+    .con_result_7(con_result[6]),
+    .con_result_8(con_result[7]),
+    .con_result_9(con_result[8]),
+    .con_result_10(con_result[9]),
+    .con_result_11(con_result[10]),
+    .con_result_12(con_result[11]),
+    
+
+    //output block memory
+    .L4_output_read_data1(L4_output_read_data1),
+    .L4_output_read_data2(L4_output_read_data2),
+    .L4_output_read_addr(L4_output_read_addr),
+    .L4_output_write_addr(L4_output_write_addr),
+    .L4_output_write_data1(L4_output_write_data1),
+    .L4_output_write_data2(L4_output_write_data2),
+    .L4_output_wea(L4_output_wea),
+     //other params
+    .cur_input_height_count(L3_input_height_count),
+    .cur_input_width_count(L3_input_width_count),
+    .inp_wait(L3_input_wait),
+    .wait_weight(L3_wait_weight),
+    .inp_load_done(L3_inp_load_done),
+    .load_weight_done(L3_load_weight_done),
+    .cur_filter_count(L3_cur_filter_count),
+    .col(L3_col),
+    .row(L3_row),
     .L3_done(L3_done)
+    
   );
 
 
+  //L3 input memory load
+  always@(posedge clk)begin
+    if(L3_input_wait == 2'b10 && L3_inp_load_done == 1'b0)begin
+      for(i = 0; i< L3_INPUT_HEIGHT ;i = i + 1)begin
+        for(j = 0; j< L3_INPUT_WIDTH ; j = j + 1)begin
+            if(L3_input_height_count == i && L3_input_width_count == j )begin
+              input_mem [0][i][j] <= L2_feature1_dout;
+              input_mem [1][i][j] <= L2_feature2_dout;
+              input_mem [2][i][j] <= L2_feature3_dout;
+              input_mem [3][i][j] <= L2_feature4_dout;
+              input_mem [4][i][j] <= L2_feature5_dout;
+              input_mem [5][i][j] <= L2_feature6_dout;
+            end
+            else begin
+              input_mem [0][i][j] <= input_mem[0][i][j];
+              input_mem [1][i][j] <= input_mem[1][i][j];
+              input_mem [2][i][j] <= input_mem[2][i][j];
+              input_mem [3][i][j] <= input_mem[3][i][j];
+              input_mem [4][i][j] <= input_mem[4][i][j];
+              input_mem [5][i][j] <= input_mem[5][i][j];
+            end   
+        end
+      end
+    end
+    else begin
+      for(i = 0; i < L3_INPUT_HEIGHT ;i = i + 1)begin
+        for(j = 0; j < L3_INPUT_WIDTH ; j = j + 1)begin
+          input_mem [0][i][j] <= input_mem [0][i][j];
+          input_mem [1][i][j] <= input_mem [1][i][j];
+          input_mem [2][i][j] <= input_mem [2][i][j];
+          input_mem [3][i][j] <= input_mem [3][i][j];
+          input_mem [4][i][j] <= input_mem [4][i][j];
+          input_mem [5][i][j] <= input_mem [5][i][j];
+        end
+      end
+    end
+  end
+
+  //L3 filter load
+   always@(posedge clk)begin
+        if(L3_wait_weight == 2'b11 && L3_load_weight_done == 1'b0)begin
+            for(i = 0; i< 150 ;i = i + 1)begin
+                if(L3_cur_filter_count == i )begin
+                    weight1_mem [i] <= L3_weigth_douta;
+                    weight2_mem [i] <= L3_weigth_doutb;
+                end
+                else begin
+                    weight1_mem [i] <= weight1_mem [i];
+                    weight2_mem [i] <= weight2_mem [i];
+                end
+            end
+
+            if(L3_cur_filter_count == L3_FILTER_SIZE - 1)begin
+                bias1_mem <= L3_weigth_douta;
+                bias2_mem <= L3_weigth_doutb;
+            end
+            else begin
+                bias2_mem <= bias2_mem;
+                bias1_mem <= bias1_mem;
+            end
+        end
+
+        else begin
+            for(i = 0; i< 150 ;i = i + 1)begin
+                weight1_mem [i] <=  weight1_mem [i];
+                weight2_mem [i] <=  weight2_mem [i];
+            end
+                bias1_mem <= bias1_mem;
+                bias2_mem <= bias2_mem;
+        end
+    end
 
 
+  //layer3 weight block memory
   con3_w_mem L3_weight_mem (
     .clka(clk),    // input wire clka
     .addra(L3_weight_addra),  // input wire [11 : 0] addra
@@ -556,24 +710,24 @@ module top_wrapper#(
     .doutb(L3_weigth_doutb)  // output wire [11 : 0] doutb
   );
 
-
+  //layer 4 output block memory
   layer_4_output L4_feature1 (
     .clka(clk),    // input wire clka
     .wea(L4_output_wea1),      // input wire [0 : 0] wea
-    .addra(L4_output_write_addr1),  // input wire [7 : 0] addra
+    .addra(L4_output_write_addr),  // input wire [7 : 0] addra
     .dina(L4_output_write_data1),    // input wire [11 : 0] dina
     .clkb(clk),    // input wire clkb
-    .addrb(L4_output_read_addr1),  // input wire [7 : 0] addrb
+    .addrb(L4_output_read_addr),  // input wire [7 : 0] addrb
     .doutb(L4_output_read_data1)  // output wire [11 : 0] doutb
   );
 
   layer_4_output L4_feature2 (
     .clka(clk),    // input wire clka
     .wea(L4_output_wea2),      // input wire [0 : 0] wea
-    .addra(L4_output_write_addr2),  // input wire [7 : 0] addra
+    .addra(L4_output_write_addr),  // input wire [7 : 0] addra
     .dina(L4_output_write_data2),    // input wire [11 : 0] dina
     .clkb(clk),    // input wire clkb
-    .addrb(L4_output_read_addr2),  // input wire [7 : 0] addrb
+    .addrb(L4_output_read_addr),  // input wire [7 : 0] addrb
     .doutb(L4_output_read_data2)  // output wire [11 : 0] doutb
   );
 

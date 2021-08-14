@@ -47,18 +47,18 @@ parameter  DATA_WIDTH = 12,
     input clk,rst,
     input L3_en,
 
-    //L3 weight data
+    //L3 weight blcok memory
     input [DATA_WIDTH - 1:0] L3_weigth_douta,
     input [DATA_WIDTH - 1:0] L3_weigth_doutb,
-    output reg [DATA_WIDTH - 1:0] L3_weight_addra,
-    output reg [DATA_WIDTH - 1:0] L3_weight_addrb,
-    //L2 output data
-    input [DATA_WIDTH - 1:0] L2_feature1_douta,
-    input [DATA_WIDTH - 1:0] L2_feature2_douta,
-    input [DATA_WIDTH - 1:0] L2_feature3_douta,
-    input [DATA_WIDTH - 1:0] L2_feature4_douta,
-    input [DATA_WIDTH - 1:0] L2_feature5_douta,
-    input [DATA_WIDTH - 1:0] L2_feature6_douta,
+    output[DATA_WIDTH - 1:0] L3_weight_addra,
+    output[DATA_WIDTH - 1:0] L3_weight_addrb,
+    //L2 output block memory
+    // input [DATA_WIDTH - 1:0] L2_feature1_douta,
+    // input [DATA_WIDTH - 1:0] L2_feature2_douta,
+    // input [DATA_WIDTH - 1:0] L2_feature3_douta,
+    // input [DATA_WIDTH - 1:0] L2_feature4_douta,
+    // input [DATA_WIDTH - 1:0] L2_feature5_douta,
+    // input [DATA_WIDTH - 1:0] L2_feature6_douta,
     output [7:0] L2_feature_addr_read,
     //convoultion result
     input [DATA_WIDTH - 1 : 0] con_result_1,
@@ -73,7 +73,7 @@ parameter  DATA_WIDTH = 12,
     input [DATA_WIDTH - 1 : 0] con_result_10,
     input [DATA_WIDTH - 1 : 0] con_result_11,
     input [DATA_WIDTH - 1 : 0] con_result_12,       
-    //output data
+    //output block memory
     input [DATA_WIDTH - 1:0] L4_output_read_data1,
     input [DATA_WIDTH - 1:0] L4_output_read_data2,
     output [7:0] L4_output_read_addr,
@@ -82,20 +82,25 @@ parameter  DATA_WIDTH = 12,
     output [DATA_WIDTH - 1:0] L4_output_write_data2,
     output L4_output_wea,
     //other flags
-    output reg [3:0] cur_input_height_count;
-    output reg [3:0] cur_input_width_count;
-    output reg L3_done
+    output reg [3:0] cur_input_height_count,
+    output reg [3:0] cur_input_width_count,
+    output reg [1:0] inp_wait,
+    output reg [2:0] wait_weight,
+    output reg load_weight_done,
+    output reg inp_load_done,
+    output reg [11:0] cur_filter_count,
+    output reg [3:0] col,row,
+
+    output L3_done
 );
 
     reg inp_load_en;
-    reg [1:0] inp_wait;
-    reg inp_load_done;
+    
+    
     reg [1:0] after_load_inp;
     reg [3:0] st,nst;
-    // assign L3_done = 1'b0;
     wire cal_done;
- 
-    reg [11:0] filter_count;
+
     wire [11:0] conv_res [0:5];
 
 
@@ -127,7 +132,7 @@ parameter  DATA_WIDTH = 12,
             nst = (L3_en == 1'b1 && cal_done == 1'b1) ? DONE : CALCULATE;
         end
         DONE: begin
-            nst = DONE;
+            nst = (L3_en == 1'b1 ) ? DONE : IDLE;
         end
         default : begin
             nst = IDLE;
@@ -167,9 +172,9 @@ parameter  DATA_WIDTH = 12,
         end
     end
 
-   
-
     reg [7:0] read_address;
+
+    //14*14*6  = 1176
     always@(posedge clk)begin
         //읽어오는 시간
         if(rst)begin
@@ -213,45 +218,9 @@ parameter  DATA_WIDTH = 12,
     end
 
     assign L2_feature_addr_read = read_address;
+    assign L3_done = st == DONE;
     
-    // integer i,j;
-    // always@(posedge clk)begin
-    //     if(inp_wait == 2'b10)begin
-    //         for(i = 0; i< 14 ;i = i + 1)begin
-    //             for(j = 0; j< 14 ; j = j + 1)begin
-    //                 if(cur_input_height_count == i && cur_input_width_count == j )begin
-    //                 input_mem [0][i][j] <= L2_feature1_douta;
-    //                 input_mem [1][i][j] <= L2_feature2_douta;
-    //                 input_mem [2][i][j] <= L2_feature3_douta;
-    //                 input_mem [3][i][j] <= L2_feature4_douta;
-    //                 input_mem [4][i][j] <= L2_feature5_douta;
-    //                 input_mem [5][i][j] <= L2_feature6_douta;
-    //                 end
-    //                 else begin
-    //                 input_mem [0][i][j] <= input_mem input_mem [0][i][j];
-    //                 input_mem [1][i][j] <= input_mem input_mem [1][i][j];
-    //                 input_mem [2][i][j] <= input_mem input_mem [2][i][j];
-    //                 input_mem [3][i][j] <= input_mem input_mem [3][i][j];
-    //                 input_mem [4][i][j] <= input_mem input_mem [4][i][j];
-    //                 input_mem [5][i][j] <= input_mem input_mem [5][i][j];
-    //                 end   
-    //             end
-                
-    //         end
-    //     end
-    //     else begin
-    //         for(i = 0; i< 196 ;i = i + 1)begin
-    //             input_mem [0][i][j] <= input_mem input_mem [0][i][j];
-    //             input_mem [1][i][j] <= input_mem input_mem [1][i][j];
-    //             input_mem [2][i][j] <= input_mem input_mem [2][i][j];
-    //             input_mem [3][i][j] <= input_mem input_mem [3][i][j];
-    //             input_mem [4][i][j] <= input_mem input_mem [4][i][j];
-    //             input_mem [5][i][j] <= input_mem input_mem [5][i][j];
-    //         end
-    //     end
-    // end
-
-
+   
 
 
 
@@ -262,16 +231,16 @@ parameter  DATA_WIDTH = 12,
     parameter CAL_IDLE = 4'b0001, WEIGHT_LOAD = 4'b0010, CONVOLUTION = 4'b0100, DONE_CALCULATION = 4'b1000;
 
     
-    reg [2:0] wait_weight;
+    
 
-    reg [11:0] cur_filter_count;
+    
 
     reg [4:0]  kernel_count;
 
 
     reg [3:0] cal_st,nst_cal_st;
 
-    reg load_weight_done;
+   
     reg conv_done;
     
     reg [11:0] weight_base1;
@@ -298,13 +267,10 @@ parameter  DATA_WIDTH = 12,
             kernel_count <= kernel_count;
             change_flag <= 1'b0;
         end
-
-
-        weight_base1 <= FILTER_BASE_0 + (kernel_count * 151);
-        weight_base2 <= FILTER_BASE_1 + (kernel_count * 151); 
-
     end
     
+    assign cal_done = cal_st == DONE_CALCULATION;
+
     //내부에서 커널 개수만큼 컨볼루션 반복해야하므로
     always@(st,cal_st,nst_cal_st,kernel_count,load_weight_done,conv_done)begin
         case(cal_st)
@@ -319,8 +285,6 @@ parameter  DATA_WIDTH = 12,
         endcase
     end
 
-    assign cal_done = (cal_st == CALCULATE);
-
 
     always@(posedge clk)begin
         if(rst)begin
@@ -334,26 +298,48 @@ parameter  DATA_WIDTH = 12,
 
     // output reg [11:0] L3_weight_addra,
     // output reg [11:0] L3_weight_addrb,
+    
+    
+    reg [11:0] filter_count_a;
+    reg [11:0] filter_count_b;
+    reg [11:0] filter_count;
+
     always@(posedge clk)begin
         if(rst)begin
-            filter_count<=1'b0;
+            filter_count_a<=FILTER_BASE_0;
+            filter_count_b<=FILTER_BASE_1;
+            filter_count <= 0;
         end
-        else if(cal_st == WEIGHT_LOAD)begin
-            if(filter_count == 12'd150)begin
-                filter_count<=filter_count;
+        else if(st == CALCULATE)begin
+            if(cal_st == WEIGHT_LOAD)begin
+                if(filter_count == 12'd150)begin
+                    filter_count<=filter_count;
+                    filter_count_a <= filter_count_a;
+                    filter_count_b <= filter_count_b;
+                end
+                else begin
+                    filter_count<=filter_count + 1'b1;
+                    filter_count_a <= filter_count_a + 1'b1;
+                    filter_count_b <= filter_count_b + 1'b1;
+                end
             end
             else begin
-                filter_count<=filter_count + 1'b1;
-            end
+                filter_count <= 1'b0;
+                filter_count_a <= filter_count_a + 1'b1;
+                filter_count_b <= filter_count_b + 1'b1;
+            end    
         end
         else begin
             filter_count <= 1'b0;
+            filter_count_a <= 1'b0;
+            filter_count_b <= 1'b0;
         end
-
-        L3_weight_addra <= weight_base1 + filter_count;
-        L3_weight_addrb <=  weight_base2 + filter_count;
-
     end
+
+    assign L3_weight_addra = filter_count_a;
+    assign L3_weight_addrb = filter_count_b;
+
+
 //L3_done
 
     always@(posedge clk)begin
@@ -385,44 +371,7 @@ parameter  DATA_WIDTH = 12,
         end
     end
 
-
-     always@(posedge clk)begin
-        if(wait_weight == 2'b11)begin
-            for(i = 0; i< 150 ;i = i + 1)begin
-                if(cur_filter_count == i )begin
-                    weight1_mem [i] <= L3_weigth_douta;
-                    weight2_mem [i] <= L3_weigth_doutb;
-                    
-                end
-                else begin
-                    weight1_mem [i] <= weight1_mem [i];
-                    weight2_mem [i] <= weight2_mem [i];
-                end
-            end
-
-            if(cur_filter_count == TOTAL_SIZE -1)begin
-                bias1_mem <= L3_weigth_douta;
-                bias2_mem <= L3_weigth_doutb;
-            end
-            else begin
-                bias2_mem <= bias2_mem;
-                bias1_mem <= bias1_mem;
-            end
-        end
-
-        else begin
-            for(i = 0; i< 150 ;i = i + 1)begin
-                weight1_mem [i] <=  weight1_mem [i];
-                weight2_mem [i] <=  weight2_mem [i];
-            end
-                bias1_mem <= bias1_mem;
-                bias2_mem <= bias2_mem;
-        end
-    end
-
-
-    reg [3:0] col;
-    reg [3:0] row;
+    
     reg [3:0] wait_done;
 
     //read done
@@ -441,9 +390,6 @@ parameter  DATA_WIDTH = 12,
             conv_done<=1'b0;
             wait_done <= 1'b0;
         end
-
-        if(wait_done == 4'd10) L3_done <= 1'b1;
-        else;
     end
 
     //read row , col
