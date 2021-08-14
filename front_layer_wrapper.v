@@ -335,7 +335,7 @@ module front_layer_wrapper
 
 
     //  // //each channel
-
+    wire [7:0] L2_reserved [0:7];
     pooling_2d L2_pool_instance1(
         clk,
         cal_wait,
@@ -348,42 +348,37 @@ module front_layer_wrapper
         pool_done_ins1
     );
 
-
-
     pooling_2d L2_pool_instance2(
         clk,
         cal_wait,
         L2_out2_dout,
         con_result_2,
-        L2_out_addr_read,
-        L2_out_addr_write,
+        L2_reserved[0],
+        L2_reserved[1],
         L2_out_wea,
         L2_out2_din,
         pool_done_ins2
     );
-
 
     pooling_2d L2_pool_instance3(
         clk,
         cal_wait,
         L2_out3_dout,
         con_result_3,
-        L2_out_addr_read,
-        L2_out_addr_write,
+        L2_reserved[2],
+        L2_reserved[3],
         L2_out_wea,
         L2_out3_din,
         pool_done_ins3
     );
     
-
-
     pooling_2d L2_pool_instance4(
         clk,
         cal_wait,
         L2_out4_dout,
         con_result_4,
-        L2_out_addr_read,
-        L2_out_addr_write,
+        L2_reserved[4],
+        L2_reserved[5],
         L2_out_wea,
         L2_out4_din,
         pool_done_ins4
@@ -394,8 +389,8 @@ module front_layer_wrapper
         cal_wait,
         L2_out5_dout,
         con_result_5,
-        L2_out_addr_read,
-        L2_out_addr_write,
+        L2_reserved[6],
+        L2_reserved[7],
         L2_out_wea,
         L2_out5_din,
         pool_done_ins5
@@ -406,8 +401,8 @@ module front_layer_wrapper
         cal_wait,
         L2_out6_dout,
         con_result_6,
-        L2_out_addr_read,
-        L2_out_addr_write,
+        L2_reserved[8],
+        L2_reserved[9],
         L2_out_wea,
         L2_out6_din,
         pool_done_ins6
