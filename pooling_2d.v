@@ -25,11 +25,12 @@ module pooling_2d(
     input [1:0] cal_wait,
     input [11 : 0] L2_out1_dout,
     input [11 : 0] calculate_result,
-    output reg [7:0] L2_out1_addr_read,
-    output reg [7:0] L2_out1_addr_write,
+    output     [7:0] L2_out1_addr_read,
+    output     [7:0] L2_out1_addr_write,
     output reg L2_out1_wea,
     output reg [11:0] L2_out1_din,
-    output reg pool_done
+    output reg pool_done,
+    output reg pool_save_start
     );
 
     reg [11:0] L2_temp;
@@ -64,7 +65,7 @@ module pooling_2d(
 
     always@(posedge clk)begin
         if(cal_wait == 2'b11)begin
-            if(L2_wait == 4'd6)begin
+            if(L2_wait == 4'd7)begin
                 L2_wait <= L2_wait;
             end
             else begin
@@ -76,7 +77,7 @@ module pooling_2d(
         end
 
         //r_start
-        if(L2_wait >= 4'd3)begin
+        if(L2_wait >= 4'd4)begin
             r_en <=  1'b1;
         end
         else begin
@@ -85,7 +86,7 @@ module pooling_2d(
 
         //w_start
 
-        if(L2_wait == 4'd6)begin
+        if(L2_wait == 4'd7)begin
             w_en <= 1'b1;
         end
         else if(w_row == 5'd27 && w_col == 5'd 27)begin
@@ -96,6 +97,7 @@ module pooling_2d(
         end
         
     end
+
 
     always@(posedge clk)begin
         if(r_en)begin
@@ -178,15 +180,17 @@ module pooling_2d(
     assign shift_w_col = w_col >>1; 
     
 
+    assign L2_out1_addr_read = shift_r_row + shift_r_col * (4'd14);
+    assign L2_out1_addr_write = shift_w_row + shift_w_col * (4'd14);
 
 
-    always@(posedge clk)begin
-        L2_out1_addr_read <= shift_r_row + (shift_r_col)*4'd14;
-    end
+    // always@(posedge clk)begin
+    //     L2_out1_addr_read <= shift_r_row + (shift_r_col)*4'd14;
+    // end
     
-    always@(posedge clk)begin
-        L2_out1_addr_write <= shift_w_row + (shift_w_col)*4'd14;
-    end
+    // always@(posedge clk)begin
+    //     L2_out1_addr_write <= shift_w_row + (shift_w_col)*4'd14;
+    // end
 
     //assign pool_done = (done_cnt == 2'b10) ? 1'b1 : 1'b0;
 

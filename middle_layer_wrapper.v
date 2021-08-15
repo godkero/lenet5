@@ -86,11 +86,11 @@ parameter  DATA_WIDTH = 12,
     output reg [3:0] cur_input_width_count,
     output reg [1:0] inp_wait,
     output reg [2:0] wait_weight,
-    output           load_weight_done,
-    output reg inp_load_done,
-    output reg [11:0] cur_filter_count,
+    output reg       load_weight_done,
+    output reg       inp_load_done,
+    output reg [11:0]cur_filter_count,
     output reg [3:0] col,row,
-
+    output reg input_load_start,
     output L3_done
 );
 
@@ -160,6 +160,14 @@ parameter  DATA_WIDTH = 12,
         else begin
             inp_wait <= 1'b0;
         end
+
+
+        if(inp_wait == 2'b01)begin
+            input_load_start <= 1'b1;
+        end
+        else begin
+            input_load_start <= 1'b0;
+        end
     end
 
     always@(posedge clk)begin
@@ -171,6 +179,9 @@ parameter  DATA_WIDTH = 12,
             inp_load_done <= 1'b0;
         end
     end
+
+    // assign inp_load_done = (cur_input_height_count == INPUT_WIDTH - 1) && (cur_input_width_count == INPUT_HEIGHT -1) ? 1'b1 : 1'b0;
+
 
     reg [7:0] read_address;
 
@@ -219,35 +230,46 @@ parameter  DATA_WIDTH = 12,
 
     assign L2_feature_addr_read = read_address;
     assign L3_done = st == DONE;
-    
-   
-
-
 
     //state calculation
     //filter in
     //input data
 
-    parameter CAL_IDLE = 4'b0001, WEIGHT_LOAD = 4'b0010, CONVOLUTION = 4'b0100, DONE_CALCULATION = 4'b1000;
-
-    
-    
-
-    
+    localparam   CAL_IDLE = 4'b0001, WEIGHT_LOAD = 4'b0010, CONVOLUTION = 4'b0100, DONE_CALCULATION = 4'b1000;
 
     reg [4:0]  kernel_count;
 
-
     reg [3:0] cal_st,nst_cal_st;
 
-   
     reg conv_done;
-    
     reg [11:0] weight_base1;
     reg [11:0] weight_base2;
 
     reg change_flag;
     
+        always@(st,cal_st,nst_cal_st,kernel_count,load_weight_done,conv_done)begin
+        case(cal_st)
+            CAL_IDLE   :nst_cal_st = (st==CALCULATE) ? WEIGHT_LOAD : CAL_IDLE;
+            WEIGHT_LOAD:nst_cal_st = (st==CALCULATE && load_weight_done == 1'b1 ) ? CONVOLUTION : 
+                                     (st==CALCULATE && kernel_count < 8) ? WEIGHT_LOAD : 
+                                     (st==CALCULATE ) ?DONE_CALCULATION : CAL_IDLE;
+            CONVOLUTION:nst_cal_st = (st==CALCULATE && conv_done == 1'b1) ? WEIGHT_LOAD :
+                                     (st==CALCULATE) ? CONVOLUTION:CAL_IDLE;
+            DONE_CALCULATION:nst_cal_st =(st ==CALCULATE) ? DONE_CALCULATION :CAL_IDLE; 
+            default:nst_cal_st = CAL_IDLE;
+        endcase
+    end
+
+
+    always@(posedge clk)begin
+        if(rst)begin
+            cal_st <=CAL_IDLE;
+        end        
+        else begin
+            cal_st <= nst_cal_st;
+        end
+    end
+
     always@(posedge clk)begin
         if(rst)begin
             kernel_count <= 1'b0;
@@ -272,29 +294,6 @@ parameter  DATA_WIDTH = 12,
     assign cal_done = cal_st == DONE_CALCULATION;
 
     //내부에서 커널 개수만큼 컨볼루션 반복해야하므로
-    always@(st,cal_st,nst_cal_st,kernel_count,load_weight_done,conv_done)begin
-        case(cal_st)
-            CAL_IDLE   :nst_cal_st = (st==CALCULATE) ? WEIGHT_LOAD : CAL_IDLE;
-            WEIGHT_LOAD:nst_cal_st = (st==CALCULATE && load_weight_done == 1'b1 ) ? CONVOLUTION : 
-                                     (st==CALCULATE && kernel_count < 8) ? WEIGHT_LOAD : 
-                                     (st==CALCULATE ) ?DONE_CALCULATION : CAL_IDLE;
-            CONVOLUTION:nst_cal_st = (st==CALCULATE && conv_done == 1'b1) ? WEIGHT_LOAD :
-                                     (st==CALCULATE) ? CONVOLUTION:CAL_IDLE;
-            DONE_CALCULATION:nst_cal_st =(st ==CALCULATE) ? DONE_CALCULATION :CAL_IDLE; 
-            default:nst_cal_st = CAL_IDLE;
-        endcase
-    end
-
-
-    always@(posedge clk)begin
-        if(rst)begin
-            cal_st <=CAL_IDLE;
-        end        
-        else begin
-            cal_st <= nst_cal_st;
-        end
-    end
-
 
     // output reg [11:0] L3_weight_addra,
     // output reg [11:0] L3_weight_addrb,
@@ -346,7 +345,7 @@ parameter  DATA_WIDTH = 12,
 
     always@(posedge clk)begin
         if(cal_st == WEIGHT_LOAD)begin
-            if(wait_weight == 2'b11)begin
+            if(wait_weight == 2'b10)begin
                 wait_weight <= wait_weight;
             end
             else begin
@@ -357,19 +356,19 @@ parameter  DATA_WIDTH = 12,
             wait_weight <= 1'b0;
         end
 
-        if(wait_weight == 2'b11)begin
+        if(wait_weight == 2'b10)begin
             if(cur_filter_count == 151)begin
                 cur_filter_count <= cur_filter_count;
-                // load_weight_done <= 1'b1;
+                load_weight_done <= 1'b1;
             end
             else begin
                 cur_filter_count <= cur_filter_count + 1'b1;
-                // load_weight_done <= 1'b0;
+                load_weight_done <= 1'b0;
             end
         end
         else begin
             cur_filter_count <= 1'b0;
-            // load_weight_done <= 1'b0;
+            load_weight_done <= 1'b0;
         end
     end
 
@@ -377,8 +376,8 @@ parameter  DATA_WIDTH = 12,
 
     //read done
     always@(posedge clk)begin
-        if(col == 4'd11)begin
-            if(wait_done == 4'd10)begin
+        if(col == 4'd9 && row == 4'd9)begin
+            if(wait_done == 4'd9)begin
                 conv_done <= 1'b1;
                 wait_done <= wait_done;
             end
@@ -396,11 +395,11 @@ parameter  DATA_WIDTH = 12,
     //read row , col
     always@(posedge clk)begin
         if(cal_st == CONVOLUTION)begin
-            if(col == 4'd11)begin
+            if(col == 5'd9 && row == 5'd9)begin
                 row <= row;
                 col <= col;
             end
-            else if(row == 5'd10)begin
+            else if(row == 5'd9)begin
                 row <= 1'b0;
                 col <= col + 1'b1;
             end
@@ -447,6 +446,8 @@ parameter  DATA_WIDTH = 12,
         .dataout(res_stage2[1])
     );
 
+    wire [4:0] L4_reserved [0:2];
+
     pooling_layer3 L4_pool_instance1(
         clk,
         pool_en,
@@ -464,14 +465,14 @@ parameter  DATA_WIDTH = 12,
         pool_en,
         L4_output_read_data2,
         res_stage2[1],
-        L4_output_read_addr,
-        L4_output_write_addr,
-        L4_output_wea,
+        L4_reserved[0],
+        L4_reserved[1],
+        L4_reserved[2],
         L4_output_write_data2,
         pool_done_ins[1]
     );
 
 
-    assign load_weight_done = cur_filter_count == 8'd151;
+    // assign load_weight_done = cur_filter_count == 8'd151;
 
 endmodule

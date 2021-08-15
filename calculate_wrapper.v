@@ -811,15 +811,15 @@ module calculate_wrapper(
     calculate_2d cal_instance2(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
-        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
-        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
-        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
-        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
-        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
-        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
-        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
-        .input_unit_25(in_a[0][24]),
+        .input_unit_1 (in_a[1][0]),.input_unit_2  (in_a[1][1 ]),.input_unit_3 (in_a[1][2 ]),    
+        .input_unit_4 (in_a[1][3]),.input_unit_5  (in_a[1][4 ]),.input_unit_6 (in_a[1][5 ]),
+        .input_unit_7 (in_a[1][6]),.input_unit_8  (in_a[1][7 ]),.input_unit_9 (in_a[1][8 ]),
+        .input_unit_10(in_a[1][9]),.input_unit_11 (in_a[1][10]),.input_unit_12(in_a[1][11]),
+        .input_unit_13(in_a[1][12]),.input_unit_14(in_a[1][13]),.input_unit_15(in_a[1][14]),
+        .input_unit_16(in_a[1][15]),.input_unit_17(in_a[1][16]),.input_unit_18(in_a[1][17]),
+        .input_unit_19(in_a[1][18]),.input_unit_20(in_a[1][19]),.input_unit_21(in_a[1][20]),
+        .input_unit_22(in_a[1][21]),.input_unit_23(in_a[1][22]),.input_unit_24(in_a[1][23]),
+        .input_unit_25(in_a[1][24]),
         
         //weight 25
         .weight_unit_1 (in_b[1][0]), .weight_unit_2 (in_b[1][1] ),.weight_unit_3 (in_b[1][2] ),
@@ -839,15 +839,15 @@ module calculate_wrapper(
     calculate_2d cal_instance3(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
-        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
-        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
-        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
-        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
-        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
-        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
-        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
-        .input_unit_25(in_a[0][24]),
+        .input_unit_1 (in_a[2][0]),.input_unit_2  (in_a[2][1 ]),.input_unit_3 (in_a[2][2 ]),    
+        .input_unit_4 (in_a[2][3]),.input_unit_5  (in_a[2][4 ]),.input_unit_6 (in_a[2][5 ]),
+        .input_unit_7 (in_a[2][6]),.input_unit_8  (in_a[2][7 ]),.input_unit_9 (in_a[2][8 ]),
+        .input_unit_10(in_a[2][9]),.input_unit_11 (in_a[2][10]),.input_unit_12(in_a[2][11]),
+        .input_unit_13(in_a[2][12]),.input_unit_14(in_a[2][13]),.input_unit_15(in_a[2][14]),
+        .input_unit_16(in_a[2][15]),.input_unit_17(in_a[2][16]),.input_unit_18(in_a[2][17]),
+        .input_unit_19(in_a[2][18]),.input_unit_20(in_a[2][19]),.input_unit_21(in_a[2][20]),
+        .input_unit_22(in_a[2][21]),.input_unit_23(in_a[2][22]),.input_unit_24(in_a[2][23]),
+        .input_unit_25(in_a[2][24]),
         
         
         //weight 25
@@ -868,15 +868,15 @@ module calculate_wrapper(
     calculate_2d cal_instance4(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
-        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
-        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
-        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
-        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
-        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
-        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
-        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
-        .input_unit_25(in_a[0][24]),
+        .input_unit_1 (in_a[3][0]),.input_unit_2  (in_a[3][1 ]),.input_unit_3 (in_a[3][2 ]),    
+        .input_unit_4 (in_a[3][3]),.input_unit_5  (in_a[3][4 ]),.input_unit_6 (in_a[3][5 ]),
+        .input_unit_7 (in_a[3][6]),.input_unit_8  (in_a[3][7 ]),.input_unit_9 (in_a[3][8 ]),
+        .input_unit_10(in_a[3][9]),.input_unit_11 (in_a[3][10]),.input_unit_12(in_a[3][11]),
+        .input_unit_13(in_a[3][12]),.input_unit_14(in_a[3][13]),.input_unit_15(in_a[3][14]),
+        .input_unit_16(in_a[3][15]),.input_unit_17(in_a[3][16]),.input_unit_18(in_a[3][17]),
+        .input_unit_19(in_a[3][18]),.input_unit_20(in_a[3][19]),.input_unit_21(in_a[3][20]),
+        .input_unit_22(in_a[3][21]),.input_unit_23(in_a[3][22]),.input_unit_24(in_a[3][23]),
+        .input_unit_25(in_a[3][24]),
         
         
         //weight 25
@@ -897,15 +897,15 @@ module calculate_wrapper(
     calculate_2d cal_instance5(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
-        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
-        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
-        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
-        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
-        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
-        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
-        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
-        .input_unit_25(in_a[0][24]),
+        .input_unit_1 (in_a[4][0]),.input_unit_2  (in_a[4][1 ]),.input_unit_3 (in_a[4][2 ]),    
+        .input_unit_4 (in_a[4][3]),.input_unit_5  (in_a[4][4 ]),.input_unit_6 (in_a[4][5 ]),
+        .input_unit_7 (in_a[4][6]),.input_unit_8  (in_a[4][7 ]),.input_unit_9 (in_a[4][8 ]),
+        .input_unit_10(in_a[4][9]),.input_unit_11 (in_a[4][10]),.input_unit_12(in_a[4][11]),
+        .input_unit_13(in_a[4][12]),.input_unit_14(in_a[4][13]),.input_unit_15(in_a[4][14]),
+        .input_unit_16(in_a[4][15]),.input_unit_17(in_a[4][16]),.input_unit_18(in_a[4][17]),
+        .input_unit_19(in_a[4][18]),.input_unit_20(in_a[4][19]),.input_unit_21(in_a[4][20]),
+        .input_unit_22(in_a[4][21]),.input_unit_23(in_a[4][22]),.input_unit_24(in_a[4][23]),
+        .input_unit_25(in_a[4][24]),
         
         
         //weight 25
@@ -927,15 +927,15 @@ module calculate_wrapper(
     calculate_2d cal_instance6(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
-        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
-        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
-        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
-        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
-        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
-        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
-        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
-        .input_unit_25(in_a[0][24]),
+        .input_unit_1 (in_a[5][0]),.input_unit_2  (in_a[5][1 ]),.input_unit_3 (in_a[5][2 ]),    
+        .input_unit_4 (in_a[5][3]),.input_unit_5  (in_a[5][4 ]),.input_unit_6 (in_a[5][5 ]),
+        .input_unit_7 (in_a[5][6]),.input_unit_8  (in_a[5][7 ]),.input_unit_9 (in_a[5][8 ]),
+        .input_unit_10(in_a[5][9]),.input_unit_11 (in_a[5][10]),.input_unit_12(in_a[5][11]),
+        .input_unit_13(in_a[5][12]),.input_unit_14(in_a[5][13]),.input_unit_15(in_a[5][14]),
+        .input_unit_16(in_a[5][15]),.input_unit_17(in_a[5][16]),.input_unit_18(in_a[5][17]),
+        .input_unit_19(in_a[5][18]),.input_unit_20(in_a[5][19]),.input_unit_21(in_a[5][20]),
+        .input_unit_22(in_a[5][21]),.input_unit_23(in_a[5][22]),.input_unit_24(in_a[5][23]),
+        .input_unit_25(in_a[5][24]),
         
         
         //weight 25
@@ -993,15 +993,15 @@ module calculate_wrapper(
     calculate_2d cal_instance8(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
-        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
-        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
-        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
-        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
-        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
-        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
-        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
-        .input_unit_25(in_a[0][24]),
+        .input_unit_1 (in_a[1][0]),.input_unit_2  (in_a[1][1 ]),.input_unit_3 (in_a[1][2 ]),    
+        .input_unit_4 (in_a[1][3]),.input_unit_5  (in_a[1][4 ]),.input_unit_6 (in_a[1][5 ]),
+        .input_unit_7 (in_a[1][6]),.input_unit_8  (in_a[1][7 ]),.input_unit_9 (in_a[1][8 ]),
+        .input_unit_10(in_a[1][9]),.input_unit_11 (in_a[1][10]),.input_unit_12(in_a[1][11]),
+        .input_unit_13(in_a[1][12]),.input_unit_14(in_a[1][13]),.input_unit_15(in_a[1][14]),
+        .input_unit_16(in_a[1][15]),.input_unit_17(in_a[1][16]),.input_unit_18(in_a[1][17]),
+        .input_unit_19(in_a[1][18]),.input_unit_20(in_a[1][19]),.input_unit_21(in_a[1][20]),
+        .input_unit_22(in_a[1][21]),.input_unit_23(in_a[1][22]),.input_unit_24(in_a[1][23]),
+        .input_unit_25(in_a[1][24]),
         
         //weight 25
         .weight_unit_1 (in_b_2[1][0]), .weight_unit_2 (in_b_2[1][1] ),.weight_unit_3 (in_b_2[1][2] ),
@@ -1021,15 +1021,15 @@ module calculate_wrapper(
     calculate_2d cal_instance9(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
-        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
-        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
-        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
-        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
-        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
-        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
-        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
-        .input_unit_25(in_a[0][24]),
+        .input_unit_1 (in_a[2][0]),.input_unit_2  (in_a[2][1 ]),.input_unit_3 (in_a[2][2 ]),    
+        .input_unit_4 (in_a[2][3]),.input_unit_5  (in_a[2][4 ]),.input_unit_6 (in_a[2][5 ]),
+        .input_unit_7 (in_a[2][6]),.input_unit_8  (in_a[2][7 ]),.input_unit_9 (in_a[2][8 ]),
+        .input_unit_10(in_a[2][9]),.input_unit_11 (in_a[2][10]),.input_unit_12(in_a[2][11]),
+        .input_unit_13(in_a[2][12]),.input_unit_14(in_a[2][13]),.input_unit_15(in_a[2][14]),
+        .input_unit_16(in_a[2][15]),.input_unit_17(in_a[2][16]),.input_unit_18(in_a[2][17]),
+        .input_unit_19(in_a[2][18]),.input_unit_20(in_a[2][19]),.input_unit_21(in_a[2][20]),
+        .input_unit_22(in_a[2][21]),.input_unit_23(in_a[2][22]),.input_unit_24(in_a[2][23]),
+        .input_unit_25(in_a[2][24]),
         
         
         //weight 25
@@ -1050,15 +1050,15 @@ module calculate_wrapper(
     calculate_2d cal_instance10(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
-        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
-        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
-        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
-        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
-        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
-        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
-        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
-        .input_unit_25(in_a[0][24]),
+        .input_unit_1 (in_a[3][0]),.input_unit_2  (in_a[3][1 ]),.input_unit_3 (in_a[3][2 ]),    
+        .input_unit_4 (in_a[3][3]),.input_unit_5  (in_a[3][4 ]),.input_unit_6 (in_a[3][5 ]),
+        .input_unit_7 (in_a[3][6]),.input_unit_8  (in_a[3][7 ]),.input_unit_9 (in_a[3][8 ]),
+        .input_unit_10(in_a[3][9]),.input_unit_11 (in_a[3][10]),.input_unit_12(in_a[3][11]),
+        .input_unit_13(in_a[3][12]),.input_unit_14(in_a[3][13]),.input_unit_15(in_a[3][14]),
+        .input_unit_16(in_a[3][15]),.input_unit_17(in_a[3][16]),.input_unit_18(in_a[3][17]),
+        .input_unit_19(in_a[3][18]),.input_unit_20(in_a[3][19]),.input_unit_21(in_a[3][20]),
+        .input_unit_22(in_a[3][21]),.input_unit_23(in_a[3][22]),.input_unit_24(in_a[3][23]),
+        .input_unit_25(in_a[3][24]),
         
         
         //weight 25
@@ -1079,15 +1079,15 @@ module calculate_wrapper(
     calculate_2d cal_instance11(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
-        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
-        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
-        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
-        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
-        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
-        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
-        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
-        .input_unit_25(in_a[0][24]),
+        .input_unit_1 (in_a[4][0]),.input_unit_2  (in_a[4][1 ]),.input_unit_3 (in_a[4][2 ]),    
+        .input_unit_4 (in_a[4][3]),.input_unit_5  (in_a[4][4 ]),.input_unit_6 (in_a[4][5 ]),
+        .input_unit_7 (in_a[4][6]),.input_unit_8  (in_a[4][7 ]),.input_unit_9 (in_a[4][8 ]),
+        .input_unit_10(in_a[4][9]),.input_unit_11 (in_a[4][10]),.input_unit_12(in_a[4][11]),
+        .input_unit_13(in_a[4][12]),.input_unit_14(in_a[4][13]),.input_unit_15(in_a[4][14]),
+        .input_unit_16(in_a[4][15]),.input_unit_17(in_a[4][16]),.input_unit_18(in_a[4][17]),
+        .input_unit_19(in_a[4][18]),.input_unit_20(in_a[4][19]),.input_unit_21(in_a[4][20]),
+        .input_unit_22(in_a[4][21]),.input_unit_23(in_a[4][22]),.input_unit_24(in_a[4][23]),
+        .input_unit_25(in_a[4][24]),
         
         
         //weight 25
@@ -1109,15 +1109,15 @@ module calculate_wrapper(
     calculate_2d cal_instance12(
         .clk(clk),
         //input 25
-        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
-        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
-        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
-        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
-        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
-        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
-        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
-        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
-        .input_unit_25(in_a[0][24]),
+        .input_unit_1 (in_a[5][0]),.input_unit_2  (in_a[5][1 ]),.input_unit_3 (in_a[5][2 ]),    
+        .input_unit_4 (in_a[5][3]),.input_unit_5  (in_a[5][4 ]),.input_unit_6 (in_a[5][5 ]),
+        .input_unit_7 (in_a[5][6]),.input_unit_8  (in_a[5][7 ]),.input_unit_9 (in_a[5][8 ]),
+        .input_unit_10(in_a[5][9]),.input_unit_11 (in_a[5][10]),.input_unit_12(in_a[5][11]),
+        .input_unit_13(in_a[5][12]),.input_unit_14(in_a[5][13]),.input_unit_15(in_a[5][14]),
+        .input_unit_16(in_a[5][15]),.input_unit_17(in_a[5][16]),.input_unit_18(in_a[5][17]),
+        .input_unit_19(in_a[5][18]),.input_unit_20(in_a[5][19]),.input_unit_21(in_a[5][20]),
+        .input_unit_22(in_a[5][21]),.input_unit_23(in_a[5][22]),.input_unit_24(in_a[5][23]),
+        .input_unit_25(in_a[5][24]),
         
         
         //weight 25

@@ -70,9 +70,9 @@ module front_layer_wrapper
     output reg [5:0] position_col,
     output reg [4:0] in_cell_row,
     output reg [4:0] in_cell_col,
-    output reg [4:0] st
+    output reg [4:0] st,
+    output reg output_start
 );
-    
     wire all_pool_done;
     wire pool_done_ins1;
     wire pool_done_ins2;
@@ -127,8 +127,18 @@ module front_layer_wrapper
             c_done<=1'b0;
             wait_done <= 1'b0;
         end
+
+        if(cal_wait == 2'b10)begin
+            output_start <= 1'b1;
+        end
+        else begin
+            output_start <= 1'b0;
+        end
+
     end
 
+
+    
 
     always@(posedge clk)begin
         if(st == CALCULATION)begin
@@ -335,7 +345,7 @@ module front_layer_wrapper
 
 
     //  // //each channel
-    wire [7:0] L2_reserved [0:7];
+    wire [7:0] L2_reserved [0:14];
     pooling_2d L2_pool_instance1(
         clk,
         cal_wait,
@@ -355,7 +365,7 @@ module front_layer_wrapper
         con_result_2,
         L2_reserved[0],
         L2_reserved[1],
-        L2_out_wea,
+        L2_reserved[12],
         L2_out2_din,
         pool_done_ins2
     );
@@ -367,7 +377,7 @@ module front_layer_wrapper
         con_result_3,
         L2_reserved[2],
         L2_reserved[3],
-        L2_out_wea,
+        L2_reserved[11],
         L2_out3_din,
         pool_done_ins3
     );
@@ -379,7 +389,7 @@ module front_layer_wrapper
         con_result_4,
         L2_reserved[4],
         L2_reserved[5],
-        L2_out_wea,
+        L2_reserved[10],
         L2_out4_din,
         pool_done_ins4
     );
@@ -391,7 +401,7 @@ module front_layer_wrapper
         con_result_5,
         L2_reserved[6],
         L2_reserved[7],
-        L2_out_wea,
+        L2_reserved[13],
         L2_out5_din,
         pool_done_ins5
     );
@@ -403,7 +413,7 @@ module front_layer_wrapper
         con_result_6,
         L2_reserved[8],
         L2_reserved[9],
-        L2_out_wea,
+        L2_reserved[14],
         L2_out6_din,
         pool_done_ins6
     );

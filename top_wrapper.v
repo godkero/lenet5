@@ -32,6 +32,7 @@ module top_wrapper#(
   wire [4:0] L1_in_addr;
   wire [5:0] L1_position_col;
   wire L3_done;
+  wire L1_output_start;
 
 
   //layer convoultion 3
@@ -566,7 +567,8 @@ module top_wrapper#(
       .position_col(L1_position_col),
       .in_cell_row(in_cell_row),
       .in_cell_col(in_cell_col),
-      .st(front_st)
+      .st(front_st),
+      .output_start(L1_output_start)
   ); 
 
   //layer2 output block memory
@@ -607,7 +609,7 @@ module top_wrapper#(
   wire [2:0] L3_wait_weight;
   wire L3_inp_load_done;
   wire L3_load_weight_done;
-
+  wire L3_inp_load_start;
   wire [11:0] cur_filter_count;
  
 
@@ -661,8 +663,9 @@ module top_wrapper#(
     .cur_filter_count(L3_cur_filter_count),
     .col(col),
     .row(row),
+    .input_load_start(L3_inp_load_start),
     .L3_done(L3_done)
-    
+      
   );
 
 
@@ -706,7 +709,7 @@ module top_wrapper#(
 
   //L3 filter load
    always@(posedge clk)begin
-        if(L3_wait_weight == 2'b11 && L3_load_weight_done == 1'b0)begin
+        if(L3_wait_weight == 2'b10 && L3_load_weight_done == 1'b0)begin
             for(i = 0; i< 8'd150 ;i = i + 1)begin
                 if(L3_cur_filter_count == i )begin
                     weight1_mem [i] <= L3_weight_douta;
