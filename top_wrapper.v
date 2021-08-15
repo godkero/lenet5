@@ -20,18 +20,18 @@ module top_wrapper#(
   wire locked;
   clk_wiz_0 pll_clk(.clk_out1(clk),.locked(locked),.clk_in1(clk_in));   
 
+  wire L1_done,L3_done,FC1_done,FC2_done,FC3_done,L1_en,L3_en,FC1_en,FC2_en,FC3_en;
+
 
   //front params
   wire L1_w_load_done;
   wire [4:0] front_st; 
   wire [1:0] L1_cal_wait;
-  wire L1_done,L1_en,L3_en;
   wire [383:0] L1_in_data; //12*32
   wire [DATA_WIDTH - 1:0]  L1_w_data;  //12
   wire [7:0] L1_w_addr;
   wire [4:0] L1_in_addr;
   wire [5:0] L1_position_col;
-  wire L3_done;
   wire L1_output_start;
 
 
@@ -497,7 +497,8 @@ module top_wrapper#(
   //w:12 d:5*5*6 + 6   addra [7:0] dout[11:0]
   con1_w_mem L1_weight_mem (.clka(clk),.addra(L1_w_addr),.douta(L1_w_data)  );
   // command center
-  control top_control(.clk(clk),.rst(rst),.start(start),.L1_done(L1_done),.L3_done(L3_done),.L1_en(L1_en),.L3_en(L3_en),.finish(finish));
+  control top_control(.clk(clk),.rst(rst),.start(start),.L1_done(L1_done),.L3_done(L3_done),.FC1_done(FC1_done),
+                      .FC2_done(FC3_done),.FC2_done(FC3_done),.L1_en(L1_en),.L3_en(L3_en),.FC1_en(FC1_en),.FC2_en(FC2_en),.FC3_en(FC3_en),.finish(finish));
   // w:12*32 d:32  input addr[9:0] dina[11:0] output addr[4:0] dout[383:0]
   Input_ram input_ram (.clka(clk),.wea(1'b0),.addra(10'b0),.dina(12'b0),.clkb(clk),.addrb(L1_in_addr),.doutb(L1_in_data));
 

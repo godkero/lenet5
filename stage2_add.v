@@ -8,6 +8,9 @@ module stage2_add(
     reg [11:0] temp_stage1 [0:2];
     reg [11:0] temp_stage2 [0:1];
 
+
+
+    //3cycle delayed
     always @(posedge clk) begin
         if(en == 1'b1)begin
             temp_stage1[0] <= datain_a + datain_b;

@@ -447,32 +447,35 @@ parameter  DATA_WIDTH = 12,
     );
 
     wire [4:0] L4_reserved [0:2];
+    wire [11:0] pool_base_position;
+    assign pool_base_position = 5'd25 * kernel_count;
+
 
     pooling_layer3 L4_pool_instance1(
-        clk,
-        pool_en,
-        L4_output_read_data1,
-        res_stage2[0],
-        L4_output_read_addr,
-        L4_output_write_addr,
-        L4_output_wea,
-        L4_output_write_data1,
-        pool_done_ins[0]
+        .clk(clk),
+        .cal_en(pool_en),
+        .base_position(pool_base_position),
+        .L4_output_dout(L4_output_read_data1),
+        .calculate_result(res_stage2[0]),
+        .L4_output_read_addr(L4_output_read_addr),
+        .L4_output_write_addr(L4_output_write_addr),
+        .L4_output_wea(L4_output_wea),
+        .L4_output_din(L4_output_write_data1),
+        .pool_done(pool_done_ins[0])
     );
 
     pooling_layer3 L4_pool_instance2(
-        clk,
-        pool_en,
-        L4_output_read_data2,
-        res_stage2[1],
-        L4_reserved[0],
-        L4_reserved[1],
-        L4_reserved[2],
-        L4_output_write_data2,
-        pool_done_ins[1]
+        .clk(clk),
+        .cal_en(pool_en),
+        .base_position(pool_base_position),
+        .L4_output_dout(L4_output_read_data2),
+        .calculate_result(res_stage2[1]),
+        .L4_output_read_addr(L4_reserved[0]),
+        .L4_output_write_addr(L4_reserved[1]),
+        .L4_output_wea(L4_reserved[2]),
+        .L4_output_din(L4_output_write_data2),
+        .pool_done(pool_done_ins[1])
     );
 
-
-    // assign load_weight_done = cur_filter_count == 8'd151;
 
 endmodule
