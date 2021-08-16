@@ -61,18 +61,18 @@ parameter  DATA_WIDTH = 12,
     // input [DATA_WIDTH - 1:0] L2_feature6_douta,
     output [7:0] L2_feature_addr_read,
     //convoultion result
-    input [DATA_WIDTH - 1 : 0] con_result_1,
-    input [DATA_WIDTH - 1 : 0] con_result_2,
-    input [DATA_WIDTH - 1 : 0] con_result_3,
-    input [DATA_WIDTH - 1 : 0] con_result_4,
-    input [DATA_WIDTH - 1 : 0] con_result_5,
-    input [DATA_WIDTH - 1 : 0] con_result_6,
-    input [DATA_WIDTH - 1 : 0] con_result_7,
-    input [DATA_WIDTH - 1 : 0] con_result_8,
-    input [DATA_WIDTH - 1 : 0] con_result_9,
-    input [DATA_WIDTH - 1 : 0] con_result_10,
-    input [DATA_WIDTH - 1 : 0] con_result_11,
-    input [DATA_WIDTH - 1 : 0] con_result_12,       
+    input signed [DATA_WIDTH - 1 : 0] con_result_1,
+    input signed [DATA_WIDTH - 1 : 0] con_result_2,
+    input signed [DATA_WIDTH - 1 : 0] con_result_3,
+    input signed [DATA_WIDTH - 1 : 0] con_result_4,
+    input signed [DATA_WIDTH - 1 : 0] con_result_5,
+    input signed [DATA_WIDTH - 1 : 0] con_result_6,
+    input signed [DATA_WIDTH - 1 : 0] con_result_7,
+    input signed [DATA_WIDTH - 1 : 0] con_result_8,
+    input signed [DATA_WIDTH - 1 : 0] con_result_9,
+    input signed [DATA_WIDTH - 1 : 0] con_result_10,
+    input signed [DATA_WIDTH - 1 : 0] con_result_11,
+    input signed [DATA_WIDTH - 1 : 0] con_result_12,       
     //output block memory
     input [DATA_WIDTH - 1:0] L4_output_read_data1,
     input [DATA_WIDTH - 1:0] L4_output_read_data2,
@@ -415,7 +415,7 @@ parameter  DATA_WIDTH = 12,
     end
 
     
-    wire [11:0] res_stage2 [0:1];
+    wire signed [11:0] res_stage2 [0:1];
     wire pool_done_ins[0:1];
     wire stage2_en;
     assign stage2_en = (cal_st == CONVOLUTION);
@@ -434,6 +434,7 @@ parameter  DATA_WIDTH = 12,
         .dataout(res_stage2[0])
     );
 
+
     stage2_add stage2_2(
         .clk(clk),
         .en(stage2_en),
@@ -451,16 +452,35 @@ parameter  DATA_WIDTH = 12,
     assign pool_base_position = 5'd25 * kernel_count;
 
 
+
+    wire  [11:0] out_result_a,out_result_b;
+
+
+      relu_function L3_relu1(
+        clk,
+        res_stage2[0],
+        out_result_a
+    );
+
+    
+      relu_function L3_relu2(
+        clk,
+        res_stage2[1],
+        out_result_b
+    );
+
+
+
     pooling_layer3 L4_pool_instance1(
         .clk(clk),
         .cal_en(pool_en),
         .base_position(pool_base_position),
         .L4_output_dout(L4_output_read_data1),
-        .calculate_result(res_stage2[0]),
+        .calculate_result(out_result_a),
         .L4_output_read_addr(L4_output_read_addr),
         .L4_output_write_addr(L4_output_write_addr),
         .L4_output_wea(L4_output_wea),
-        .L4_output_din(L4_output_write_data1),
+        .L4_out_din(L4_output_write_data1),
         .pool_done(pool_done_ins[0])
     );
 
@@ -469,11 +489,11 @@ parameter  DATA_WIDTH = 12,
         .cal_en(pool_en),
         .base_position(pool_base_position),
         .L4_output_dout(L4_output_read_data2),
-        .calculate_result(res_stage2[1]),
+        .calculate_result(out_result_b),
         .L4_output_read_addr(L4_reserved[0]),
         .L4_output_write_addr(L4_reserved[1]),
         .L4_output_wea(L4_reserved[2]),
-        .L4_output_din(L4_output_write_data2),
+        .L4_out_din(L4_output_write_data2),
         .pool_done(pool_done_ins[1])
     );
 

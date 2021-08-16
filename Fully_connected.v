@@ -20,17 +20,18 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module Fully_connected
-#(
-    parameter DATA_WIDTH = 12,
-              INPUT_SIZE = 400,
-              OUTPUT_SIZE = 120,  
-)
-(
-    input 
-);
+// module Fully_connected
+// #(
+//     parameter DATA_WIDTH = 12,
+//               INPUT_SIZE = 400,
+//               OUTPUT_SIZE = 120
+// )
+// (
+//     output a 
+// );
+
+// assign a = 1'b0;
 
 
 
-
-endmodule
+// endmodule

@@ -52,7 +52,7 @@ module top_wrapper#(
   reg [11:0] bias2_mem;
 
 
-  wire [DATA_WIDTH-1:0] con_result [0:11];
+  wire [DATA_WIDTH-1:0] con_result [0:17];
 
   wire [11:0] L3_cur_filter_count;
   wire [1:0] L1_load_wait;
@@ -65,7 +65,10 @@ module top_wrapper#(
   
   wire [4:0] in_cell_row;
   wire [4:0] in_cell_col;
- 
+//  Fully_connected u0
+// (
+//     FC1_done 
+// );
 
 
   calculate_wrapper cal_wrapper(
@@ -339,18 +342,31 @@ module top_wrapper#(
     .L3_bias_unit2(bias2_mem),
 
 
-    .out_result_a(con_result[0]),
-    .out_result_b(con_result[1]),
-    .out_result_c(con_result[2]),
-    .out_result_d(con_result[3]),
-    .out_result_e(con_result[4]),
-    .out_result_f(con_result[5]),
-    .out_result_g(con_result[6]),
-    .out_result_h(con_result[7]),
-    .out_result_i(con_result[8]),
-    .out_result_j(con_result[9]),
-    .out_result_k(con_result[10]),
-    .out_result_l(con_result[11])
+    .out_result_a(con_result[0] ),
+    .out_result_b(con_result[1] ),
+    .out_result_c(con_result[2] ),
+    .out_result_d(con_result[3] ),
+    .out_result_e(con_result[4] ),
+    .out_result_f(con_result[5] ),
+    .L2_output1  (con_result[6] ),
+    .L2_output2  (con_result[7] ),
+    .L2_output3  (con_result[8] ),
+    .L2_output4  (con_result[9] ),
+    .L2_output5  (con_result[10]),
+    .L2_output6  (con_result[11]),
+    .L2_output7  (con_result[12]),
+    .L2_output8  (con_result[13]),
+    .L2_output9  (con_result[14]),
+    .L2_output10 (con_result[15]),
+    .L2_output11 (con_result[16]),
+    .L2_output12 (con_result[17])
+
+    // .out_result_g(con_result[6]),
+    // .out_result_h(con_result[7]),
+    // .out_result_i(con_result[8]),
+    // .out_result_j(con_result[9]),
+    // .out_result_k(con_result[10]),
+    // .out_result_l(con_result[11])
 
     );
 
@@ -498,7 +514,7 @@ module top_wrapper#(
   con1_w_mem L1_weight_mem (.clka(clk),.addra(L1_w_addr),.douta(L1_w_data)  );
   // command center
   control top_control(.clk(clk),.rst(rst),.start(start),.L1_done(L1_done),.L3_done(L3_done),.FC1_done(FC1_done),
-                      .FC2_done(FC3_done),.FC2_done(FC3_done),.L1_en(L1_en),.L3_en(L3_en),.FC1_en(FC1_en),.FC2_en(FC2_en),.FC3_en(FC3_en),.finish(finish));
+                      .FC2_done(FC2_done),.FC3_done(FC3_done),.L1_en(L1_en),.L3_en(L3_en),.FC1_en(FC1_en),.FC2_en(FC2_en),.FC3_en(FC3_en),.finish(finish));
   // w:12*32 d:32  input addr[9:0] dina[11:0] output addr[4:0] dout[383:0]
   Input_ram input_ram (.clka(clk),.wea(1'b0),.addra(10'b0),.dina(12'b0),.clkb(clk),.addrb(L1_in_addr),.doutb(L1_in_data));
 
@@ -632,18 +648,18 @@ module top_wrapper#(
     // .L2_feature6_douta(L2_feature6_dout),
     .L2_feature_addr_read(L2_feature_addr_read_r),
     //convoultion result
-    .con_result_1(con_result[0]),
-    .con_result_2(con_result[1]),
-    .con_result_3(con_result[2]),
-    .con_result_4(con_result[3]),
-    .con_result_5(con_result[4]),
-    .con_result_6(con_result[5]),
-    .con_result_7(con_result[6]),
-    .con_result_8(con_result[7]),
-    .con_result_9(con_result[8]),
-    .con_result_10(con_result[9]),
-    .con_result_11(con_result[10]),
-    .con_result_12(con_result[11]),
+    .con_result_1(con_result[6]),
+    .con_result_2(con_result[7]),
+    .con_result_3(con_result[8]),
+    .con_result_4(con_result[9]),
+    .con_result_5(con_result[10]),
+    .con_result_6(con_result[11]),
+    .con_result_7(con_result[12]),
+    .con_result_8(con_result[13]),
+    .con_result_9(con_result[14]),
+    .con_result_10(con_result[15]),
+    .con_result_11(con_result[16]),
+    .con_result_12(con_result[17]),
     
 
     //output block memory

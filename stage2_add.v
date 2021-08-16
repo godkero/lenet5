@@ -1,12 +1,12 @@
 module stage2_add(
     input clk,
     input en,
-    input [11:0] datain_a,datain_b,datain_c,datain_d,datain_e,datain_f,
-    output reg [11:0] dataout
+    input  signed [11:0] datain_a,datain_b,datain_c,datain_d,datain_e,datain_f,
+    output  reg signed [11:0] dataout
 );
 
-    reg [11:0] temp_stage1 [0:2];
-    reg [11:0] temp_stage2 [0:1];
+    reg signed [12:0] temp_stage1 [0:2];
+    reg signed [12:0] temp_stage2 [0:1];
 
 
 

@@ -20,8 +20,10 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module pooling_layer3#(parameter 
+module pooling_layer3
+#(parameter 
         DATA_WIDTH = 12
+)
 (
     input               clk,
     input               cal_en,
@@ -29,7 +31,7 @@ module pooling_layer3#(parameter
     input [DATA_WIDTH - 1 : 0]      L4_output_dout,
     input [DATA_WIDTH - 1 : 0]      calculate_result,
     output reg [7:0]    L4_output_read_addr,
-    output reg [7:0]    L4_output_wrtie_addr,
+    output reg [7:0]    L4_output_write_addr,
     output reg          L4_output_wea,
     output reg [DATA_WIDTH - 1:0]   L4_out_din,
     output reg          pool_done
@@ -133,7 +135,7 @@ module pooling_layer3#(parameter
 
         if(w_en)begin
             if(w_row == 5'd9 && w_col == 5'd9)begin
-                if(done_cnt >= 2'b01)begin
+                if(done_cnt >= 2'b10)begin
                     L4_output_wea <= 1'b0;    
                 end
                 else begin
@@ -202,7 +204,7 @@ module pooling_layer3#(parameter
         //calcaulte address 2cycle delayed
         base_addr <= base_position;
         
-        shifted_addr [0] <= shift_r_row + (shift_r_col)*4'd5;;
+        shifted_addr [0] <= shift_r_row + (shift_r_col)*4'd5;
         shifted_addr [1] <= shift_w_row + (shift_w_col)*4'd5;
 
         L4_output_read_addr  <=  base_addr + shifted_addr [0];

@@ -276,13 +276,24 @@ module calculate_wrapper(
     output [11:0] out_result_d,
     output [11:0] out_result_e,
     output [11:0] out_result_f,
-    output [11:0] out_result_g,
-    output [11:0] out_result_h,
-    output [11:0] out_result_i,
-    output [11:0] out_result_j,
-    output [11:0] out_result_k,
-    output [11:0] out_result_l
-
+    // output [11:0] out_result_g,
+    // output [11:0] out_result_h,
+    // output [11:0] out_result_i,
+    // output [11:0] out_result_j,
+    // output [11:0] out_result_k,
+    // output [11:0] out_result_l
+    output [11:0] L2_output1,
+    output [11:0] L2_output2,
+    output [11:0] L2_output3,
+    output [11:0] L2_output4,
+    output [11:0] L2_output5,
+    output [11:0] L2_output6,
+    output [11:0] L2_output7,
+    output [11:0] L2_output8,
+    output [11:0] L2_output9,
+    output [11:0] L2_output10,
+    output [11:0] L2_output11,
+    output [11:0] L2_output12
     );
 
 
@@ -291,7 +302,22 @@ module calculate_wrapper(
     wire [11:0] in_b_2  [0:5][0:24];
     wire [11:0] bias    [0:11];
 
-    wire [11:0] out_temp[0:11];
+    wire signed [11:0] out_temp[0:11];
+
+    assign L2_output1 = out_temp[0];
+    assign L2_output2 = out_temp[1];
+    assign L2_output3 = out_temp[2];
+    assign L2_output4 = out_temp[3];
+    assign L2_output5 = out_temp[4];
+    assign L2_output6 = out_temp[5];
+    assign L2_output7 = out_temp[6];
+    assign L2_output8 = out_temp[7];
+    assign L2_output9 = out_temp[8];
+    assign L2_output10 = out_temp[9];
+    assign L2_output11 = out_temp[10];
+    assign L2_output12 = out_temp[11];
+
+
     
     //input a assign
     assign in_a[0][0 ] = L1_en  ? L1_inp_unit1 : L3_en ? L3_a_channel1_unit1  : 1'b0;
@@ -953,15 +979,6 @@ module calculate_wrapper(
         .output_unit_1(out_temp[5])        //.stage_5_unit(out_temp)
     );
 
-    assign out_result_a = out_temp[0];
-    assign out_result_b = out_temp[1];
-    assign out_result_c = out_temp[2];
-    assign out_result_d = out_temp[3];
-    assign out_result_e = out_temp[4];
-    assign out_result_f = out_temp[5];
-
-
-
     calculate_2d cal_instance7(
         .clk(clk),
         //input 25
@@ -1134,13 +1151,66 @@ module calculate_wrapper(
         .bias_unit(bias[11]),
         .output_unit_1(out_temp[11])        //.stage_5_unit(out_temp)
     );
+
+
     
-    assign out_result_g = out_temp[6];
-    assign out_result_h = out_temp[7];
-    assign out_result_i = out_temp[8];
-    assign out_result_j = out_temp[9];
-    assign out_result_k = out_temp[10];
-    assign out_result_l = out_temp[11];
+    relu_function L1_relu1(
+        clk,
+        out_temp[0],
+        out_result_a
+    );
+
+    
+    relu_function L1_relu2(
+        clk,
+        out_temp[1],
+        out_result_b
+    );
+
+    
+    relu_function L1_relu3(
+        clk,
+       out_temp[2],
+        out_result_c
+    );
+
+    
+    relu_function L1_relu4(
+        clk,
+        out_temp[3],
+        out_result_d
+    );
+
+    
+    relu_function L1_relu5(
+        clk,
+        out_temp[4],
+        out_result_e
+    );
+
+    
+    relu_function L1_relu6(
+        clk,
+       out_temp[5],
+        out_result_f
+    );
+
+
+
+
+    // assign out_result_a = out_temp[0];
+    // assign out_result_b = out_temp[1];
+    // assign out_result_c = out_temp[2];
+    // assign out_result_d = out_temp[3];
+    // assign out_result_e = out_temp[4];
+    // assign out_result_f = out_temp[5];
+
+    // assign out_result_g = out_temp[6];
+    // assign out_result_h = out_temp[7];
+    // assign out_result_i = out_temp[8];
+    // assign out_result_j = out_temp[9];
+    // assign out_result_k = out_temp[10];
+    // assign out_result_l = out_temp[11];
 
 
 endmodule

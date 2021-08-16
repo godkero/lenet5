@@ -188,12 +188,7 @@ reg signed [DATA_WIDTH-1:0]  stage_5_unit;
         stage_5_unit <= stage_4_unit[0] + stage_4_unit[1]; 
     end
 
-    relu_function relu(
-        clk,
-        stage_5_unit,
-        output_unit_1
-    );
 
-
+assign output_unit_1 =  stage_5_unit; 
 
 endmodule
