@@ -22,7 +22,7 @@
 
 module middle_layer_wrapper
 #(
-parameter  DATA_WIDTH = 12,
+parameter  DATA_WIDTH = 16,
            TOTAL_SIZE = 151,
            KERNEL_SIZE = 25,
            CAHNNEL_SIZE = 196,
@@ -101,7 +101,7 @@ parameter  DATA_WIDTH = 12,
     reg [3:0] st,nst;
     wire cal_done;
 
-    wire [11:0] conv_res [0:5];
+    wire [DATA_WIDTH - 1:0] conv_res [0:5];
 
 
     

@@ -1,12 +1,16 @@
-module stage2_add(
+module stage2_add
+#(
+    DATA_WIDTH = 16
+)
+(
     input clk,
     input en,
-    input  signed [11:0] datain_a,datain_b,datain_c,datain_d,datain_e,datain_f,
-    output  reg signed [11:0] dataout
+    input  signed [DATA_WIDTH - 1:0] datain_a,datain_b,datain_c,datain_d,datain_e,datain_f,
+    output  reg signed [DATA_WIDTH -1:0] dataout
 );
 
-    reg signed [12:0] temp_stage1 [0:2];
-    reg signed [12:0] temp_stage2 [0:1];
+    reg signed [DATA_WIDTH -1 :0] temp_stage1 [0:2];
+    reg signed [DATA_WIDTH -1 :0] temp_stage2 [0:1];
 
 
 

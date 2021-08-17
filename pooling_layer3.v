@@ -22,7 +22,7 @@
 
 module pooling_layer3
 #(parameter 
-        DATA_WIDTH = 12
+        DATA_WIDTH = 16
 )
 (
     input               clk,
@@ -189,15 +189,14 @@ module pooling_layer3
     wire [3:0] shift_w_col;
 
 
-    // wire [11:0] 
     assign shift_r_row = r_row >>1;
     assign shift_r_col = r_col >>1;
     assign shift_w_row = w_row >>1;
     assign shift_w_col = w_col >>1; 
     
 
-    reg [11:0] base_addr;
-    reg [11:0] shifted_addr [0:1];
+    reg [DATA_WIDTH -1:0] base_addr;
+    reg [DATA_WIDTH -1:0] shifted_addr [0:1];
 
     always@(posedge clk)begin
 

@@ -4,8 +4,8 @@
 module mult_cell
 #(
     parameter 
-    DATA_WIDTH = 12, 
-    EXTENDED_WIDTH = 24,
+    DATA_WIDTH = 16, 
+    EXPANDED_WIDTH = 32,
     FRACTIONAL_BITS = 8,
     IDLE = 4'b0001,
     LOAD_W = 4'b0010,
@@ -18,8 +18,8 @@ module mult_cell
     input  signed [DATA_WIDTH-1 : 0] weight_unit,
     output reg signed  [DATA_WIDTH-1 :0] output_unit
 );
-    wire [EXTENDED_WIDTH -1:0] temp;
-    wire [EXTENDED_WIDTH -1 :0] shift_temp;
+    wire [EXPANDED_WIDTH -1:0] temp;
+    wire [EXPANDED_WIDTH -1 :0] shift_temp;
     
     assign temp = input_unit*weight_unit;
     assign shift_temp = temp>>FRACTIONAL_BITS;

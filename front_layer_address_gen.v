@@ -22,7 +22,7 @@
 
 module front_layer_address_gen
 #(
-    DATA_WIDTH = 12, 
+    DATA_WIDTH = 16, 
     FILTER_WIDTH = 5, 
     FILTER_WEIGHT = 5,
     INPUT_WIDTH = 32, 

@@ -3,7 +3,7 @@
 
 module calculate_2d
 #(parameter 
-    DATA_WIDTH = 12, 
+    DATA_WIDTH = 16, 
     FILTER_WIDTH = 5, 
     FILTER_WEIGHT = 5,
     INPUT_WIDTH = 32, 
@@ -116,10 +116,10 @@ wire signed[DATA_WIDTH-1 : 0] mult_unit_23;
 wire signed[DATA_WIDTH-1 : 0] mult_unit_24;
 wire signed[DATA_WIDTH-1 : 0] mult_unit_25;
 
-reg signed [11:0] stage_1_unit [0:12];
-reg signed [11:0] stage_2_unit [0:6];
-reg signed [11:0] stage_3_unit [0:3];
-reg signed [11:0] stage_4_unit [0:1];
+reg signed [DATA_WIDTH-1 : 0] stage_1_unit [0:12];
+reg signed [DATA_WIDTH-1 : 0] stage_2_unit [0:6];
+reg signed [DATA_WIDTH-1 : 0] stage_3_unit [0:3];
+reg signed [DATA_WIDTH-1 : 0] stage_4_unit [0:1];
 reg signed [DATA_WIDTH-1:0]  stage_5_unit;
 
 

@@ -20,20 +20,24 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module pooling_2d(
+module pooling_2d
+#(
+    parameter DATA_WIDTH = 16
+)
+(
     input clk,
     input [1:0] cal_wait,
-    input [11 : 0] L2_out1_dout,
-    input [11 : 0] calculate_result,
+    input [DATA_WIDTH -1 : 0] L2_out1_dout,
+    input [DATA_WIDTH -1 : 0] calculate_result,
     output reg    [7:0] L2_out1_addr_read,
     output reg    [7:0] L2_out1_addr_write,
     output reg L2_out1_wea,
-    output reg [11:0] L2_out1_din,
+    output reg [DATA_WIDTH -1:0] L2_out1_din,
     output reg pool_done,
     output reg pool_save_start
     );
 
-    reg [11:0] L2_temp;
+    reg [DATA_WIDTH -1:0] L2_temp;
     reg [3:0] L2_wait;
     reg r_en;
     reg w_en;

@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module top_wrapper#(
-  parameter DATA_WIDTH = 12,
+  parameter DATA_WIDTH = 16,
             L3_INPUT_CHANNEL = 6,
             L3_INPUT_HEIGHT = 14,
             L3_INPUT_WIDTH = 14,
@@ -45,16 +45,16 @@ module top_wrapper#(
   reg [DATA_WIDTH-1:0] bias [0:5];
 
   //middle layer
-  reg [11:0] input_mem [0: L3_INPUT_CHANNEL - 1][0: L3_INPUT_HEIGHT - 1][0: L3_INPUT_WIDTH - 1];
-  reg [11:0] weight1_mem [0:L3_FILTER_SIZE -2];
-  reg [11:0] weight2_mem [0:L3_FILTER_SIZE -2];
-  reg [11:0] bias1_mem;
-  reg [11:0] bias2_mem;
+  reg [DATA_WIDTH - 1:0] input_mem [0: L3_INPUT_CHANNEL - 1][0: L3_INPUT_HEIGHT - 1][0: L3_INPUT_WIDTH - 1];
+  reg [DATA_WIDTH - 1:0] weight1_mem [0:L3_FILTER_SIZE -2];
+  reg [DATA_WIDTH - 1:0] weight2_mem [0:L3_FILTER_SIZE -2];
+  reg [DATA_WIDTH - 1:0] bias1_mem;
+  reg [DATA_WIDTH - 1:0] bias2_mem;
 
 
   wire [DATA_WIDTH-1:0] con_result [0:17];
 
-  wire [11:0] L3_cur_filter_count;
+  wire [DATA_WIDTH -1:0] L3_cur_filter_count;
   wire [1:0] L1_load_wait;
   wire [5:0] weight_index;
   wire [3:0] weight_channel;
@@ -525,19 +525,19 @@ module top_wrapper#(
   wire [7:0] L2_feature_addr_read_r;
   wire [7:0] L2_mem_addr_read;
 
-  wire [11:0] L2_feature1_dina;
-  wire [11:0] L2_feature2_dina;
-  wire [11:0] L2_feature3_dina;
-  wire [11:0] L2_feature4_dina;
-  wire [11:0] L2_feature5_dina;
-  wire [11:0] L2_feature6_dina;
+  wire [DATA_WIDTH -1:0] L2_feature1_dina;
+  wire [DATA_WIDTH -1:0] L2_feature2_dina;
+  wire [DATA_WIDTH -1:0] L2_feature3_dina;
+  wire [DATA_WIDTH -1:0] L2_feature4_dina;
+  wire [DATA_WIDTH -1:0] L2_feature5_dina;
+  wire [DATA_WIDTH -1:0] L2_feature6_dina;
 
-  wire [11:0] L2_feature1_dout;
-  wire [11:0] L2_feature2_dout;
-  wire [11:0] L2_feature3_dout;
-  wire [11:0] L2_feature4_dout;
-  wire [11:0] L2_feature5_dout;
-  wire [11:0] L2_feature6_dout;
+  wire [DATA_WIDTH -1:0] L2_feature1_dout;
+  wire [DATA_WIDTH -1:0] L2_feature2_dout;
+  wire [DATA_WIDTH -1:0] L2_feature3_dout;
+  wire [DATA_WIDTH -1:0] L2_feature4_dout;
+  wire [DATA_WIDTH -1:0] L2_feature5_dout;
+  wire [DATA_WIDTH -1:0] L2_feature6_dout;
 
 //layer front (layer1 & layer2)
   front_layer_wrapper L1_L2_wrapper(
@@ -604,20 +604,20 @@ module top_wrapper#(
 
 /////////////////////////// 
   wire [7:0] L4_output_read_addr;
-  wire [11:0] L4_output_read_data1;
-  wire [11:0] L4_output_read_data2;
+  wire [DATA_WIDTH -1:0] L4_output_read_data1;
+  wire [DATA_WIDTH -1:0] L4_output_read_data2;
 
   wire [7:0] L4_output_write_addr;
-  wire [11:0] L4_output_write_data1;
-  wire [11:0] L4_output_write_data2;
+  wire [DATA_WIDTH -1:0] L4_output_write_data1;
+  wire [DATA_WIDTH -1:0] L4_output_write_data2;
 
   wire L4_output_wea;
 
 
-  wire [11:0] L3_weight_douta;
-  wire [11:0] L3_weight_doutb;
-  wire [11:0] L3_weight_addra;
-  wire [11:0] L3_weight_addrb;
+  wire [DATA_WIDTH -1:0] L3_weight_douta;
+  wire [DATA_WIDTH -1:0] L3_weight_doutb;
+  wire [DATA_WIDTH -1:0] L3_weight_addra;
+  wire [DATA_WIDTH -1:0] L3_weight_addrb;
   
   
   wire [3:0] L3_input_height_count;

@@ -1,15 +1,18 @@
 `timescale 1ns / 1ps
 
 
-module relu_function(
+module relu_function
+#(
+    parameter DATA_WIDTH = 16
+)(
     input clk,
-    input [11:0] relu_in,
-    output reg [11:0] relu_out
+    input [DATA_WIDTH - 1:0] relu_in,
+    output reg [DATA_WIDTH - 1:0] relu_out
     );
 
-    wire [11:0] relu_func ;
+    wire [DATA_WIDTH -1:0] relu_func ;
 
-    assign relu_func = relu_in[11] != 1'b1 ? relu_in : 12'b0;
+    assign relu_func = relu_in[DATA_WIDTH -1] != 1'b1 ? relu_in : 12'b0;
 
     always@(posedge clk)begin
         relu_out <= relu_func;

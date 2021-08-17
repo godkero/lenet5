@@ -22,7 +22,7 @@
 
 module Fully_connected
 #(
-    parameter DATA_WIDTH = 12,
+    parameter DATA_WIDTH = 16,
               INPUT_SIZE = 400,
               OUTPUT_SIZE = 120
 )
