@@ -284,18 +284,9 @@ module calculate_wrapper
     // output [11:0] out_result_j,
     // output [11:0] out_result_k,
     // output [11:0] out_result_l
-    output [DATA_WIDTH -1:0] L2_output1,
-    output [DATA_WIDTH -1:0] L2_output2,
-    output [DATA_WIDTH -1:0] L2_output3,
-    output [DATA_WIDTH -1:0] L2_output4,
-    output [DATA_WIDTH -1:0] L2_output5,
-    output [DATA_WIDTH -1:0] L2_output6,
-    output [DATA_WIDTH -1:0] L2_output7,
-    output [DATA_WIDTH -1:0] L2_output8,
-    output [DATA_WIDTH -1:0] L2_output9,
-    output [DATA_WIDTH -1:0] L2_output10,
-    output [DATA_WIDTH -1:0] L2_output11,
-    output [DATA_WIDTH -1:0] L2_output12
+    output [DATA_WIDTH -1:0] middle_output1,
+    output [DATA_WIDTH -1:0] middle_output2
+  
     );
 
 
@@ -304,24 +295,460 @@ module calculate_wrapper
     wire [DATA_WIDTH -1:0] in_b_2  [0:5][0:24];
     wire [DATA_WIDTH -1:0] bias    [0:11];
 
-    wire signed [11:0] out_temp[0:11];
+    wire  [DATA_WIDTH -1:0] out_temp[0:11];
 
-    assign L2_output1 = out_temp[0];
-    assign L2_output2 = out_temp[1];
-    assign L2_output3 = out_temp[2];
-    assign L2_output4 = out_temp[3];
-    assign L2_output5 = out_temp[4];
-    assign L2_output6 = out_temp[5];
-    assign L2_output7 = out_temp[6];
-    assign L2_output8 = out_temp[7];
-    assign L2_output9 = out_temp[8];
-    assign L2_output10 = out_temp[9];
-    assign L2_output11 = out_temp[10];
-    assign L2_output12 = out_temp[11];
+    wire  [DATA_WIDTH -1:0] res_stage2[0:1];
+
+    
+    
+   
+
+
+
+
+
+
+
+    localparam IDLE = 4'b0001, FRONT = 4'b0010, MIDDLE = 4'b0100, FC = 4'b1000;
+    reg [3:0] st;
+
+    always@(posedge clk)begin
+        if     (L1_en == 1'b1) st <= FRONT;
+        else if(L3_en == 1'b1) st <= MIDDLE; 
+        else st <= IDLE;
+    end
+    
+
+    calculate_2d cal_instance1(
+        .clk(clk),
+        //input 25
+        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
+        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
+        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
+        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
+        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
+        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
+        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
+        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
+        .input_unit_25(in_a[0][24]),
+        
+        //weight 25
+        .weight_unit_1 (in_b[0][0]), .weight_unit_2 (in_b[0][1] ),.weight_unit_3 (in_b[0][2] ),
+        .weight_unit_4 (in_b[0][3]), .weight_unit_5 (in_b[0][4] ),.weight_unit_6 (in_b[0][5] ),
+        .weight_unit_7 (in_b[0][6]), .weight_unit_8 (in_b[0][7] ),.weight_unit_9 (in_b[0][8] ),
+        .weight_unit_10(in_b[0][9]), .weight_unit_11(in_b[0][10]),.weight_unit_12(in_b[0][11]),
+        .weight_unit_13(in_b[0][12]),.weight_unit_14(in_b[0][13]),.weight_unit_15(in_b[0][14]),
+        .weight_unit_16(in_b[0][15]),.weight_unit_17(in_b[0][16]),.weight_unit_18(in_b[0][17]),
+        .weight_unit_19(in_b[0][18]),.weight_unit_20(in_b[0][19]),.weight_unit_21(in_b[0][20]),
+        .weight_unit_22(in_b[0][21]),.weight_unit_23(in_b[0][22]),.weight_unit_24(in_b[0][23]),
+        .weight_unit_25(in_b[0][24]),
+        //bias 1
+        .bias_unit(bias[0]),
+        .output_unit_1(out_temp[0])        //.stage_5_unit(out_temp)
+    );
+
+    calculate_2d cal_instance2(
+        .clk(clk),
+        //input 25
+        .input_unit_1 (in_a[1][0]),.input_unit_2  (in_a[1][1 ]),.input_unit_3 (in_a[1][2 ]),    
+        .input_unit_4 (in_a[1][3]),.input_unit_5  (in_a[1][4 ]),.input_unit_6 (in_a[1][5 ]),
+        .input_unit_7 (in_a[1][6]),.input_unit_8  (in_a[1][7 ]),.input_unit_9 (in_a[1][8 ]),
+        .input_unit_10(in_a[1][9]),.input_unit_11 (in_a[1][10]),.input_unit_12(in_a[1][11]),
+        .input_unit_13(in_a[1][12]),.input_unit_14(in_a[1][13]),.input_unit_15(in_a[1][14]),
+        .input_unit_16(in_a[1][15]),.input_unit_17(in_a[1][16]),.input_unit_18(in_a[1][17]),
+        .input_unit_19(in_a[1][18]),.input_unit_20(in_a[1][19]),.input_unit_21(in_a[1][20]),
+        .input_unit_22(in_a[1][21]),.input_unit_23(in_a[1][22]),.input_unit_24(in_a[1][23]),
+        .input_unit_25(in_a[1][24]),
+        
+        //weight 25
+        .weight_unit_1 (in_b[1][0]), .weight_unit_2 (in_b[1][1] ),.weight_unit_3 (in_b[1][2] ),
+        .weight_unit_4 (in_b[1][3]), .weight_unit_5 (in_b[1][4] ),.weight_unit_6 (in_b[1][5] ),
+        .weight_unit_7 (in_b[1][6]), .weight_unit_8 (in_b[1][7] ),.weight_unit_9 (in_b[1][8] ),
+        .weight_unit_10(in_b[1][9]), .weight_unit_11(in_b[1][10]),.weight_unit_12(in_b[1][11]),
+        .weight_unit_13(in_b[1][12]),.weight_unit_14(in_b[1][13]),.weight_unit_15(in_b[1][14]),
+        .weight_unit_16(in_b[1][15]),.weight_unit_17(in_b[1][16]),.weight_unit_18(in_b[1][17]),
+        .weight_unit_19(in_b[1][18]),.weight_unit_20(in_b[1][19]),.weight_unit_21(in_b[1][20]),
+        .weight_unit_22(in_b[1][21]),.weight_unit_23(in_b[1][22]),.weight_unit_24(in_b[1][23]),
+        .weight_unit_25(in_b[1][24]),
+        //bias 1
+        .bias_unit(bias[1]),
+        .output_unit_1(out_temp[1])        //.stage_5_unit(out_temp)
+    );
+
+    calculate_2d cal_instance3(
+        .clk(clk),
+        //input 25
+        .input_unit_1 (in_a[2][0]),.input_unit_2  (in_a[2][1 ]),.input_unit_3 (in_a[2][2 ]),    
+        .input_unit_4 (in_a[2][3]),.input_unit_5  (in_a[2][4 ]),.input_unit_6 (in_a[2][5 ]),
+        .input_unit_7 (in_a[2][6]),.input_unit_8  (in_a[2][7 ]),.input_unit_9 (in_a[2][8 ]),
+        .input_unit_10(in_a[2][9]),.input_unit_11 (in_a[2][10]),.input_unit_12(in_a[2][11]),
+        .input_unit_13(in_a[2][12]),.input_unit_14(in_a[2][13]),.input_unit_15(in_a[2][14]),
+        .input_unit_16(in_a[2][15]),.input_unit_17(in_a[2][16]),.input_unit_18(in_a[2][17]),
+        .input_unit_19(in_a[2][18]),.input_unit_20(in_a[2][19]),.input_unit_21(in_a[2][20]),
+        .input_unit_22(in_a[2][21]),.input_unit_23(in_a[2][22]),.input_unit_24(in_a[2][23]),
+        .input_unit_25(in_a[2][24]),
+        
+        
+        //weight 25
+        .weight_unit_1 (in_b[2][0]), .weight_unit_2 (in_b[2][1] ),.weight_unit_3 (in_b[2][2] ),
+        .weight_unit_4 (in_b[2][3]), .weight_unit_5 (in_b[2][4] ),.weight_unit_6 (in_b[2][5] ),
+        .weight_unit_7 (in_b[2][6]), .weight_unit_8 (in_b[2][7] ),.weight_unit_9 (in_b[2][8] ),
+        .weight_unit_10(in_b[2][9]), .weight_unit_11(in_b[2][10]),.weight_unit_12(in_b[2][11]),
+        .weight_unit_13(in_b[2][12]),.weight_unit_14(in_b[2][13]),.weight_unit_15(in_b[2][14]),
+        .weight_unit_16(in_b[2][15]),.weight_unit_17(in_b[2][16]),.weight_unit_18(in_b[2][17]),
+        .weight_unit_19(in_b[2][18]),.weight_unit_20(in_b[2][19]),.weight_unit_21(in_b[2][20]),
+        .weight_unit_22(in_b[2][21]),.weight_unit_23(in_b[2][22]),.weight_unit_24(in_b[2][23]),
+        .weight_unit_25(in_b[2][24]),
+        //bias 1
+        .bias_unit(bias[2]),
+        .output_unit_1(out_temp[2])        //.stage_5_unit(out_temp)
+    );
+
+    calculate_2d cal_instance4(
+        .clk(clk),
+        //input 25
+        .input_unit_1 (in_a[3][0]),.input_unit_2  (in_a[3][1 ]),.input_unit_3 (in_a[3][2 ]),    
+        .input_unit_4 (in_a[3][3]),.input_unit_5  (in_a[3][4 ]),.input_unit_6 (in_a[3][5 ]),
+        .input_unit_7 (in_a[3][6]),.input_unit_8  (in_a[3][7 ]),.input_unit_9 (in_a[3][8 ]),
+        .input_unit_10(in_a[3][9]),.input_unit_11 (in_a[3][10]),.input_unit_12(in_a[3][11]),
+        .input_unit_13(in_a[3][12]),.input_unit_14(in_a[3][13]),.input_unit_15(in_a[3][14]),
+        .input_unit_16(in_a[3][15]),.input_unit_17(in_a[3][16]),.input_unit_18(in_a[3][17]),
+        .input_unit_19(in_a[3][18]),.input_unit_20(in_a[3][19]),.input_unit_21(in_a[3][20]),
+        .input_unit_22(in_a[3][21]),.input_unit_23(in_a[3][22]),.input_unit_24(in_a[3][23]),
+        .input_unit_25(in_a[3][24]),
+        
+        
+        //weight 25
+        .weight_unit_1 (in_b[3][0]), .weight_unit_2 (in_b[3][1] ),.weight_unit_3 (in_b[3][2] ),
+        .weight_unit_4 (in_b[3][3]), .weight_unit_5 (in_b[3][4] ),.weight_unit_6 (in_b[3][5] ),
+        .weight_unit_7 (in_b[3][6]), .weight_unit_8 (in_b[3][7] ),.weight_unit_9 (in_b[3][8] ),
+        .weight_unit_10(in_b[3][9]), .weight_unit_11(in_b[3][10]),.weight_unit_12(in_b[3][11]),
+        .weight_unit_13(in_b[3][12]),.weight_unit_14(in_b[3][13]),.weight_unit_15(in_b[3][14]),
+        .weight_unit_16(in_b[3][15]),.weight_unit_17(in_b[3][16]),.weight_unit_18(in_b[3][17]),
+        .weight_unit_19(in_b[3][18]),.weight_unit_20(in_b[3][19]),.weight_unit_21(in_b[3][20]),
+        .weight_unit_22(in_b[3][21]),.weight_unit_23(in_b[3][22]),.weight_unit_24(in_b[3][23]),
+        .weight_unit_25(in_b[3][24]),
+        //bias 1
+        .bias_unit(bias[3]),
+        .output_unit_1(out_temp[3])        //.stage_5_unit(out_temp)
+    );
+
+    calculate_2d cal_instance5(
+        .clk(clk),
+        //input 25
+        .input_unit_1 (in_a[4][0]),.input_unit_2  (in_a[4][1 ]),.input_unit_3 (in_a[4][2 ]),    
+        .input_unit_4 (in_a[4][3]),.input_unit_5  (in_a[4][4 ]),.input_unit_6 (in_a[4][5 ]),
+        .input_unit_7 (in_a[4][6]),.input_unit_8  (in_a[4][7 ]),.input_unit_9 (in_a[4][8 ]),
+        .input_unit_10(in_a[4][9]),.input_unit_11 (in_a[4][10]),.input_unit_12(in_a[4][11]),
+        .input_unit_13(in_a[4][12]),.input_unit_14(in_a[4][13]),.input_unit_15(in_a[4][14]),
+        .input_unit_16(in_a[4][15]),.input_unit_17(in_a[4][16]),.input_unit_18(in_a[4][17]),
+        .input_unit_19(in_a[4][18]),.input_unit_20(in_a[4][19]),.input_unit_21(in_a[4][20]),
+        .input_unit_22(in_a[4][21]),.input_unit_23(in_a[4][22]),.input_unit_24(in_a[4][23]),
+        .input_unit_25(in_a[4][24]),
+        
+        
+        //weight 25
+        .weight_unit_1 (in_b[4][0]), .weight_unit_2 (in_b[4][1] ),.weight_unit_3 (in_b[4][2] ),
+        .weight_unit_4 (in_b[4][3]), .weight_unit_5 (in_b[4][4] ),.weight_unit_6 (in_b[4][5] ),
+        .weight_unit_7 (in_b[4][6]), .weight_unit_8 (in_b[4][7] ),.weight_unit_9 (in_b[4][8] ),
+        .weight_unit_10(in_b[4][9]), .weight_unit_11(in_b[4][10]),.weight_unit_12(in_b[4][11]),
+        .weight_unit_13(in_b[4][12]),.weight_unit_14(in_b[4][13]),.weight_unit_15(in_b[4][14]),
+        .weight_unit_16(in_b[4][15]),.weight_unit_17(in_b[4][16]),.weight_unit_18(in_b[4][17]),
+        .weight_unit_19(in_b[4][18]),.weight_unit_20(in_b[4][19]),.weight_unit_21(in_b[4][20]),
+        .weight_unit_22(in_b[4][21]),.weight_unit_23(in_b[4][22]),.weight_unit_24(in_b[4][23]),
+        .weight_unit_25(in_b[4][24]),
+        //bias 1
+        .bias_unit(bias[4]),
+        .output_unit_1(out_temp[4])        //.stage_5_unit(out_temp)
+    );
+
+
+    calculate_2d cal_instance6(
+        .clk(clk),
+        //input 25
+        .input_unit_1 (in_a[5][0]),.input_unit_2  (in_a[5][1 ]),.input_unit_3 (in_a[5][2 ]),    
+        .input_unit_4 (in_a[5][3]),.input_unit_5  (in_a[5][4 ]),.input_unit_6 (in_a[5][5 ]),
+        .input_unit_7 (in_a[5][6]),.input_unit_8  (in_a[5][7 ]),.input_unit_9 (in_a[5][8 ]),
+        .input_unit_10(in_a[5][9]),.input_unit_11 (in_a[5][10]),.input_unit_12(in_a[5][11]),
+        .input_unit_13(in_a[5][12]),.input_unit_14(in_a[5][13]),.input_unit_15(in_a[5][14]),
+        .input_unit_16(in_a[5][15]),.input_unit_17(in_a[5][16]),.input_unit_18(in_a[5][17]),
+        .input_unit_19(in_a[5][18]),.input_unit_20(in_a[5][19]),.input_unit_21(in_a[5][20]),
+        .input_unit_22(in_a[5][21]),.input_unit_23(in_a[5][22]),.input_unit_24(in_a[5][23]),
+        .input_unit_25(in_a[5][24]),
+        
+        
+        //weight 25
+        .weight_unit_1 (in_b[5][0]), .weight_unit_2 (in_b[5][1] ),.weight_unit_3 (in_b[5][2] ),
+        .weight_unit_4 (in_b[5][3]), .weight_unit_5 (in_b[5][4] ),.weight_unit_6 (in_b[5][5] ),
+        .weight_unit_7 (in_b[5][6]), .weight_unit_8 (in_b[5][7] ),.weight_unit_9 (in_b[5][8] ),
+        .weight_unit_10(in_b[5][9]), .weight_unit_11(in_b[5][10]),.weight_unit_12(in_b[5][11]),
+        .weight_unit_13(in_b[5][12]),.weight_unit_14(in_b[5][13]),.weight_unit_15(in_b[5][14]),
+        .weight_unit_16(in_b[5][15]),.weight_unit_17(in_b[5][16]),.weight_unit_18(in_b[5][17]),
+        .weight_unit_19(in_b[5][18]),.weight_unit_20(in_b[5][19]),.weight_unit_21(in_b[5][20]),
+        .weight_unit_22(in_b[5][21]),.weight_unit_23(in_b[5][22]),.weight_unit_24(in_b[5][23]),
+        .weight_unit_25(in_b[5][24]),
+        //bias 1
+        .bias_unit(bias[5]),
+        .output_unit_1(out_temp[5])        //.stage_5_unit(out_temp)
+    );
+
+    calculate_2d cal_instance7(
+        .clk(clk),
+        //input 25
+        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
+        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
+        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
+        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
+        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
+        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
+        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
+        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
+        .input_unit_25(in_a[0][24]),
+        
+        //weight 25
+        .weight_unit_1 (in_b_2[0][0]), .weight_unit_2 (in_b_2[0][1] ),.weight_unit_3 (in_b_2[0][2] ),
+        .weight_unit_4 (in_b_2[0][3]), .weight_unit_5 (in_b_2[0][4] ),.weight_unit_6 (in_b_2[0][5] ),
+        .weight_unit_7 (in_b_2[0][6]), .weight_unit_8 (in_b_2[0][7] ),.weight_unit_9 (in_b_2[0][8] ),
+        .weight_unit_10(in_b_2[0][9]), .weight_unit_11(in_b_2[0][10]),.weight_unit_12(in_b_2[0][11]),
+        .weight_unit_13(in_b_2[0][12]),.weight_unit_14(in_b_2[0][13]),.weight_unit_15(in_b_2[0][14]),
+        .weight_unit_16(in_b_2[0][15]),.weight_unit_17(in_b_2[0][16]),.weight_unit_18(in_b_2[0][17]),
+        .weight_unit_19(in_b_2[0][18]),.weight_unit_20(in_b_2[0][19]),.weight_unit_21(in_b_2[0][20]),
+        .weight_unit_22(in_b_2[0][21]),.weight_unit_23(in_b_2[0][22]),.weight_unit_24(in_b_2[0][23]),
+        .weight_unit_25(in_b_2[0][24]),
+        //bias 1
+        .bias_unit(bias[6]),
+        .output_unit_1(out_temp[6])        //.stage_5_unit(out_temp)
+    );
+
+    calculate_2d cal_instance8(
+        .clk(clk),
+        //input 25
+        .input_unit_1 (in_a[1][0]),.input_unit_2  (in_a[1][1 ]),.input_unit_3 (in_a[1][2 ]),    
+        .input_unit_4 (in_a[1][3]),.input_unit_5  (in_a[1][4 ]),.input_unit_6 (in_a[1][5 ]),
+        .input_unit_7 (in_a[1][6]),.input_unit_8  (in_a[1][7 ]),.input_unit_9 (in_a[1][8 ]),
+        .input_unit_10(in_a[1][9]),.input_unit_11 (in_a[1][10]),.input_unit_12(in_a[1][11]),
+        .input_unit_13(in_a[1][12]),.input_unit_14(in_a[1][13]),.input_unit_15(in_a[1][14]),
+        .input_unit_16(in_a[1][15]),.input_unit_17(in_a[1][16]),.input_unit_18(in_a[1][17]),
+        .input_unit_19(in_a[1][18]),.input_unit_20(in_a[1][19]),.input_unit_21(in_a[1][20]),
+        .input_unit_22(in_a[1][21]),.input_unit_23(in_a[1][22]),.input_unit_24(in_a[1][23]),
+        .input_unit_25(in_a[1][24]),
+        
+        //weight 25
+        .weight_unit_1 (in_b_2[1][0]), .weight_unit_2 (in_b_2[1][1] ),.weight_unit_3 (in_b_2[1][2] ),
+        .weight_unit_4 (in_b_2[1][3]), .weight_unit_5 (in_b_2[1][4] ),.weight_unit_6 (in_b_2[1][5] ),
+        .weight_unit_7 (in_b_2[1][6]), .weight_unit_8 (in_b_2[1][7] ),.weight_unit_9 (in_b_2[1][8] ),
+        .weight_unit_10(in_b_2[1][9]), .weight_unit_11(in_b_2[1][10]),.weight_unit_12(in_b_2[1][11]),
+        .weight_unit_13(in_b_2[1][12]),.weight_unit_14(in_b_2[1][13]),.weight_unit_15(in_b_2[1][14]),
+        .weight_unit_16(in_b_2[1][15]),.weight_unit_17(in_b_2[1][16]),.weight_unit_18(in_b_2[1][17]),
+        .weight_unit_19(in_b_2[1][18]),.weight_unit_20(in_b_2[1][19]),.weight_unit_21(in_b_2[1][20]),
+        .weight_unit_22(in_b_2[1][21]),.weight_unit_23(in_b_2[1][22]),.weight_unit_24(in_b_2[1][23]),
+        .weight_unit_25(in_b_2[1][24]),
+        //bias 1
+        .bias_unit(bias[7]),
+        .output_unit_1(out_temp[7])        //.stage_5_unit(out_temp)
+    );
+
+    calculate_2d cal_instance9(
+        .clk(clk),
+        //input 25
+        .input_unit_1 (in_a[2][0]),.input_unit_2  (in_a[2][1 ]),.input_unit_3 (in_a[2][2 ]),    
+        .input_unit_4 (in_a[2][3]),.input_unit_5  (in_a[2][4 ]),.input_unit_6 (in_a[2][5 ]),
+        .input_unit_7 (in_a[2][6]),.input_unit_8  (in_a[2][7 ]),.input_unit_9 (in_a[2][8 ]),
+        .input_unit_10(in_a[2][9]),.input_unit_11 (in_a[2][10]),.input_unit_12(in_a[2][11]),
+        .input_unit_13(in_a[2][12]),.input_unit_14(in_a[2][13]),.input_unit_15(in_a[2][14]),
+        .input_unit_16(in_a[2][15]),.input_unit_17(in_a[2][16]),.input_unit_18(in_a[2][17]),
+        .input_unit_19(in_a[2][18]),.input_unit_20(in_a[2][19]),.input_unit_21(in_a[2][20]),
+        .input_unit_22(in_a[2][21]),.input_unit_23(in_a[2][22]),.input_unit_24(in_a[2][23]),
+        .input_unit_25(in_a[2][24]),
+        
+        
+        //weight 25
+        .weight_unit_1 (in_b_2[2][0]), .weight_unit_2 (in_b_2[2][1] ),.weight_unit_3 (in_b_2[2][2] ),
+        .weight_unit_4 (in_b_2[2][3]), .weight_unit_5 (in_b_2[2][4] ),.weight_unit_6 (in_b_2[2][5] ),
+        .weight_unit_7 (in_b_2[2][6]), .weight_unit_8 (in_b_2[2][7] ),.weight_unit_9 (in_b_2[2][8] ),
+        .weight_unit_10(in_b_2[2][9]), .weight_unit_11(in_b_2[2][10]),.weight_unit_12(in_b_2[2][11]),
+        .weight_unit_13(in_b_2[2][12]),.weight_unit_14(in_b_2[2][13]),.weight_unit_15(in_b_2[2][14]),
+        .weight_unit_16(in_b_2[2][15]),.weight_unit_17(in_b_2[2][16]),.weight_unit_18(in_b_2[2][17]),
+        .weight_unit_19(in_b_2[2][18]),.weight_unit_20(in_b_2[2][19]),.weight_unit_21(in_b_2[2][20]),
+        .weight_unit_22(in_b_2[2][21]),.weight_unit_23(in_b_2[2][22]),.weight_unit_24(in_b_2[2][23]),
+        .weight_unit_25(in_b_2[2][24]),
+        //bias 1
+        .bias_unit(bias[8]),
+        .output_unit_1(out_temp[8])        //.stage_5_unit(out_temp)
+    );
+
+    calculate_2d cal_instance10(
+        .clk(clk),
+        //input 25
+        .input_unit_1 (in_a[3][0]),.input_unit_2  (in_a[3][1 ]),.input_unit_3 (in_a[3][2 ]),    
+        .input_unit_4 (in_a[3][3]),.input_unit_5  (in_a[3][4 ]),.input_unit_6 (in_a[3][5 ]),
+        .input_unit_7 (in_a[3][6]),.input_unit_8  (in_a[3][7 ]),.input_unit_9 (in_a[3][8 ]),
+        .input_unit_10(in_a[3][9]),.input_unit_11 (in_a[3][10]),.input_unit_12(in_a[3][11]),
+        .input_unit_13(in_a[3][12]),.input_unit_14(in_a[3][13]),.input_unit_15(in_a[3][14]),
+        .input_unit_16(in_a[3][15]),.input_unit_17(in_a[3][16]),.input_unit_18(in_a[3][17]),
+        .input_unit_19(in_a[3][18]),.input_unit_20(in_a[3][19]),.input_unit_21(in_a[3][20]),
+        .input_unit_22(in_a[3][21]),.input_unit_23(in_a[3][22]),.input_unit_24(in_a[3][23]),
+        .input_unit_25(in_a[3][24]),
+        
+        
+        //weight 25
+        .weight_unit_1 (in_b_2[3][0]), .weight_unit_2 (in_b_2[3][1] ),.weight_unit_3 (in_b_2[3][2] ),
+        .weight_unit_4 (in_b_2[3][3]), .weight_unit_5 (in_b_2[3][4] ),.weight_unit_6 (in_b_2[3][5] ),
+        .weight_unit_7 (in_b_2[3][6]), .weight_unit_8 (in_b_2[3][7] ),.weight_unit_9 (in_b_2[3][8] ),
+        .weight_unit_10(in_b_2[3][9]), .weight_unit_11(in_b_2[3][10]),.weight_unit_12(in_b_2[3][11]),
+        .weight_unit_13(in_b_2[3][12]),.weight_unit_14(in_b_2[3][13]),.weight_unit_15(in_b_2[3][14]),
+        .weight_unit_16(in_b_2[3][15]),.weight_unit_17(in_b_2[3][16]),.weight_unit_18(in_b_2[3][17]),
+        .weight_unit_19(in_b_2[3][18]),.weight_unit_20(in_b_2[3][19]),.weight_unit_21(in_b_2[3][20]),
+        .weight_unit_22(in_b_2[3][21]),.weight_unit_23(in_b_2[3][22]),.weight_unit_24(in_b_2[3][23]),
+        .weight_unit_25(in_b_2[3][24]),
+        //bias 1
+        .bias_unit(bias[9]),
+        .output_unit_1(out_temp[9])        //.stage_5_unit(out_temp)
+    );
+
+    calculate_2d cal_instance11(
+        .clk(clk),
+        //input 25
+        .input_unit_1 (in_a[4][0]),.input_unit_2  (in_a[4][1 ]),.input_unit_3 (in_a[4][2 ]),    
+        .input_unit_4 (in_a[4][3]),.input_unit_5  (in_a[4][4 ]),.input_unit_6 (in_a[4][5 ]),
+        .input_unit_7 (in_a[4][6]),.input_unit_8  (in_a[4][7 ]),.input_unit_9 (in_a[4][8 ]),
+        .input_unit_10(in_a[4][9]),.input_unit_11 (in_a[4][10]),.input_unit_12(in_a[4][11]),
+        .input_unit_13(in_a[4][12]),.input_unit_14(in_a[4][13]),.input_unit_15(in_a[4][14]),
+        .input_unit_16(in_a[4][15]),.input_unit_17(in_a[4][16]),.input_unit_18(in_a[4][17]),
+        .input_unit_19(in_a[4][18]),.input_unit_20(in_a[4][19]),.input_unit_21(in_a[4][20]),
+        .input_unit_22(in_a[4][21]),.input_unit_23(in_a[4][22]),.input_unit_24(in_a[4][23]),
+        .input_unit_25(in_a[4][24]),
+        
+        
+        //weight 25
+        .weight_unit_1 (in_b_2[4][0]), .weight_unit_2 (in_b_2[4][1] ),.weight_unit_3 (in_b_2[4][2] ),
+        .weight_unit_4 (in_b_2[4][3]), .weight_unit_5 (in_b_2[4][4] ),.weight_unit_6 (in_b_2[4][5] ),
+        .weight_unit_7 (in_b_2[4][6]), .weight_unit_8 (in_b_2[4][7] ),.weight_unit_9 (in_b_2[4][8] ),
+        .weight_unit_10(in_b_2[4][9]), .weight_unit_11(in_b_2[4][10]),.weight_unit_12(in_b_2[4][11]),
+        .weight_unit_13(in_b_2[4][12]),.weight_unit_14(in_b_2[4][13]),.weight_unit_15(in_b_2[4][14]),
+        .weight_unit_16(in_b_2[4][15]),.weight_unit_17(in_b_2[4][16]),.weight_unit_18(in_b_2[4][17]),
+        .weight_unit_19(in_b_2[4][18]),.weight_unit_20(in_b_2[4][19]),.weight_unit_21(in_b_2[4][20]),
+        .weight_unit_22(in_b_2[4][21]),.weight_unit_23(in_b_2[4][22]),.weight_unit_24(in_b_2[4][23]),
+        .weight_unit_25(in_b_2[4][24]),
+        //bias 1
+        .bias_unit(bias[10]),
+        .output_unit_1(out_temp[10])        //.stage_5_unit(out_temp)
+    );
+
+
+    calculate_2d cal_instance12(
+        .clk(clk),
+        //input 25
+        .input_unit_1 (in_a[5][0]),.input_unit_2  (in_a[5][1 ]),.input_unit_3 (in_a[5][2 ]),    
+        .input_unit_4 (in_a[5][3]),.input_unit_5  (in_a[5][4 ]),.input_unit_6 (in_a[5][5 ]),
+        .input_unit_7 (in_a[5][6]),.input_unit_8  (in_a[5][7 ]),.input_unit_9 (in_a[5][8 ]),
+        .input_unit_10(in_a[5][9]),.input_unit_11 (in_a[5][10]),.input_unit_12(in_a[5][11]),
+        .input_unit_13(in_a[5][12]),.input_unit_14(in_a[5][13]),.input_unit_15(in_a[5][14]),
+        .input_unit_16(in_a[5][15]),.input_unit_17(in_a[5][16]),.input_unit_18(in_a[5][17]),
+        .input_unit_19(in_a[5][18]),.input_unit_20(in_a[5][19]),.input_unit_21(in_a[5][20]),
+        .input_unit_22(in_a[5][21]),.input_unit_23(in_a[5][22]),.input_unit_24(in_a[5][23]),
+        .input_unit_25(in_a[5][24]),
+        
+        
+        //weight 25
+        .weight_unit_1 (in_b_2[5][0]), .weight_unit_2 (in_b_2[5][1] ),.weight_unit_3 (in_b_2[5][2] ),
+        .weight_unit_4 (in_b_2[5][3]), .weight_unit_5 (in_b_2[5][4] ),.weight_unit_6 (in_b_2[5][5] ),
+        .weight_unit_7 (in_b_2[5][6]), .weight_unit_8 (in_b_2[5][7] ),.weight_unit_9 (in_b_2[5][8] ),
+        .weight_unit_10(in_b_2[5][9]), .weight_unit_11(in_b_2[5][10]),.weight_unit_12(in_b_2[5][11]),
+        .weight_unit_13(in_b_2[5][12]),.weight_unit_14(in_b_2[5][13]),.weight_unit_15(in_b_2[5][14]),
+        .weight_unit_16(in_b_2[5][15]),.weight_unit_17(in_b_2[5][16]),.weight_unit_18(in_b_2[5][17]),
+        .weight_unit_19(in_b_2[5][18]),.weight_unit_20(in_b_2[5][19]),.weight_unit_21(in_b_2[5][20]),
+        .weight_unit_22(in_b_2[5][21]),.weight_unit_23(in_b_2[5][22]),.weight_unit_24(in_b_2[5][23]),
+        .weight_unit_25(in_b_2[5][24]),
+        //bias 1
+        .bias_unit(bias[11]),
+        .output_unit_1(out_temp[11])        //.stage_5_unit(out_temp)
+    );
 
 
     
-    //input a assign
+    relu_function L1_relu1(
+        clk,
+        out_temp[0],
+        out_result_a
+    );
+
+    
+    relu_function L1_relu2(
+        clk,
+        out_temp[1],
+        out_result_b
+    );
+
+    
+    relu_function L1_relu3(
+        clk,
+       out_temp[2],
+        out_result_c
+    );
+
+    
+    relu_function L1_relu4(
+        clk,
+        out_temp[3],
+        out_result_d
+    );
+
+    
+    relu_function L1_relu5(
+        clk,
+        out_temp[4],
+        out_result_e
+    );
+
+    
+    relu_function L1_relu6(
+        clk,
+       out_temp[5],
+        out_result_f
+    );
+
+
+     stage2_add stage2_1(
+        .clk(clk),
+        .en(L3_en),
+        .datain_a(out_temp[0]),
+        .datain_b(out_temp[1]),
+        .datain_c(out_temp[2]),
+        .datain_d(out_temp[3]),
+        .datain_e(out_temp[4]),
+        .datain_f(out_temp[5]),
+        .dataout(res_stage2[0])
+    );
+
+
+    stage2_add stage2_2(
+        .clk(clk),
+        .en(L3_en),
+        .datain_a(6),
+        .datain_b(7),
+        .datain_c(8),
+        .datain_d(9),
+        .datain_e(10),
+        .datain_f(11),
+        .dataout(res_stage2[1])
+    );
+
+
+     relu_function L3_relu1(
+        clk,
+        res_stage2[0],
+        middle_output1
+    );
+
+    
+      relu_function L3_relu2(
+        clk,
+        res_stage2[1],
+        middle_output2
+    );
+
+ //input a assign
     assign in_a[0][0 ] = L1_en  ? L1_inp_unit1 : L3_en ? L3_a_channel1_unit1  : 1'b0;
     assign in_a[0][1 ] = L1_en  ? L1_inp_unit2 : L3_en ? L3_a_channel1_unit2  : 1'b0;
     assign in_a[0][2 ] = L1_en  ? L1_inp_unit3 : L3_en ? L3_a_channel1_unit3  : 1'b0;
@@ -791,428 +1218,6 @@ module calculate_wrapper
 
 
 
-
-
-
-
-
-
-
-    localparam IDLE = 4'b0001, FRONT = 4'b0010, MIDDLE = 4'b0100, FC = 4'b1000;
-    reg [3:0] st;
-
-    always@(posedge clk)begin
-        if     (L1_en == 1'b1) st <= FRONT;
-        else if(L3_en == 1'b1) st <= MIDDLE; 
-        else st <= IDLE;
-    end
-    
-
-    calculate_2d cal_instance1(
-        .clk(clk),
-        //input 25
-        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
-        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
-        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
-        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
-        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
-        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
-        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
-        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
-        .input_unit_25(in_a[0][24]),
-        
-        //weight 25
-        .weight_unit_1 (in_b[0][0]), .weight_unit_2 (in_b[0][1] ),.weight_unit_3 (in_b[0][2] ),
-        .weight_unit_4 (in_b[0][3]), .weight_unit_5 (in_b[0][4] ),.weight_unit_6 (in_b[0][5] ),
-        .weight_unit_7 (in_b[0][6]), .weight_unit_8 (in_b[0][7] ),.weight_unit_9 (in_b[0][8] ),
-        .weight_unit_10(in_b[0][9]), .weight_unit_11(in_b[0][10]),.weight_unit_12(in_b[0][11]),
-        .weight_unit_13(in_b[0][12]),.weight_unit_14(in_b[0][13]),.weight_unit_15(in_b[0][14]),
-        .weight_unit_16(in_b[0][15]),.weight_unit_17(in_b[0][16]),.weight_unit_18(in_b[0][17]),
-        .weight_unit_19(in_b[0][18]),.weight_unit_20(in_b[0][19]),.weight_unit_21(in_b[0][20]),
-        .weight_unit_22(in_b[0][21]),.weight_unit_23(in_b[0][22]),.weight_unit_24(in_b[0][23]),
-        .weight_unit_25(in_b[0][24]),
-        //bias 1
-        .bias_unit(bias[0]),
-        .output_unit_1(out_temp[0])        //.stage_5_unit(out_temp)
-    );
-
-    calculate_2d cal_instance2(
-        .clk(clk),
-        //input 25
-        .input_unit_1 (in_a[1][0]),.input_unit_2  (in_a[1][1 ]),.input_unit_3 (in_a[1][2 ]),    
-        .input_unit_4 (in_a[1][3]),.input_unit_5  (in_a[1][4 ]),.input_unit_6 (in_a[1][5 ]),
-        .input_unit_7 (in_a[1][6]),.input_unit_8  (in_a[1][7 ]),.input_unit_9 (in_a[1][8 ]),
-        .input_unit_10(in_a[1][9]),.input_unit_11 (in_a[1][10]),.input_unit_12(in_a[1][11]),
-        .input_unit_13(in_a[1][12]),.input_unit_14(in_a[1][13]),.input_unit_15(in_a[1][14]),
-        .input_unit_16(in_a[1][15]),.input_unit_17(in_a[1][16]),.input_unit_18(in_a[1][17]),
-        .input_unit_19(in_a[1][18]),.input_unit_20(in_a[1][19]),.input_unit_21(in_a[1][20]),
-        .input_unit_22(in_a[1][21]),.input_unit_23(in_a[1][22]),.input_unit_24(in_a[1][23]),
-        .input_unit_25(in_a[1][24]),
-        
-        //weight 25
-        .weight_unit_1 (in_b[1][0]), .weight_unit_2 (in_b[1][1] ),.weight_unit_3 (in_b[1][2] ),
-        .weight_unit_4 (in_b[1][3]), .weight_unit_5 (in_b[1][4] ),.weight_unit_6 (in_b[1][5] ),
-        .weight_unit_7 (in_b[1][6]), .weight_unit_8 (in_b[1][7] ),.weight_unit_9 (in_b[1][8] ),
-        .weight_unit_10(in_b[1][9]), .weight_unit_11(in_b[1][10]),.weight_unit_12(in_b[1][11]),
-        .weight_unit_13(in_b[1][12]),.weight_unit_14(in_b[1][13]),.weight_unit_15(in_b[1][14]),
-        .weight_unit_16(in_b[1][15]),.weight_unit_17(in_b[1][16]),.weight_unit_18(in_b[1][17]),
-        .weight_unit_19(in_b[1][18]),.weight_unit_20(in_b[1][19]),.weight_unit_21(in_b[1][20]),
-        .weight_unit_22(in_b[1][21]),.weight_unit_23(in_b[1][22]),.weight_unit_24(in_b[1][23]),
-        .weight_unit_25(in_b[1][24]),
-        //bias 1
-        .bias_unit(bias[1]),
-        .output_unit_1(out_temp[1])        //.stage_5_unit(out_temp)
-    );
-
-    calculate_2d cal_instance3(
-        .clk(clk),
-        //input 25
-        .input_unit_1 (in_a[2][0]),.input_unit_2  (in_a[2][1 ]),.input_unit_3 (in_a[2][2 ]),    
-        .input_unit_4 (in_a[2][3]),.input_unit_5  (in_a[2][4 ]),.input_unit_6 (in_a[2][5 ]),
-        .input_unit_7 (in_a[2][6]),.input_unit_8  (in_a[2][7 ]),.input_unit_9 (in_a[2][8 ]),
-        .input_unit_10(in_a[2][9]),.input_unit_11 (in_a[2][10]),.input_unit_12(in_a[2][11]),
-        .input_unit_13(in_a[2][12]),.input_unit_14(in_a[2][13]),.input_unit_15(in_a[2][14]),
-        .input_unit_16(in_a[2][15]),.input_unit_17(in_a[2][16]),.input_unit_18(in_a[2][17]),
-        .input_unit_19(in_a[2][18]),.input_unit_20(in_a[2][19]),.input_unit_21(in_a[2][20]),
-        .input_unit_22(in_a[2][21]),.input_unit_23(in_a[2][22]),.input_unit_24(in_a[2][23]),
-        .input_unit_25(in_a[2][24]),
-        
-        
-        //weight 25
-        .weight_unit_1 (in_b[2][0]), .weight_unit_2 (in_b[2][1] ),.weight_unit_3 (in_b[2][2] ),
-        .weight_unit_4 (in_b[2][3]), .weight_unit_5 (in_b[2][4] ),.weight_unit_6 (in_b[2][5] ),
-        .weight_unit_7 (in_b[2][6]), .weight_unit_8 (in_b[2][7] ),.weight_unit_9 (in_b[2][8] ),
-        .weight_unit_10(in_b[2][9]), .weight_unit_11(in_b[2][10]),.weight_unit_12(in_b[2][11]),
-        .weight_unit_13(in_b[2][12]),.weight_unit_14(in_b[2][13]),.weight_unit_15(in_b[2][14]),
-        .weight_unit_16(in_b[2][15]),.weight_unit_17(in_b[2][16]),.weight_unit_18(in_b[2][17]),
-        .weight_unit_19(in_b[2][18]),.weight_unit_20(in_b[2][19]),.weight_unit_21(in_b[2][20]),
-        .weight_unit_22(in_b[2][21]),.weight_unit_23(in_b[2][22]),.weight_unit_24(in_b[2][23]),
-        .weight_unit_25(in_b[2][24]),
-        //bias 1
-        .bias_unit(bias[2]),
-        .output_unit_1(out_temp[2])        //.stage_5_unit(out_temp)
-    );
-
-    calculate_2d cal_instance4(
-        .clk(clk),
-        //input 25
-        .input_unit_1 (in_a[3][0]),.input_unit_2  (in_a[3][1 ]),.input_unit_3 (in_a[3][2 ]),    
-        .input_unit_4 (in_a[3][3]),.input_unit_5  (in_a[3][4 ]),.input_unit_6 (in_a[3][5 ]),
-        .input_unit_7 (in_a[3][6]),.input_unit_8  (in_a[3][7 ]),.input_unit_9 (in_a[3][8 ]),
-        .input_unit_10(in_a[3][9]),.input_unit_11 (in_a[3][10]),.input_unit_12(in_a[3][11]),
-        .input_unit_13(in_a[3][12]),.input_unit_14(in_a[3][13]),.input_unit_15(in_a[3][14]),
-        .input_unit_16(in_a[3][15]),.input_unit_17(in_a[3][16]),.input_unit_18(in_a[3][17]),
-        .input_unit_19(in_a[3][18]),.input_unit_20(in_a[3][19]),.input_unit_21(in_a[3][20]),
-        .input_unit_22(in_a[3][21]),.input_unit_23(in_a[3][22]),.input_unit_24(in_a[3][23]),
-        .input_unit_25(in_a[3][24]),
-        
-        
-        //weight 25
-        .weight_unit_1 (in_b[3][0]), .weight_unit_2 (in_b[3][1] ),.weight_unit_3 (in_b[3][2] ),
-        .weight_unit_4 (in_b[3][3]), .weight_unit_5 (in_b[3][4] ),.weight_unit_6 (in_b[3][5] ),
-        .weight_unit_7 (in_b[3][6]), .weight_unit_8 (in_b[3][7] ),.weight_unit_9 (in_b[3][8] ),
-        .weight_unit_10(in_b[3][9]), .weight_unit_11(in_b[3][10]),.weight_unit_12(in_b[3][11]),
-        .weight_unit_13(in_b[3][12]),.weight_unit_14(in_b[3][13]),.weight_unit_15(in_b[3][14]),
-        .weight_unit_16(in_b[3][15]),.weight_unit_17(in_b[3][16]),.weight_unit_18(in_b[3][17]),
-        .weight_unit_19(in_b[3][18]),.weight_unit_20(in_b[3][19]),.weight_unit_21(in_b[3][20]),
-        .weight_unit_22(in_b[3][21]),.weight_unit_23(in_b[3][22]),.weight_unit_24(in_b[3][23]),
-        .weight_unit_25(in_b[3][24]),
-        //bias 1
-        .bias_unit(bias[3]),
-        .output_unit_1(out_temp[3])        //.stage_5_unit(out_temp)
-    );
-
-    calculate_2d cal_instance5(
-        .clk(clk),
-        //input 25
-        .input_unit_1 (in_a[4][0]),.input_unit_2  (in_a[4][1 ]),.input_unit_3 (in_a[4][2 ]),    
-        .input_unit_4 (in_a[4][3]),.input_unit_5  (in_a[4][4 ]),.input_unit_6 (in_a[4][5 ]),
-        .input_unit_7 (in_a[4][6]),.input_unit_8  (in_a[4][7 ]),.input_unit_9 (in_a[4][8 ]),
-        .input_unit_10(in_a[4][9]),.input_unit_11 (in_a[4][10]),.input_unit_12(in_a[4][11]),
-        .input_unit_13(in_a[4][12]),.input_unit_14(in_a[4][13]),.input_unit_15(in_a[4][14]),
-        .input_unit_16(in_a[4][15]),.input_unit_17(in_a[4][16]),.input_unit_18(in_a[4][17]),
-        .input_unit_19(in_a[4][18]),.input_unit_20(in_a[4][19]),.input_unit_21(in_a[4][20]),
-        .input_unit_22(in_a[4][21]),.input_unit_23(in_a[4][22]),.input_unit_24(in_a[4][23]),
-        .input_unit_25(in_a[4][24]),
-        
-        
-        //weight 25
-        .weight_unit_1 (in_b[4][0]), .weight_unit_2 (in_b[4][1] ),.weight_unit_3 (in_b[4][2] ),
-        .weight_unit_4 (in_b[4][3]), .weight_unit_5 (in_b[4][4] ),.weight_unit_6 (in_b[4][5] ),
-        .weight_unit_7 (in_b[4][6]), .weight_unit_8 (in_b[4][7] ),.weight_unit_9 (in_b[4][8] ),
-        .weight_unit_10(in_b[4][9]), .weight_unit_11(in_b[4][10]),.weight_unit_12(in_b[4][11]),
-        .weight_unit_13(in_b[4][12]),.weight_unit_14(in_b[4][13]),.weight_unit_15(in_b[4][14]),
-        .weight_unit_16(in_b[4][15]),.weight_unit_17(in_b[4][16]),.weight_unit_18(in_b[4][17]),
-        .weight_unit_19(in_b[4][18]),.weight_unit_20(in_b[4][19]),.weight_unit_21(in_b[4][20]),
-        .weight_unit_22(in_b[4][21]),.weight_unit_23(in_b[4][22]),.weight_unit_24(in_b[4][23]),
-        .weight_unit_25(in_b[4][24]),
-        //bias 1
-        .bias_unit(bias[4]),
-        .output_unit_1(out_temp[4])        //.stage_5_unit(out_temp)
-    );
-
-
-    calculate_2d cal_instance6(
-        .clk(clk),
-        //input 25
-        .input_unit_1 (in_a[5][0]),.input_unit_2  (in_a[5][1 ]),.input_unit_3 (in_a[5][2 ]),    
-        .input_unit_4 (in_a[5][3]),.input_unit_5  (in_a[5][4 ]),.input_unit_6 (in_a[5][5 ]),
-        .input_unit_7 (in_a[5][6]),.input_unit_8  (in_a[5][7 ]),.input_unit_9 (in_a[5][8 ]),
-        .input_unit_10(in_a[5][9]),.input_unit_11 (in_a[5][10]),.input_unit_12(in_a[5][11]),
-        .input_unit_13(in_a[5][12]),.input_unit_14(in_a[5][13]),.input_unit_15(in_a[5][14]),
-        .input_unit_16(in_a[5][15]),.input_unit_17(in_a[5][16]),.input_unit_18(in_a[5][17]),
-        .input_unit_19(in_a[5][18]),.input_unit_20(in_a[5][19]),.input_unit_21(in_a[5][20]),
-        .input_unit_22(in_a[5][21]),.input_unit_23(in_a[5][22]),.input_unit_24(in_a[5][23]),
-        .input_unit_25(in_a[5][24]),
-        
-        
-        //weight 25
-        .weight_unit_1 (in_b[5][0]), .weight_unit_2 (in_b[5][1] ),.weight_unit_3 (in_b[5][2] ),
-        .weight_unit_4 (in_b[5][3]), .weight_unit_5 (in_b[5][4] ),.weight_unit_6 (in_b[5][5] ),
-        .weight_unit_7 (in_b[5][6]), .weight_unit_8 (in_b[5][7] ),.weight_unit_9 (in_b[5][8] ),
-        .weight_unit_10(in_b[5][9]), .weight_unit_11(in_b[5][10]),.weight_unit_12(in_b[5][11]),
-        .weight_unit_13(in_b[5][12]),.weight_unit_14(in_b[5][13]),.weight_unit_15(in_b[5][14]),
-        .weight_unit_16(in_b[5][15]),.weight_unit_17(in_b[5][16]),.weight_unit_18(in_b[5][17]),
-        .weight_unit_19(in_b[5][18]),.weight_unit_20(in_b[5][19]),.weight_unit_21(in_b[5][20]),
-        .weight_unit_22(in_b[5][21]),.weight_unit_23(in_b[5][22]),.weight_unit_24(in_b[5][23]),
-        .weight_unit_25(in_b[5][24]),
-        //bias 1
-        .bias_unit(bias[5]),
-        .output_unit_1(out_temp[5])        //.stage_5_unit(out_temp)
-    );
-
-    calculate_2d cal_instance7(
-        .clk(clk),
-        //input 25
-        .input_unit_1 (in_a[0][0]),.input_unit_2  (in_a[0][1 ]),.input_unit_3 (in_a[0][2 ]),    
-        .input_unit_4 (in_a[0][3]),.input_unit_5  (in_a[0][4 ]),.input_unit_6 (in_a[0][5 ]),
-        .input_unit_7 (in_a[0][6]),.input_unit_8  (in_a[0][7 ]),.input_unit_9 (in_a[0][8 ]),
-        .input_unit_10(in_a[0][9]),.input_unit_11 (in_a[0][10]),.input_unit_12(in_a[0][11]),
-        .input_unit_13(in_a[0][12]),.input_unit_14(in_a[0][13]),.input_unit_15(in_a[0][14]),
-        .input_unit_16(in_a[0][15]),.input_unit_17(in_a[0][16]),.input_unit_18(in_a[0][17]),
-        .input_unit_19(in_a[0][18]),.input_unit_20(in_a[0][19]),.input_unit_21(in_a[0][20]),
-        .input_unit_22(in_a[0][21]),.input_unit_23(in_a[0][22]),.input_unit_24(in_a[0][23]),
-        .input_unit_25(in_a[0][24]),
-        
-        //weight 25
-        .weight_unit_1 (in_b_2[0][0]), .weight_unit_2 (in_b_2[0][1] ),.weight_unit_3 (in_b_2[0][2] ),
-        .weight_unit_4 (in_b_2[0][3]), .weight_unit_5 (in_b_2[0][4] ),.weight_unit_6 (in_b_2[0][5] ),
-        .weight_unit_7 (in_b_2[0][6]), .weight_unit_8 (in_b_2[0][7] ),.weight_unit_9 (in_b_2[0][8] ),
-        .weight_unit_10(in_b_2[0][9]), .weight_unit_11(in_b_2[0][10]),.weight_unit_12(in_b_2[0][11]),
-        .weight_unit_13(in_b_2[0][12]),.weight_unit_14(in_b_2[0][13]),.weight_unit_15(in_b_2[0][14]),
-        .weight_unit_16(in_b_2[0][15]),.weight_unit_17(in_b_2[0][16]),.weight_unit_18(in_b_2[0][17]),
-        .weight_unit_19(in_b_2[0][18]),.weight_unit_20(in_b_2[0][19]),.weight_unit_21(in_b_2[0][20]),
-        .weight_unit_22(in_b_2[0][21]),.weight_unit_23(in_b_2[0][22]),.weight_unit_24(in_b_2[0][23]),
-        .weight_unit_25(in_b_2[0][24]),
-        //bias 1
-        .bias_unit(bias[6]),
-        .output_unit_1(out_temp[6])        //.stage_5_unit(out_temp)
-    );
-
-    calculate_2d cal_instance8(
-        .clk(clk),
-        //input 25
-        .input_unit_1 (in_a[1][0]),.input_unit_2  (in_a[1][1 ]),.input_unit_3 (in_a[1][2 ]),    
-        .input_unit_4 (in_a[1][3]),.input_unit_5  (in_a[1][4 ]),.input_unit_6 (in_a[1][5 ]),
-        .input_unit_7 (in_a[1][6]),.input_unit_8  (in_a[1][7 ]),.input_unit_9 (in_a[1][8 ]),
-        .input_unit_10(in_a[1][9]),.input_unit_11 (in_a[1][10]),.input_unit_12(in_a[1][11]),
-        .input_unit_13(in_a[1][12]),.input_unit_14(in_a[1][13]),.input_unit_15(in_a[1][14]),
-        .input_unit_16(in_a[1][15]),.input_unit_17(in_a[1][16]),.input_unit_18(in_a[1][17]),
-        .input_unit_19(in_a[1][18]),.input_unit_20(in_a[1][19]),.input_unit_21(in_a[1][20]),
-        .input_unit_22(in_a[1][21]),.input_unit_23(in_a[1][22]),.input_unit_24(in_a[1][23]),
-        .input_unit_25(in_a[1][24]),
-        
-        //weight 25
-        .weight_unit_1 (in_b_2[1][0]), .weight_unit_2 (in_b_2[1][1] ),.weight_unit_3 (in_b_2[1][2] ),
-        .weight_unit_4 (in_b_2[1][3]), .weight_unit_5 (in_b_2[1][4] ),.weight_unit_6 (in_b_2[1][5] ),
-        .weight_unit_7 (in_b_2[1][6]), .weight_unit_8 (in_b_2[1][7] ),.weight_unit_9 (in_b_2[1][8] ),
-        .weight_unit_10(in_b_2[1][9]), .weight_unit_11(in_b_2[1][10]),.weight_unit_12(in_b_2[1][11]),
-        .weight_unit_13(in_b_2[1][12]),.weight_unit_14(in_b_2[1][13]),.weight_unit_15(in_b_2[1][14]),
-        .weight_unit_16(in_b_2[1][15]),.weight_unit_17(in_b_2[1][16]),.weight_unit_18(in_b_2[1][17]),
-        .weight_unit_19(in_b_2[1][18]),.weight_unit_20(in_b_2[1][19]),.weight_unit_21(in_b_2[1][20]),
-        .weight_unit_22(in_b_2[1][21]),.weight_unit_23(in_b_2[1][22]),.weight_unit_24(in_b_2[1][23]),
-        .weight_unit_25(in_b_2[1][24]),
-        //bias 1
-        .bias_unit(bias[7]),
-        .output_unit_1(out_temp[7])        //.stage_5_unit(out_temp)
-    );
-
-    calculate_2d cal_instance9(
-        .clk(clk),
-        //input 25
-        .input_unit_1 (in_a[2][0]),.input_unit_2  (in_a[2][1 ]),.input_unit_3 (in_a[2][2 ]),    
-        .input_unit_4 (in_a[2][3]),.input_unit_5  (in_a[2][4 ]),.input_unit_6 (in_a[2][5 ]),
-        .input_unit_7 (in_a[2][6]),.input_unit_8  (in_a[2][7 ]),.input_unit_9 (in_a[2][8 ]),
-        .input_unit_10(in_a[2][9]),.input_unit_11 (in_a[2][10]),.input_unit_12(in_a[2][11]),
-        .input_unit_13(in_a[2][12]),.input_unit_14(in_a[2][13]),.input_unit_15(in_a[2][14]),
-        .input_unit_16(in_a[2][15]),.input_unit_17(in_a[2][16]),.input_unit_18(in_a[2][17]),
-        .input_unit_19(in_a[2][18]),.input_unit_20(in_a[2][19]),.input_unit_21(in_a[2][20]),
-        .input_unit_22(in_a[2][21]),.input_unit_23(in_a[2][22]),.input_unit_24(in_a[2][23]),
-        .input_unit_25(in_a[2][24]),
-        
-        
-        //weight 25
-        .weight_unit_1 (in_b_2[2][0]), .weight_unit_2 (in_b_2[2][1] ),.weight_unit_3 (in_b_2[2][2] ),
-        .weight_unit_4 (in_b_2[2][3]), .weight_unit_5 (in_b_2[2][4] ),.weight_unit_6 (in_b_2[2][5] ),
-        .weight_unit_7 (in_b_2[2][6]), .weight_unit_8 (in_b_2[2][7] ),.weight_unit_9 (in_b_2[2][8] ),
-        .weight_unit_10(in_b_2[2][9]), .weight_unit_11(in_b_2[2][10]),.weight_unit_12(in_b_2[2][11]),
-        .weight_unit_13(in_b_2[2][12]),.weight_unit_14(in_b_2[2][13]),.weight_unit_15(in_b_2[2][14]),
-        .weight_unit_16(in_b_2[2][15]),.weight_unit_17(in_b_2[2][16]),.weight_unit_18(in_b_2[2][17]),
-        .weight_unit_19(in_b_2[2][18]),.weight_unit_20(in_b_2[2][19]),.weight_unit_21(in_b_2[2][20]),
-        .weight_unit_22(in_b_2[2][21]),.weight_unit_23(in_b_2[2][22]),.weight_unit_24(in_b_2[2][23]),
-        .weight_unit_25(in_b_2[2][24]),
-        //bias 1
-        .bias_unit(bias[8]),
-        .output_unit_1(out_temp[8])        //.stage_5_unit(out_temp)
-    );
-
-    calculate_2d cal_instance10(
-        .clk(clk),
-        //input 25
-        .input_unit_1 (in_a[3][0]),.input_unit_2  (in_a[3][1 ]),.input_unit_3 (in_a[3][2 ]),    
-        .input_unit_4 (in_a[3][3]),.input_unit_5  (in_a[3][4 ]),.input_unit_6 (in_a[3][5 ]),
-        .input_unit_7 (in_a[3][6]),.input_unit_8  (in_a[3][7 ]),.input_unit_9 (in_a[3][8 ]),
-        .input_unit_10(in_a[3][9]),.input_unit_11 (in_a[3][10]),.input_unit_12(in_a[3][11]),
-        .input_unit_13(in_a[3][12]),.input_unit_14(in_a[3][13]),.input_unit_15(in_a[3][14]),
-        .input_unit_16(in_a[3][15]),.input_unit_17(in_a[3][16]),.input_unit_18(in_a[3][17]),
-        .input_unit_19(in_a[3][18]),.input_unit_20(in_a[3][19]),.input_unit_21(in_a[3][20]),
-        .input_unit_22(in_a[3][21]),.input_unit_23(in_a[3][22]),.input_unit_24(in_a[3][23]),
-        .input_unit_25(in_a[3][24]),
-        
-        
-        //weight 25
-        .weight_unit_1 (in_b_2[3][0]), .weight_unit_2 (in_b_2[3][1] ),.weight_unit_3 (in_b_2[3][2] ),
-        .weight_unit_4 (in_b_2[3][3]), .weight_unit_5 (in_b_2[3][4] ),.weight_unit_6 (in_b_2[3][5] ),
-        .weight_unit_7 (in_b_2[3][6]), .weight_unit_8 (in_b_2[3][7] ),.weight_unit_9 (in_b_2[3][8] ),
-        .weight_unit_10(in_b_2[3][9]), .weight_unit_11(in_b_2[3][10]),.weight_unit_12(in_b_2[3][11]),
-        .weight_unit_13(in_b_2[3][12]),.weight_unit_14(in_b_2[3][13]),.weight_unit_15(in_b_2[3][14]),
-        .weight_unit_16(in_b_2[3][15]),.weight_unit_17(in_b_2[3][16]),.weight_unit_18(in_b_2[3][17]),
-        .weight_unit_19(in_b_2[3][18]),.weight_unit_20(in_b_2[3][19]),.weight_unit_21(in_b_2[3][20]),
-        .weight_unit_22(in_b_2[3][21]),.weight_unit_23(in_b_2[3][22]),.weight_unit_24(in_b_2[3][23]),
-        .weight_unit_25(in_b_2[3][24]),
-        //bias 1
-        .bias_unit(bias[9]),
-        .output_unit_1(out_temp[9])        //.stage_5_unit(out_temp)
-    );
-
-    calculate_2d cal_instance11(
-        .clk(clk),
-        //input 25
-        .input_unit_1 (in_a[4][0]),.input_unit_2  (in_a[4][1 ]),.input_unit_3 (in_a[4][2 ]),    
-        .input_unit_4 (in_a[4][3]),.input_unit_5  (in_a[4][4 ]),.input_unit_6 (in_a[4][5 ]),
-        .input_unit_7 (in_a[4][6]),.input_unit_8  (in_a[4][7 ]),.input_unit_9 (in_a[4][8 ]),
-        .input_unit_10(in_a[4][9]),.input_unit_11 (in_a[4][10]),.input_unit_12(in_a[4][11]),
-        .input_unit_13(in_a[4][12]),.input_unit_14(in_a[4][13]),.input_unit_15(in_a[4][14]),
-        .input_unit_16(in_a[4][15]),.input_unit_17(in_a[4][16]),.input_unit_18(in_a[4][17]),
-        .input_unit_19(in_a[4][18]),.input_unit_20(in_a[4][19]),.input_unit_21(in_a[4][20]),
-        .input_unit_22(in_a[4][21]),.input_unit_23(in_a[4][22]),.input_unit_24(in_a[4][23]),
-        .input_unit_25(in_a[4][24]),
-        
-        
-        //weight 25
-        .weight_unit_1 (in_b_2[4][0]), .weight_unit_2 (in_b_2[4][1] ),.weight_unit_3 (in_b_2[4][2] ),
-        .weight_unit_4 (in_b_2[4][3]), .weight_unit_5 (in_b_2[4][4] ),.weight_unit_6 (in_b_2[4][5] ),
-        .weight_unit_7 (in_b_2[4][6]), .weight_unit_8 (in_b_2[4][7] ),.weight_unit_9 (in_b_2[4][8] ),
-        .weight_unit_10(in_b_2[4][9]), .weight_unit_11(in_b_2[4][10]),.weight_unit_12(in_b_2[4][11]),
-        .weight_unit_13(in_b_2[4][12]),.weight_unit_14(in_b_2[4][13]),.weight_unit_15(in_b_2[4][14]),
-        .weight_unit_16(in_b_2[4][15]),.weight_unit_17(in_b_2[4][16]),.weight_unit_18(in_b_2[4][17]),
-        .weight_unit_19(in_b_2[4][18]),.weight_unit_20(in_b_2[4][19]),.weight_unit_21(in_b_2[4][20]),
-        .weight_unit_22(in_b_2[4][21]),.weight_unit_23(in_b_2[4][22]),.weight_unit_24(in_b_2[4][23]),
-        .weight_unit_25(in_b_2[4][24]),
-        //bias 1
-        .bias_unit(bias[10]),
-        .output_unit_1(out_temp[10])        //.stage_5_unit(out_temp)
-    );
-
-
-    calculate_2d cal_instance12(
-        .clk(clk),
-        //input 25
-        .input_unit_1 (in_a[5][0]),.input_unit_2  (in_a[5][1 ]),.input_unit_3 (in_a[5][2 ]),    
-        .input_unit_4 (in_a[5][3]),.input_unit_5  (in_a[5][4 ]),.input_unit_6 (in_a[5][5 ]),
-        .input_unit_7 (in_a[5][6]),.input_unit_8  (in_a[5][7 ]),.input_unit_9 (in_a[5][8 ]),
-        .input_unit_10(in_a[5][9]),.input_unit_11 (in_a[5][10]),.input_unit_12(in_a[5][11]),
-        .input_unit_13(in_a[5][12]),.input_unit_14(in_a[5][13]),.input_unit_15(in_a[5][14]),
-        .input_unit_16(in_a[5][15]),.input_unit_17(in_a[5][16]),.input_unit_18(in_a[5][17]),
-        .input_unit_19(in_a[5][18]),.input_unit_20(in_a[5][19]),.input_unit_21(in_a[5][20]),
-        .input_unit_22(in_a[5][21]),.input_unit_23(in_a[5][22]),.input_unit_24(in_a[5][23]),
-        .input_unit_25(in_a[5][24]),
-        
-        
-        //weight 25
-        .weight_unit_1 (in_b_2[5][0]), .weight_unit_2 (in_b_2[5][1] ),.weight_unit_3 (in_b_2[5][2] ),
-        .weight_unit_4 (in_b_2[5][3]), .weight_unit_5 (in_b_2[5][4] ),.weight_unit_6 (in_b_2[5][5] ),
-        .weight_unit_7 (in_b_2[5][6]), .weight_unit_8 (in_b_2[5][7] ),.weight_unit_9 (in_b_2[5][8] ),
-        .weight_unit_10(in_b_2[5][9]), .weight_unit_11(in_b_2[5][10]),.weight_unit_12(in_b_2[5][11]),
-        .weight_unit_13(in_b_2[5][12]),.weight_unit_14(in_b_2[5][13]),.weight_unit_15(in_b_2[5][14]),
-        .weight_unit_16(in_b_2[5][15]),.weight_unit_17(in_b_2[5][16]),.weight_unit_18(in_b_2[5][17]),
-        .weight_unit_19(in_b_2[5][18]),.weight_unit_20(in_b_2[5][19]),.weight_unit_21(in_b_2[5][20]),
-        .weight_unit_22(in_b_2[5][21]),.weight_unit_23(in_b_2[5][22]),.weight_unit_24(in_b_2[5][23]),
-        .weight_unit_25(in_b_2[5][24]),
-        //bias 1
-        .bias_unit(bias[11]),
-        .output_unit_1(out_temp[11])        //.stage_5_unit(out_temp)
-    );
-
-
-    
-    relu_function L1_relu1(
-        clk,
-        out_temp[0],
-        out_result_a
-    );
-
-    
-    relu_function L1_relu2(
-        clk,
-        out_temp[1],
-        out_result_b
-    );
-
-    
-    relu_function L1_relu3(
-        clk,
-       out_temp[2],
-        out_result_c
-    );
-
-    
-    relu_function L1_relu4(
-        clk,
-        out_temp[3],
-        out_result_d
-    );
-
-    
-    relu_function L1_relu5(
-        clk,
-        out_temp[4],
-        out_result_e
-    );
-
-    
-    relu_function L1_relu6(
-        clk,
-       out_temp[5],
-        out_result_f
-    );
-
-
-
-
-    // assign out_result_a = out_temp[0];
-    // assign out_result_b = out_temp[1];
-    // assign out_result_c = out_temp[2];
-    // assign out_result_d = out_temp[3];
-    // assign out_result_e = out_temp[4];
-    // assign out_result_f = out_temp[5];
-
-    // assign out_result_g = out_temp[6];
-    // assign out_result_h = out_temp[7];
-    // assign out_result_i = out_temp[8];
-    // assign out_result_j = out_temp[9];
-    // assign out_result_k = out_temp[10];
-    // assign out_result_l = out_temp[11];
 
 
 endmodule

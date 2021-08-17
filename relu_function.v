@@ -12,7 +12,7 @@ module relu_function
 
     wire [DATA_WIDTH -1:0] relu_func ;
 
-    assign relu_func = relu_in[DATA_WIDTH -1] != 1'b1 ? relu_in : 12'b0;
+    assign relu_func = relu_in[DATA_WIDTH -1] != 1'b1 ? relu_in : 16'b0;
 
     always@(posedge clk)begin
         relu_out <= relu_func;

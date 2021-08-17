@@ -61,18 +61,9 @@ parameter  DATA_WIDTH = 16,
     // input [DATA_WIDTH - 1:0] L2_feature6_douta,
     output [7:0] L2_feature_addr_read,
     //convoultion result
-    input signed [DATA_WIDTH - 1 : 0] con_result_1,
-    input signed [DATA_WIDTH - 1 : 0] con_result_2,
-    input signed [DATA_WIDTH - 1 : 0] con_result_3,
-    input signed [DATA_WIDTH - 1 : 0] con_result_4,
-    input signed [DATA_WIDTH - 1 : 0] con_result_5,
-    input signed [DATA_WIDTH - 1 : 0] con_result_6,
-    input signed [DATA_WIDTH - 1 : 0] con_result_7,
-    input signed [DATA_WIDTH - 1 : 0] con_result_8,
-    input signed [DATA_WIDTH - 1 : 0] con_result_9,
-    input signed [DATA_WIDTH - 1 : 0] con_result_10,
-    input signed [DATA_WIDTH - 1 : 0] con_result_11,
-    input signed [DATA_WIDTH - 1 : 0] con_result_12,       
+    input  [DATA_WIDTH - 1 : 0] result_1,
+    input  [DATA_WIDTH - 1 : 0] result_2,
+    
     //output block memory
     input [DATA_WIDTH - 1:0] L4_output_read_data1,
     input [DATA_WIDTH - 1:0] L4_output_read_data2,
@@ -295,8 +286,6 @@ parameter  DATA_WIDTH = 16,
 
     //내부에서 커널 개수만큼 컨볼루션 반복해야하므로
 
-    // output reg [11:0] L3_weight_addra,
-    // output reg [11:0] L3_weight_addrb,
     
     
     reg [11:0] filter_count_a;
@@ -415,37 +404,13 @@ parameter  DATA_WIDTH = 16,
     end
 
     
-    wire signed [11:0] res_stage2 [0:1];
+    wire signed [DATA_WIDTH -1:0] res_stage2 [0:1];
     wire pool_done_ins[0:1];
-    wire stage2_en;
-    assign stage2_en = (cal_st == CONVOLUTION);
+  
     wire pool_en = cal_st==CONVOLUTION;
     
     //stage 2 add tree && pooling && layer4 output block memory
-    stage2_add stage2_1(
-        .clk(clk),
-        .en(stage2_en),
-        .datain_a(con_result_1),
-        .datain_b(con_result_2),
-        .datain_c(con_result_3),
-        .datain_d(con_result_4),
-        .datain_e(con_result_5),
-        .datain_f(con_result_6),
-        .dataout(res_stage2[0])
-    );
 
-
-    stage2_add stage2_2(
-        .clk(clk),
-        .en(stage2_en),
-        .datain_a(con_result_7),
-        .datain_b(con_result_8),
-        .datain_c(con_result_9),
-        .datain_d(con_result_10),
-        .datain_e(con_result_11),
-        .datain_f(con_result_12),
-        .dataout(res_stage2[1])
-    );
 
     wire [4:0] L4_reserved [0:2];
     wire [11:0] pool_base_position;
@@ -453,21 +418,8 @@ parameter  DATA_WIDTH = 16,
 
 
 
-    wire  [11:0] out_result_a,out_result_b;
+    wire  [DATA_WIDTH -1:0] out_result_a,out_result_b;
 
-
-      relu_function L3_relu1(
-        clk,
-        res_stage2[0],
-        out_result_a
-    );
-
-    
-      relu_function L3_relu2(
-        clk,
-        res_stage2[1],
-        out_result_b
-    );
 
 
 
@@ -476,7 +428,7 @@ parameter  DATA_WIDTH = 16,
         .cal_en(pool_en),
         .base_position(pool_base_position),
         .L4_output_dout(L4_output_read_data1),
-        .calculate_result(out_result_a),
+        .calculate_result(result_1),
         .L4_output_read_addr(L4_output_read_addr),
         .L4_output_write_addr(L4_output_write_addr),
         .L4_output_wea(L4_output_wea),
@@ -489,13 +441,16 @@ parameter  DATA_WIDTH = 16,
         .cal_en(pool_en),
         .base_position(pool_base_position),
         .L4_output_dout(L4_output_read_data2),
-        .calculate_result(out_result_b),
+        .calculate_result(result_2),
         .L4_output_read_addr(L4_reserved[0]),
         .L4_output_write_addr(L4_reserved[1]),
         .L4_output_wea(L4_reserved[2]),
         .L4_out_din(L4_output_write_data2),
         .pool_done(pool_done_ins[1])
     );
+
+    
+
 
 
 endmodule

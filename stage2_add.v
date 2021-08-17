@@ -9,8 +9,8 @@ module stage2_add
     output  reg signed [DATA_WIDTH -1:0] dataout
 );
 
-    reg signed [DATA_WIDTH -1 :0] temp_stage1 [0:2];
-    reg signed [DATA_WIDTH -1 :0] temp_stage2 [0:1];
+    reg signed [DATA_WIDTH :0] temp_stage1 [0:2];
+    reg signed [DATA_WIDTH :0] temp_stage2 [0:1];
 
 
 

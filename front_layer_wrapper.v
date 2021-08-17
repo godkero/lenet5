@@ -4,7 +4,7 @@
 module front_layer_wrapper
 #(
     parameter 
-    DATA_WIDTH = 12, 
+    DATA_WIDTH = 16, 
     FILTER_WIDTH = 5, 
     FILTER_WEIGHT = 5,
     INPUT_WIDTH = 32, 
@@ -25,7 +25,7 @@ module front_layer_wrapper
 (
     input clk,rst,L1_en,
     //L1 params
-    input [383 : 0] L1_in_data,
+    input [511 : 0] L1_in_data,
     output L1_done,
     output [7:0] L1_w_addr,
     output [4:0] L1_in_addr,

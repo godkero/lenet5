@@ -4,6 +4,7 @@
 module calculate_2d
 #(parameter 
     DATA_WIDTH = 16, 
+    EXPANDED_WIDTH = 32,
     FILTER_WIDTH = 5, 
     FILTER_WEIGHT = 5,
     INPUT_WIDTH = 32, 
@@ -90,37 +91,37 @@ output signed [DATA_WIDTH-1 : 0] output_unit_1
 
 
 
-wire signed [DATA_WIDTH-1 : 0] mult_unit_1;
-wire signed [DATA_WIDTH-1 : 0] mult_unit_2;
-wire signed [DATA_WIDTH-1 : 0] mult_unit_3;
-wire signed [DATA_WIDTH-1 : 0] mult_unit_4;
-wire signed [DATA_WIDTH-1 : 0] mult_unit_5;
-wire signed [DATA_WIDTH-1 : 0] mult_unit_6;
-wire signed [DATA_WIDTH-1 : 0] mult_unit_7;
-wire signed [DATA_WIDTH-1 : 0] mult_unit_8;
-wire signed [DATA_WIDTH-1 : 0] mult_unit_9;
-wire signed [DATA_WIDTH-1 : 0] mult_unit_10;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_11;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_12;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_13;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_14;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_15;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_16;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_17;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_18;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_19;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_20;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_21;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_22;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_23;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_24;
-wire signed[DATA_WIDTH-1 : 0] mult_unit_25;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_1;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_2;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_3;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_4;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_5;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_6;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_7;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_8;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_9;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_10;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_11;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_12;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_13;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_14;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_15;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_16;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_17;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_18;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_19;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_20;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_21;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_22;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_23;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_24;
+wire signed [DATA_WIDTH -1 : 0] mult_unit_25;
 
-reg signed [DATA_WIDTH-1 : 0] stage_1_unit [0:12];
-reg signed [DATA_WIDTH-1 : 0] stage_2_unit [0:6];
-reg signed [DATA_WIDTH-1 : 0] stage_3_unit [0:3];
-reg signed [DATA_WIDTH-1 : 0] stage_4_unit [0:1];
-reg signed [DATA_WIDTH-1:0]  stage_5_unit;
+reg signed [DATA_WIDTH : 0] stage_1_unit [0:12];
+reg signed [DATA_WIDTH : 0] stage_2_unit [0:6];
+reg signed [DATA_WIDTH : 0] stage_3_unit [0:3];
+reg signed [DATA_WIDTH : 0] stage_4_unit [0:1];
+reg signed [DATA_WIDTH -1 : 0]  stage_5_unit;
 
 
     mult_cell mul1(clk,input_unit_1,weight_unit_1,mult_unit_1);
@@ -189,6 +190,6 @@ reg signed [DATA_WIDTH-1:0]  stage_5_unit;
     end
 
 
-assign output_unit_1 =  stage_5_unit; 
+assign output_unit_1 =  stage_5_unit[DATA_WIDTH - 1 : 0]; 
 
 endmodule
