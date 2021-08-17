@@ -36,7 +36,7 @@ parameter IDLE  = 7'b0000001,
         if(rst) begin st <= IDLE; end
         else begin st <= nst; end
     end
-
+  
 
     //next state logic
     always@(st,L1_en,L1_done,start,L3_done,FC1_done,FC2_done,FC3_done)begin

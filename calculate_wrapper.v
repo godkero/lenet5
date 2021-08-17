@@ -780,7 +780,7 @@ module calculate_wrapper(
     assign bias[3 ] = L1_en==1'b1 ? L1_bias_unit4 : 1'b0;
     assign bias[4 ] = L1_en==1'b1 ? L1_bias_unit5 : 1'b0;
     assign bias[5 ] = L1_en==1'b1 ? L1_bias_unit6 : 1'b0;
-    assign bias[6 ] = L3_en==1'b1 ? L3_bias_unit2 : 1'b0;
+    assign bias[6 ] =                               L3_en==1'b1 ? L3_bias_unit2 : 1'b0;
     assign bias[7 ] = 1'b0; 
     assign bias[8 ] = 1'b0; 
     assign bias[9 ] = 1'b0; 
