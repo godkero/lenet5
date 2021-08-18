@@ -404,7 +404,6 @@ parameter  DATA_WIDTH = 16,
     end
 
     
-    wire signed [DATA_WIDTH -1:0] res_stage2 [0:1];
     wire pool_done_ins[0:1];
   
     wire pool_en = cal_st==CONVOLUTION;
@@ -415,11 +414,6 @@ parameter  DATA_WIDTH = 16,
     wire [4:0] L4_reserved [0:2];
     wire [11:0] pool_base_position;
     assign pool_base_position = 5'd25 * kernel_count;
-
-
-
-    wire  [DATA_WIDTH -1:0] out_result_a,out_result_b;
-
 
 
 

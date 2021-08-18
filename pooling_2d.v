@@ -45,12 +45,12 @@ module pooling_2d
     reg [1:0] done_cnt;
 
     always@(posedge clk)begin
-        if(ev_odd == 1'b1)begin
+        if(ev_odd == 1'b0)begin
             L2_temp <= (L2_out1_dout >= calculate_result) ? L2_out1_dout : calculate_result;
             L2_out1_din <= (L2_out1_dout >= calculate_result) ? L2_out1_dout : calculate_result;
         end
         else begin
-            L2_temp <= 1'b0;
+            L2_temp <= L2_temp;
             L2_out1_din <= (L2_temp >= calculate_result) ? L2_temp : calculate_result ;
         end
     end

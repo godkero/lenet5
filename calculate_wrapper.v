@@ -4,7 +4,8 @@
 
 module calculate_wrapper
 #(
-    parameter DATA_WIDTH = 16
+    parameter DATA_WIDTH = 16,
+              EXPANDED_WIDTH = 32
 )
 (
     input clk,
@@ -298,10 +299,6 @@ module calculate_wrapper
     wire  [DATA_WIDTH -1:0] out_temp[0:11];
 
     wire  [DATA_WIDTH -1:0] res_stage2[0:1];
-
-    
-    
-   
 
 
 

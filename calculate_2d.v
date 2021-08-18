@@ -117,11 +117,11 @@ wire signed [DATA_WIDTH -1 : 0] mult_unit_23;
 wire signed [DATA_WIDTH -1 : 0] mult_unit_24;
 wire signed [DATA_WIDTH -1 : 0] mult_unit_25;
 
-reg signed [DATA_WIDTH : 0] stage_1_unit [0:12];
-reg signed [DATA_WIDTH : 0] stage_2_unit [0:6];
-reg signed [DATA_WIDTH : 0] stage_3_unit [0:3];
-reg signed [DATA_WIDTH : 0] stage_4_unit [0:1];
-reg signed [DATA_WIDTH -1 : 0]  stage_5_unit;
+reg signed [DATA_WIDTH + 1 : 0] stage_1_unit [0:12];
+reg signed [DATA_WIDTH + 1 : 0] stage_2_unit [0:6];
+reg signed [DATA_WIDTH + 1 : 0] stage_3_unit [0:3];
+reg signed [DATA_WIDTH + 1 : 0] stage_4_unit [0:1];
+reg signed [DATA_WIDTH + 1 : 0]  stage_5_unit;
 
 
     mult_cell mul1(clk,input_unit_1,weight_unit_1,mult_unit_1);

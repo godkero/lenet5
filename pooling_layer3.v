@@ -61,7 +61,7 @@ module pooling_layer3
             L4_out_din <= (L4_output_dout >= calculate_result) ? L4_output_dout : calculate_result;
         end
         else begin
-            L4_temp <= 1'b0;
+            L4_temp <= L4_temp;
             L4_out_din <= (L4_temp >= calculate_result) ? L4_temp : calculate_result ;
         end
     end

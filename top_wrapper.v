@@ -51,7 +51,9 @@ module top_wrapper#(
   reg [DATA_WIDTH - 1:0] bias1_mem;
   reg [DATA_WIDTH - 1:0] bias2_mem;
 
-
+  //fc1
+  wire [7:0] L4_FC1_read_addr;
+  wire [7:0] FC1_read_addr;
   reg [DATA_WIDTH - 1: 0] fc1_input_reg [0 : 399];
 
 
@@ -589,11 +591,18 @@ module top_wrapper#(
   assign L2_mem_addr_read = (L1_en == 1'b1) ? L2_feature_addr_read_s:(L3_en == 1'b1) ? L2_feature_addr_read_r : 1'b0;  
 
 
+  
+ 
 
 
+// [INPUT_SIZE - 1: 0] 
+// [READ_SIZE - 1 : 0] 
+// [OUTPUT_SIZE - 1 :0]
 
 /////////////////////////// 
   wire [7:0] L4_output_read_addr;
+
+
   wire [DATA_WIDTH -1:0] L4_output_read_data1;
   wire [DATA_WIDTH -1:0] L4_output_read_data2;
 
@@ -756,7 +765,7 @@ module top_wrapper#(
     .addra(L4_output_write_addr),  // input wire [7 : 0] addra
     .dina(L4_output_write_data1),    // input wire [11 : 0] dina
     .clkb(clk),    // input wire clkb
-    .addrb(L4_output_read_addr),  // input wire [7 : 0] addrb
+    .addrb(L4_FC1_read_addr),  // input wire [7 : 0] addrb
     .doutb(L4_output_read_data1)  // output wire [11 : 0] doutb
   );
 
@@ -766,10 +775,39 @@ module top_wrapper#(
     .addra(L4_output_write_addr),  // input wire [7 : 0] addra
     .dina(L4_output_write_data2),    // input wire [11 : 0] dina
     .clkb(clk),    // input wire clkb
-    .addrb(L4_output_read_addr),  // input wire [7 : 0] addrb
+    .addrb(L4_FC1_read_addr),  // input wire [7 : 0] addrb
     .doutb(L4_output_read_data2)  // output wire [11 : 0] doutb
   );
 
+
+wire [127:0] burst_weight_fc1;
+wire [DATA_WIDTH -1 : 0] FC1_weight_addr;
+wire [DATA_WIDTH - 1 : 0] fc1_out;
+
+reg [DATA_WIDTH - 1 : 0] fc2_mem [0 : 99];
+
+ Fully_connected FC1_wrapper
+(
+    .clk(clk),
+    .en(FC1_en),
+    .in(L4_output_read_data1),        //data
+    .weight_set(burst_weight_fc1),    //burst data
+    .out(fc1_out),                    //out set
+    .FC1_weight_addr(FC1_weight_addr),
+    .FC1_read_addr(FC1_read_addr),    //16bit
+    .FC_done(FC1_done)
+);
+
+FC1_weight FC1_weight (
+  .clka(clk),                         // input wire clka
+  .addra(FC1_weight_addr),           // input wire [12 : 0] addra
+  .douta(burst_weight_fc1),           // output wire [127 : 0] douta
+  .clkb(clk),                         // input wire clkb
+  .addrb(1'bz),                       // input wire [12 : 0] addrb
+  .doutb(1'bz)                        // output wire [127 : 0] doutb
+);
+
+  assign L4_FC1_read_addr = (L3_en == 1'b1) ? L4_output_read_addr : (FC1_en == 1'b1) ? FC1_read_addr : 8'b0 ;
 
   assign out_d = {L4_output_write_data2[2:0] ,L4_output_write_data1[3:0]};
 
