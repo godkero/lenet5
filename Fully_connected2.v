@@ -124,7 +124,7 @@ module Fully_connected2
 
     reg [11:0] temp_weight_addr;
     reg [11:0] weight_cnt;
-
+    reg [2:0]  done_wait;
 
     always@(posedge clk)begin
         if(st ==CAL)begin
@@ -141,6 +141,14 @@ module Fully_connected2
             temp_weight_addr <= run_cnt * 7'd84;
             weight_cnt <= 1'b0;
         end
+
+        if(weight_cnt == 7'd84)begin
+            load_done<=1'b1;
+        end
+        else begin
+            load_done<=1'b0;
+        end
+
     end
 
     

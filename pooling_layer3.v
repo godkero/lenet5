@@ -80,7 +80,7 @@ module pooling_layer3
 
     always@(posedge clk)begin
         if(cal_en)begin
-            if(L4_wait == 4'd10)begin
+            if(L4_wait == 4'd11)begin
                 L4_wait <= L4_wait;
             end
             else begin
@@ -92,7 +92,7 @@ module pooling_layer3
         end
 
         //r_start
-        if(L4_wait >= 4'd4)begin
+        if(L4_wait >= 4'd5)begin
             r_en <=  1'b1;
         end
         else begin
@@ -101,7 +101,7 @@ module pooling_layer3
 
         //w_start
 
-        if(L4_wait >= 4'd7)begin
+        if(L4_wait >= 4'd8)begin
             w_en <= 1'b1;
         end
         else if(w_row == 5'd9 && w_col == 5'd9)begin
@@ -152,7 +152,7 @@ module pooling_layer3
             w_col <= 1'b0;
         end    
 
-        if(w_en == 1'b1 && L4_wait == 4'd10 && done_cnt < 2'b10)begin
+        if(w_en == 1'b1 && L4_wait == 4'd11 && done_cnt < 2'b10)begin
             L4_output_wea <= 1'b1;
         end
         else begin

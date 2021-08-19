@@ -857,7 +857,7 @@ wire [DATA_WIDTH - 1: 0] fc2_bias_read_data;
 Fully_connected2 FC2_wrapper(
    .clk(clk),
     .rst(rst),
-    .en(FC1_en),
+    .en(FC2_en),
     .in(fc1_out_read_data),        //data
     .weight_set(burst_weight_fc2),    //burst data
     .out_write_ena(fc2_wea),
@@ -865,7 +865,7 @@ Fully_connected2 FC2_wrapper(
     .out_read_data(fc2_out_read_data),
     .out_write_addr(fc2_out_write_addr),
     .out_write_data(fc2_out_write_data),       
-    .FC1_weight_addr(burst_weight_fc2),
+    .FC1_weight_addr(FC2_weight_addr),
     .FC1_read_addr(fc_2_in_addr),    //16bit
      .bias_read_addr(fc2_bias_read_addr),
     . bias_read_data(fc2_bias_read_data),
@@ -873,9 +873,31 @@ Fully_connected2 FC2_wrapper(
 );
  
 
+ fc2_weight fc2_weight (
+  .clka(clk),    // input wire clka
+  .addra(FC2_weight_addr),  // input wire [11 : 0] addra
+  .douta(burst_weight_fc2)  // output wire [63 : 0] douta
+);
+
+fc2_bias fc2_bias (
+  .clka(clk),    // input wire clka
+  .addra(fc2_bias_read_addr),  // input wire [6 : 0] addra
+  .douta(fc2_bias_read_data)  // output wire [15 : 0] douta
+);
+
+fc2_output fc2_output (
+  .clka(clk),    // input wire clka
+  .wea(fc2_wea),      // input wire [0 : 0] wea
+  .addra(fc2_out_write_addr),  // input wire [6 : 0] addra
+  .dina(fc2_out_write_data),    // input wire [15 : 0] dina
+  .clkb(clk),    // input wire clkb
+  .addrb(fc2_out_read_addr),  // input wire [6 : 0] addrb
+  .doutb(fc2_out_read_data)  // output wire [15 : 0] doutb
+);
+
  assign fc_1_2_addr = (FC1_en == 1'b1) ? fc1_out_read_addr : (FC2_en == 1'b1) ? fc_2_in_addr : 1'b0;
  assign L4_FC1_read_addr = (L3_en == 1'b1) ? L4_output_read_addr : (FC1_en == 1'b1) ? FC1_read_addr : 8'b0 ;
 
-  assign out_d = {L4_output_write_data2[2:0] ,L4_output_write_data1[3:0]};
+  assign out_d = fc1_out_read_data[6:0];
 
 endmodule
