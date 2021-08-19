@@ -11,6 +11,7 @@ module calculate_wrapper
     input clk,
     input L1_en,
     input L3_en,
+    input cal_start,
     input [DATA_WIDTH - 1:0]  L1_inp_unit1 ,
     input [DATA_WIDTH - 1:0]  L1_inp_unit2 ,
     input [DATA_WIDTH - 1:0]  L1_inp_unit3 ,
@@ -722,12 +723,12 @@ module calculate_wrapper
     stage2_add stage2_2(
         .clk(clk),
         .en(L3_en),
-        .datain_a(6),
-        .datain_b(7),
-        .datain_c(8),
-        .datain_d(9),
-        .datain_e(10),
-        .datain_f(11),
+        .datain_a(out_temp[6]),
+        .datain_b(out_temp[7]),
+        .datain_c(out_temp[8]),
+        .datain_d(out_temp[9]),
+        .datain_e(out_temp[10]),
+        .datain_f(out_temp[11]),
         .dataout(res_stage2[1])
     );
 

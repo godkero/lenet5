@@ -82,6 +82,7 @@ parameter  DATA_WIDTH = 16,
     output reg [11:0]cur_filter_count,
     output reg [3:0] col,row,
     output reg input_load_start,
+    output reg cal_start,
     output L3_done
 );
 
@@ -400,6 +401,13 @@ parameter  DATA_WIDTH = 16,
         else begin
             row <= 1'b0;
             col <= 1'b0;
+        end
+
+        if(cal_st == CONVOLUTION && row == 1'b0 && col == 1'b0)begin
+            cal_start <= 1'b1;
+        end
+        else begin
+            cal_start <= 1'b0;
         end
     end
 

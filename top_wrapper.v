@@ -54,8 +54,6 @@ module top_wrapper#(
   //fc1
   wire [7:0] L4_FC1_read_addr;
   wire [7:0] FC1_read_addr;
-  reg [DATA_WIDTH - 1: 0] fc1_input_reg [0 : 399];
-
 
   wire [DATA_WIDTH-1 : 0] con_result [0:5];
   wire [DATA_WIDTH-1 : 0] middle_output1,middle_output2;
@@ -81,6 +79,7 @@ module top_wrapper#(
     .clk(clk),
     .L1_en(L1_en),
     .L3_en(L3_en),
+    .cal_start(cal_start),
     .L1_inp_unit1 (inp[0][0+in_cell_row]    ),
     .L1_inp_unit2 (inp[0][1+in_cell_row]    ),
     .L1_inp_unit3 (inp[0][2+in_cell_row]    ),
@@ -618,7 +617,6 @@ module top_wrapper#(
   wire [DATA_WIDTH -1:0] L3_weight_addra;
   wire [DATA_WIDTH -1:0] L3_weight_addrb;
   
-  
   wire [3:0] L3_input_height_count;
   wire [3:0] L3_input_width_count;
   wire [1:0] L3_input_wait;
@@ -670,7 +668,8 @@ module top_wrapper#(
     .col(col),
     .row(row),
     .input_load_start(L3_inp_load_start),
-    .L3_done(L3_done)
+    .L3_done(L3_done),
+    .cal_start(cal_start)
       
   );
 
@@ -780,34 +779,102 @@ module top_wrapper#(
   );
 
 
-wire [127:0] burst_weight_fc1;
+wire [255:0] burst_weight_fc1;
 wire [DATA_WIDTH -1 : 0] FC1_weight_addr;
-wire [DATA_WIDTH - 1 : 0] fc1_out;
 
-reg [DATA_WIDTH - 1 : 0] fc2_mem [0 : 99];
 
+
+wire fc1_wea;
+wire [6:0]  fc1_out_write_addr;
+wire [DATA_WIDTH - 1: 0] fc1_out_read_data;
+wire [6:0]  fc1_out_read_addr;
+wire [DATA_WIDTH - 1: 0] fc1_out_write_data;
+
+wire [6:0]  fc1_bias_read_addr;
+wire [DATA_WIDTH - 1: 0] fc1_bias_read_data;
  Fully_connected FC1_wrapper
 (
     .clk(clk),
+    .rst(rst),
     .en(FC1_en),
-    .in(L4_output_read_data1),        //data
+    .in_1(L4_output_read_data1),        //data
+    .in_2(L4_output_read_data2),
     .weight_set(burst_weight_fc1),    //burst data
-    .out(fc1_out),                    //out set
+    .out_write_ena(fc1_wea),
+    .out_read_addr(fc1_out_read_addr),
+    .out_read_data(fc1_out_read_data),
+    .out_write_addr(fc1_out_write_addr),
+    .out_write_data(fc1_out_write_data),       
+                //out set
     .FC1_weight_addr(FC1_weight_addr),
     .FC1_read_addr(FC1_read_addr),    //16bit
+     .bias_read_addr(fc1_bias_read_addr),
+    . bias_read_data(fc1_bias_read_data),
     .FC_done(FC1_done)
+
 );
+
 
 FC1_weight FC1_weight (
-  .clka(clk),                         // input wire clka
-  .addra(FC1_weight_addr),           // input wire [12 : 0] addra
-  .douta(burst_weight_fc1),           // output wire [127 : 0] douta
-  .clkb(clk),                         // input wire clkb
-  .addrb(1'bz),                       // input wire [12 : 0] addrb
-  .doutb(1'bz)                        // output wire [127 : 0] doutb
+  .clka(clk),    // input wire clka
+  .addra(FC1_weight_addr),  // input wire [11 : 0] addra
+  .douta(burst_weight_fc1)  // output wire [255 : 0] douta
 );
 
-  assign L4_FC1_read_addr = (L3_en == 1'b1) ? L4_output_read_addr : (FC1_en == 1'b1) ? FC1_read_addr : 8'b0 ;
+ wire [6 :0 ] fc_1_2_addr;
+fc1_output fc1_output (
+  .clka(clk),    // input wire clka
+  .wea(fc1_wea),      // input wire [0 : 0] wea
+  .addra(fc1_out_write_addr),  // input wire [6 : 0] addra
+  .dina(fc1_out_write_data),    // input wire [15 : 0] dina
+  .clkb(clk),    // input wire clkb
+  .addrb(fc_1_2_addr),  // input wire [6 : 0] addrb
+  .doutb(fc1_out_read_data)  // output wire [15 : 0] doutb
+);
+
+FC1_bias fc1_bias (
+  .clka(clk),    // input wire clka
+  .addra(fc1_bias_read_addr),  // input wire [6 : 0] addra
+  .douta(fc1_bias_read_data)  // output wire [15 : 0] douta
+);
+
+
+
+wire [63:0] burst_weight_fc2;
+wire [DATA_WIDTH -1 : 0] FC2_weight_addr;
+
+
+wire fc2_wea;
+wire [6:0] fc_2_in_addr;
+wire [6:0]  fc2_out_write_addr;
+wire [DATA_WIDTH - 1: 0] fc2_out_read_data;
+wire [6:0]  fc2_out_read_addr;
+wire [DATA_WIDTH - 1: 0] fc2_out_write_data;
+wire [6:0]  fc2_bias_read_addr;
+wire [DATA_WIDTH - 1: 0] fc2_bias_read_data;
+
+
+Fully_connected2 FC2_wrapper(
+   .clk(clk),
+    .rst(rst),
+    .en(FC1_en),
+    .in(fc1_out_read_data),        //data
+    .weight_set(burst_weight_fc2),    //burst data
+    .out_write_ena(fc2_wea),
+    .out_read_addr(fc2_out_read_addr),
+    .out_read_data(fc2_out_read_data),
+    .out_write_addr(fc2_out_write_addr),
+    .out_write_data(fc2_out_write_data),       
+    .FC1_weight_addr(burst_weight_fc2),
+    .FC1_read_addr(fc_2_in_addr),    //16bit
+     .bias_read_addr(fc2_bias_read_addr),
+    . bias_read_data(fc2_bias_read_data),
+    .FC_done(FC2_done)
+);
+ 
+
+ assign fc_1_2_addr = (FC1_en == 1'b1) ? fc1_out_read_addr : (FC2_en == 1'b1) ? fc_2_in_addr : 1'b0;
+ assign L4_FC1_read_addr = (L3_en == 1'b1) ? L4_output_read_addr : (FC1_en == 1'b1) ? FC1_read_addr : 8'b0 ;
 
   assign out_d = {L4_output_write_data2[2:0] ,L4_output_write_data1[3:0]};
 
