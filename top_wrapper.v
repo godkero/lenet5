@@ -13,14 +13,14 @@ module top_wrapper#(
   (
   input clk_in,rst,start,
   output finish,
-  output [6:0] out_d
+  output reg [3:0] out_d
   );
   
   wire clk;
   wire locked;
   clk_wiz_0 pll_clk(.clk_out1(clk),.locked(locked),.clk_in1(clk_in));   
 
-  wire L1_done,L3_done,FC1_done,FC2_done,FC3_done,L1_en,L3_en,FC1_en,FC2_en,FC3_en;
+  wire L1_done,L3_done,FC1_done,FC2_done,FC3_done,RESULT_done,L1_en,L3_en,FC1_en,FC2_en,FC3_en,RESULT_en;
 
 
   //front params
@@ -504,8 +504,8 @@ module top_wrapper#(
   //w:12 d:5*5*6 + 6   addra [7:0] dout[11:0]
   con1_w_mem L1_weight_mem (.clka(clk),.addra(L1_w_addr),.douta(L1_w_data)  );
   // command center
-  control top_control(.clk(clk),.rst(rst),.start(start),.L1_done(L1_done),.L3_done(L3_done),.FC1_done(FC1_done),
-                      .FC2_done(FC2_done),.FC3_done(FC3_done),.L1_en(L1_en),.L3_en(L3_en),.FC1_en(FC1_en),.FC2_en(FC2_en),.FC3_en(FC3_en),.finish(finish));
+  control top_control(.clk(clk),.rst(rst),.start(start),.L1_done(L1_done),.L3_done(L3_done),.FC1_done(FC1_done),.RESULT_done(RESULT_done),
+                      .FC2_done(FC2_done),.FC3_done(FC3_done),.L1_en(L1_en),.L3_en(L3_en),.FC1_en(FC1_en),.FC2_en(FC2_en),.FC3_en(FC3_en),.RESULT_en(RESULT_en),.finish(finish));
   // w:12*32 d:32  input addr[9:0] dina[11:0] output addr[4:0] dout[383:0]
   Input_ram input_ram (.clka(clk),.wea(1'b0),.addra(10'b0),.dina(12'b0),.clkb(clk),.addrb(L1_in_addr),.doutb(L1_in_data));
 
@@ -821,7 +821,11 @@ FC1_weight FC1_weight (
   .douta(burst_weight_fc1)  // output wire [255 : 0] douta
 );
 
- wire [6 :0 ] fc_1_2_addr;
+wire [6 :0 ] fc_1_2_addr;
+wire [6:0 ] FC2_FC3_read_addr;
+wire [3:0 ] result_read_addr;
+wire [3:0] F3_result_read_addr;
+
 fc1_output fc1_output (
   .clka(clk),    // input wire clka
   .wea(fc1_wea),      // input wire [0 : 0] wea
@@ -854,6 +858,18 @@ wire [6:0]  fc2_bias_read_addr;
 wire [DATA_WIDTH - 1: 0] fc2_bias_read_data;
 
 
+
+wire [63:0] burst_weight_fc3;
+wire [DATA_WIDTH -1 : 0] FC3_weight_addr;
+wire fc3_wea;
+wire [6:0] fc_3_in_addr;
+wire [6:0]  fc3_out_write_addr;
+wire [DATA_WIDTH - 1: 0] fc3_out_read_data;
+wire [6:0]  fc3_out_read_addr;
+wire [DATA_WIDTH - 1: 0] fc3_out_write_data;
+wire [6:0]  fc3_bias_read_addr;
+wire [DATA_WIDTH - 1: 0] fc3_bias_read_data;
+
 Fully_connected2 FC2_wrapper(
    .clk(clk),
     .rst(rst),
@@ -873,6 +889,34 @@ Fully_connected2 FC2_wrapper(
 );
  
 
+Fully_connected2
+#(
+  .INPUT_MAP(84),
+  .OUTPUT_MAP(10),
+  .RUN_TIME(21)
+
+) 
+FC3_wrapper
+ (
+   .clk(clk),
+    .rst(rst),
+    .en(FC3_en),
+    .in(fc2_out_read_data),        //data
+    .weight_set(burst_weight_fc3),    //burst data
+    .out_write_ena(fc3_wea),
+    .out_read_addr(fc3_out_read_addr),
+    .out_read_data(fc3_out_read_data),
+    .out_write_addr(fc3_out_write_addr),
+    .out_write_data(fc3_out_write_data),       
+    .FC1_weight_addr(FC3_weight_addr),
+    .FC1_read_addr(fc_3_in_addr),    //16bit
+     .bias_read_addr(fc3_bias_read_addr),
+    . bias_read_data(fc3_bias_read_data),
+    .FC_done(FC3_done)
+);
+ 
+
+
  fc2_weight fc2_weight (
   .clka(clk),    // input wire clka
   .addra(FC2_weight_addr),  // input wire [11 : 0] addra
@@ -891,13 +935,59 @@ fc2_output fc2_output (
   .addra(fc2_out_write_addr),  // input wire [6 : 0] addra
   .dina(fc2_out_write_data),    // input wire [15 : 0] dina
   .clkb(clk),    // input wire clkb
-  .addrb(fc2_out_read_addr),  // input wire [6 : 0] addrb
+  .addrb(FC2_FC3_read_addr),  // input wire [6 : 0] addrb
   .doutb(fc2_out_read_data)  // output wire [15 : 0] doutb
 );
 
- assign fc_1_2_addr = (FC1_en == 1'b1) ? fc1_out_read_addr : (FC2_en == 1'b1) ? fc_2_in_addr : 1'b0;
- assign L4_FC1_read_addr = (L3_en == 1'b1) ? L4_output_read_addr : (FC1_en == 1'b1) ? FC1_read_addr : 8'b0 ;
 
-  assign out_d = fc1_out_read_data[6:0];
+blk_mem_gen_0 fc3_bias (
+  .clka(clk),    // input wire clka
+  .addra(fc3_bias_read_addr),  // input wire [3 : 0] addra
+  .douta(fc3_bias_read_data)  // output wire [15 : 0] douta
+);
+
+fc3_output fc3_output (
+  .clka(clk),    // input wire clka
+  .wea(fc3_wea),      // input wire [0 : 0] wea
+  .addra(fc3_out_write_addr),  // input wire [3 : 0] addra
+  .dina(fc3_out_write_data),    // input wire [15 : 0] dina
+  .clkb(clk),    // input wire clkb
+  .addrb(F3_result_read_addr),  // input wire [3 : 0] addrb
+  .doutb(fc3_out_read_data)  // output wire [15 : 0] doutb
+);
+
+fc3_weight fc3_weight (
+  .clka(clk),    // input wire clka
+  .addra(FC3_weight_addr),  // input wire [7 : 0] addra
+  .douta(burst_weight_fc3)  // output wire [63 : 0] douta
+);
+
+wire [DATA_WIDTH - 1 : 0] result;
+
+always@(posedge clk)begin
+    if(RESULT_en)begin
+        out_d <= result;
+    end
+    else begin
+      out_d <= out_d;
+    end
+end
+
+
+result_gen result0(
+  clk,rst,RESULT_en,
+  fc3_out_read_data,
+  result_read_addr,
+  result,
+  RESULT_done
+);
+
+
+ assign L4_FC1_read_addr = (L3_en == 1'b1) ? L4_output_read_addr : (FC1_en == 1'b1) ? FC1_read_addr : 8'b0 ;
+ assign fc_1_2_addr = (FC1_en == 1'b1) ? fc1_out_read_addr : (FC2_en == 1'b1) ? fc_2_in_addr : 1'b0;
+ assign FC2_FC3_read_addr = (FC2_en == 1'b1) ? fc2_out_read_addr : (FC3_en == 1'b1) ? fc_3_in_addr : 8'b0 ;
+ assign F3_result_read_addr = (FC3_en == 1'b1) ? fc3_out_read_addr : (RESULT_en == 1'b1 ) ? result_read_addr : 4'b0;
+
+ 
 
 endmodule

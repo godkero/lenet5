@@ -24,6 +24,7 @@ module Fully_connected2
 #( parameter DATA_WIDTH = 16,
               INPUT_MAP = 120,
               OUTPUT_MAP = 84,
+              RUN_TIME = 30,
               INPUT_SIZE = INPUT_MAP * DATA_WIDTH,
               OUTPUT_SIZE = OUTPUT_MAP * DATA_WIDTH,
               READ_SET = 4,
@@ -57,27 +58,55 @@ module Fully_connected2
     wire cal_done;
     wire all_done;
     
-    reg [3:0] position;
     reg [11:0] cur_addr;
 
     reg  signed [DATA_WIDTH - 1:0] input_unit [0:READ_SET-1];
     reg  signed [DATA_WIDTH - 1:0] weight_unit [0:READ_SET-1];
     wire signed [DATA_WIDTH - 1:0] temp_unit [0:READ_SET-1];
 
-    reg flag;
     reg [2:0] bias_add_wait;
 
     // cal 끝내는 변수
     reg [6:0] run_cnt;
     reg run_flag;
     
-    localparam IDLE = 5'b0001 , LOAD = 5'b0010 , CAL = 5'b0100 , BIAS_ADD = 5'b01000, DONE = 5'b10000;
+    localparam IDLE = 5'b00001 , LOAD = 5'b00010 , CAL = 5'b00100 , BIAS_ADD = 5'b01000, DONE = 5'b10000;
 
-    reg [3:0] st,nst;
+    reg [4:0] st,nst;
 
     assign FC_done = st ==DONE ? 1'b1 : 1'b0;
 
+    reg [3:0] load_wait;
     reg [3:0] load_cnt;
+
+    reg [2:0] cal_wait;
+    always@(posedge clk)begin
+        if(st == CAL)begin
+            if(cal_wait == 3'd7)begin
+                cal_wait <= cal_wait;
+            end
+            else begin
+                cal_wait <= cal_wait + 1'b1;
+            end
+        end
+        else begin
+            cal_wait <= 1'b0;
+        end
+
+        if(st == BIAS_ADD)begin
+            if(bias_add_wait == 3'd4)begin
+                bias_add_wait <= bias_add_wait;
+            end
+            else begin
+                bias_add_wait <= bias_add_wait + 1'b1;
+
+            end
+        end
+        else begin
+            bias_add_wait <= 1'b0;
+        end
+
+    end
 
     always@(posedge clk)begin
         if(st == LOAD)begin
@@ -98,6 +127,23 @@ module Fully_connected2
             cur_addr <= 1'b0;
             load_cnt <= 1'b0;
         end
+
+        if(load_cnt == 4'd4)begin
+            if(load_wait == 1'b1)begin
+                load_done <= 1'b1;
+                load_wait <= load_wait;
+            end
+            else begin
+                load_done <= 1'b0;
+                load_wait <= load_wait + 1'b1;
+            end
+        end
+        else begin
+            load_done <= 1'b0;
+            load_wait <= 1'b0;
+        end
+
+
     end
 
     assign FC1_read_addr = cur_addr;
@@ -115,8 +161,7 @@ module Fully_connected2
     end
 
 
-    reg [3:0] cal_wait;
-    reg [6:0] cal_cnt;
+
     reg add_done;
 // FC1_weight_addr
 
@@ -124,11 +169,10 @@ module Fully_connected2
 
     reg [11:0] temp_weight_addr;
     reg [11:0] weight_cnt;
-    reg [2:0]  done_wait;
 
     always@(posedge clk)begin
         if(st ==CAL)begin
-            if(weight_cnt < 7'd84)begin
+            if(weight_cnt < OUTPUT_MAP)begin
                 temp_weight_addr <= temp_weight_addr + 1'b1;
                 weight_cnt <= weight_cnt + 1'b1;
             end
@@ -138,15 +182,8 @@ module Fully_connected2
             end
         end
         else begin
-            temp_weight_addr <= run_cnt * 7'd84;
+            temp_weight_addr <= run_cnt * OUTPUT_MAP;
             weight_cnt <= 1'b0;
-        end
-
-        if(weight_cnt == 7'd84)begin
-            load_done<=1'b1;
-        end
-        else begin
-            load_done<=1'b0;
         end
 
     end
@@ -155,13 +192,13 @@ module Fully_connected2
     assign FC1_weight_addr = temp_weight_addr;
    
 
-    assign cal_done = out_write_addr == 7'd119 && st==CAL ? 1'b1 : 1'b0;  
-    assign all_done = out_write_addr == 7'd119 && run_cnt == 5'd25 && st ==CAL ? 1'b1 : 1'b0;
+    assign cal_done = out_write_addr == OUTPUT_MAP -1 && st==CAL ? 1'b1 : 1'b0;  
+    assign all_done = out_write_addr == OUTPUT_MAP -1 && run_cnt == RUN_TIME && st ==CAL ? 1'b1 : 1'b0;
 
     always@(posedge clk)begin
         for(i = 0 ; i< 4 ; i = i + 1)begin
             if(cal_wait >= 3'b010)begin
-                weight_unit[i] <=  weight_set[ i*4 +: 4];
+                weight_unit[i] <=  weight_set[ i*16 +: 16];
             end
             else begin
                 weight_unit[i] <= 1'b0;
@@ -210,22 +247,33 @@ module Fully_connected2
     // output [DATA_WIDTH -1:0]     out_data,
 
     always@(posedge clk)begin
-        
+        if(st ==CAL)begin
+            if(cal_wait == 3'd7)begin
+                cal_wait <= cal_wait;
+            end
+            else begin
+                cal_wait <= cal_wait + 1'b1;
+            end
+        end
+        else begin
+            cal_wait <= 1'b0;
+        end
+
     /////read addr
         if(all_done == 1'b1)begin
             out_read_addr <= 1'b0;
         end
         
         else if(st == BIAS_ADD)begin
-            if(out_read_addr == 7'd83)begin
+            if(out_read_addr == (OUTPUT_MAP-1))begin
                 out_read_addr <= out_read_addr;
             end
             else begin
                 out_read_addr <= out_read_addr + 1'b1;
             end
         end
-        else if(cal_wait >= 4'd04)begin
-            if(out_read_addr < 7'd84)begin
+        else if(cal_wait >= 3'd4)begin
+            if(out_read_addr == (OUTPUT_MAP-1))begin
                 out_read_addr <= out_read_addr;
             end
             else begin
@@ -243,8 +291,8 @@ module Fully_connected2
         end
         
         else if(st == BIAS_ADD)begin
-            if(bias_add_wait == 3'd3)begin
-                if(out_write_addr == 7'd83)begin    
+            if(bias_add_wait == 3'd4)begin
+                if(out_write_addr == (OUTPUT_MAP-1))begin    
                     out_write_addr <= out_write_addr;
                 end
                 else begin
@@ -255,8 +303,8 @@ module Fully_connected2
                 out_write_addr <= 1'b0;
             end
         end
-        else if(cal_wait >= 4'd7)begin
-            if(out_write_addr == 7'd83)begin
+        else if(cal_wait >= 3'd7)begin
+            if(out_write_addr == (OUTPUT_MAP-1))begin
                 out_write_addr <= out_write_addr;
             end
             else begin
@@ -267,22 +315,23 @@ module Fully_connected2
             out_write_addr <= 1'b0;
         end
 
-        if(cal_wait >=  4'd6 && cal_done == 1'b0 && st == CAL)begin
+        if(cal_wait >=  3'd6 && cal_done == 1'b0 && st == CAL)begin
              out_write_ena <= 1'b1;
         end
-        else if(bias_add_wait >= 2'b11 && add_done == 1'b0 && st == BIAS_ADD)begin
+        else if(out_write_addr < OUTPUT_MAP - 1 &&  bias_add_wait > 3'd2 &&st == BIAS_ADD)begin
             out_write_ena <= 1'b1;
         end
         else begin
              out_write_ena <= 1'b0;
         end
 
+
     end
 
 
     always@(posedge clk)begin
         if(st == BIAS_ADD)begin
-            if(bias_read_addr == 7'd83)begin
+            if(bias_read_addr ==(OUTPUT_MAP-1))begin
                 bias_read_addr <= bias_read_addr ;
             end
             else begin
@@ -296,7 +345,7 @@ module Fully_connected2
 
 
     always@(posedge clk)begin
-        if(out_write_addr == 7'd83 && bias_add_wait == 2'b11)begin
+        if(out_write_addr == (OUTPUT_MAP-1) && bias_add_wait >= 2'b11)begin
             add_done <= 1'b1;
         end
         else begin

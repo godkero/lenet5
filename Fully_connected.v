@@ -175,7 +175,6 @@ module Fully_connected
 // FC1_weight_addr
 
 
-
     reg  [11:0] cal_out_cnt;
     wire [11:0] temp_weight_addr = cal_cnt + cal_out_cnt;
 
