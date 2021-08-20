@@ -400,6 +400,7 @@ module Fully_connected
             CAL :  nst = en == 1'b1 && all_done == 1'b1 ? BIAS_ADD : en == 1'b1 && cal_done == 1'b1 ? LOAD : en == 1'b1 ? CAL : IDLE ;
             BIAS_ADD : nst = en == 1'b1 && add_done == 1'b1 ? DONE : en == 1'b1 ? BIAS_ADD : IDLE;
             DONE : nst = en == 1'b1 ? DONE : IDLE;
+            default : nst = IDLE;
         endcase 
     end
 
