@@ -982,6 +982,23 @@ result_gen result0(
   RESULT_done
 );
 
+  
+  
+  
+  ila_0 ila_test (
+      .clk(clk), // input wire clk
+      .probe0(F3_result_read_addr), // input wire [0:0]  probe0  
+      .probe1(fc3_out_read_data), // input wire [0:0]  probe1 
+      .probe2(out_d), // input wire [11:0]  probe2 
+      .probe3(result), // input wire [11:0]  probe3 
+      .probe4(FC3_done), // input wire [11:0]  probe4 
+      // .probe5(L4_output_read_data2), // input wire [11:0]  probe5 
+      // .probe6(L4_output_write_addr1), // input wire [11:0]  probe6 
+      // .probe7(L4_output_write_addr1), // input wire [11:0]  probe7 
+//       .probe4(L3_done)// input wire [1:0]  probe8 
+      // .probe9(L1_position_col), // input wire [5:0]  probe9,
+      // .probe10(front_st)
+  );
 
  assign L4_FC1_read_addr = (L3_en == 1'b1) ? L4_output_read_addr : (FC1_en == 1'b1) ? FC1_read_addr : 8'b0 ;
  assign fc_1_2_addr = (FC1_en == 1'b1) ? fc1_out_read_addr : (FC2_en == 1'b1) ? fc_2_in_addr : 1'b0;
